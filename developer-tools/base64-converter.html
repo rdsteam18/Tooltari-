@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3097658772821429" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Base64 Encoder Decoder Online - ToolTari</title>
+  <meta name="description" content="Encode and decode text to and from Base64 online for free. Clean local browser execution protects your developer strings data from server uploads.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Base64 Encoder Decoder Online",
+    "description": "Encode string characters into Base64 format and decode sequences locally.",
+    "url": "https://tooltari.netlify.app/developer-tools/base64-converter",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All OS platforms",
+    "browserRequirements": "Requires JavaScript.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+</head>
+<body class="theme-dev">
+
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo-link">
+        <i class="fa-solid fa-screwdriver-wrench logo-icon"></i>
+        <span>ToolTari</span>
+      </a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tool-workspace">
+    
+    <div class="breadcrumb">
+      <a href="/">Home</a> <i class="fa-solid fa-chevron-right"></i> <span>Developer Tools</span> <i class="fa-solid fa-chevron-right"></i> <span>Base64 Converter</span>
+    </div>
+
+    <div class="tool-header-block">
+      <h1 style="color:var(--accent)"><i class="fa-solid fa-arrow-right-left" style="color:var(--accent)"></i> Base64 Converter</h1>
+      <p>Encode plain text into Base64 format or decode Base64 data back into readable text.</p>
+    </div>
+
+    <div class="security-guard-banner">
+      <i class="fa-solid fa-shield-halved" style="color:var(--success)"></i>
+      <div>
+        <div class="security-title" style="color:#065f46">100% Secure In-Browser Encoding</div>
+        <div class="security-desc" style="color:#047857">All encoding calculations execute in your local system sandbox. Your variables are completely private and secure.</div>
+      </div>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- Layout with side by side panels for text -->
+    <div class="processing-dashboard text-tool-layout">
+      <div>
+        <div class="setting-group">
+          <label for="rawInputText">Input Text Data</label>
+          <textarea id="rawInputText" class="text-input-area" placeholder="Type or paste your text content here..."></textarea>
+        </div>
+
+        <div class="button-row">
+          <button id="btnEncode" class="btn-action-trigger" style="width:auto; padding:0.75rem 2rem; background-color:var(--accent); font-size:0.95rem; box-shadow:0 4px 10px rgba(139,92,246,0.15)">
+            <i class="fa-solid fa-lock"></i> Encode to Base64
+          </button>
+          <button id="btnDecode" class="btn-secondary">
+            <i class="fa-solid fa-unlock"></i> Decode Base64
+          </button>
+        </div>
+
+        <div class="alert-error" id="errorAlert" style="display:none; margin-top:1rem;">
+          <i class="fa-solid fa-circle-exclamation"></i> <span id="errorMessage"></span>
+        </div>
+      </div>
+
+      <div>
+        <div class="result-box-container" style="margin-top:0;">
+          <div class="result-box-header">
+            <span>Converter Output</span>
+            <button id="btnCopy" class="btn-copy"><i class="fa-solid fa-copy"></i> Copy <span id="copySuccessTip" class="copy-success-tip">Copied!</span></button>
+          </div>
+          <textarea id="resultTextarea" class="result-textarea" style="height:250px;" placeholder="Output data will be generated here..." readonly></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <article class="tool-info-article">
+      <div class="info-block">
+        <h2>How to convert text to and from Base64</h2>
+        <ol>
+          <li>Type or paste your text values into the <strong>Input Text Data</strong> field.</li>
+          <li>Click <strong>Encode to Base64</strong> to transform text into characters or click <strong>Decode Base64</strong> to read code blocks.</li>
+          <li>Your output is generated instantly in the right-side box.</li>
+          <li>Click the <strong>Copy</strong> icon on the output header to save the result.</li>
+        </ol>
+      </div>
+
+      <div class="info-block">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-grid">
+          <details class="faq-item" open>
+            <summary>What is Base64 representation used for?</summary>
+            <p>Base64 is an encoding algorithm used to represent binary data in an ASCII string format. It is widely used in CSS embedded files, JSON transfers, and email attachments (MIME) to prevent data corruption during transport.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Is this file size-limited?</summary>
+            <p>No. The conversion is done inside your local browser memory space. Keep inputs below 20MB for a lag-free experience.</p>
+          </details>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-info">
+        <h3>ToolTari</h3>
+        <p>Fast, secure, and private client-side utility suite. Your files stay with you.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms of Service</a></li>
+          <li><a href="/disclaimer.html">Disclaimer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="/about.html">Our Story</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ToolTari. All rights reserved.</p>
+      <p>Powered by local browser-native WebAssembly technology.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/utility-engine.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const encodeBtn = document.getElementById('btnEncode');
+      const decodeBtn = document.getElementById('btnDecode');
+      const rawInput = document.getElementById('rawInputText');
+      const resultArea = document.getElementById('resultTextarea');
+
+      if (encodeBtn) {
+        encodeBtn.addEventListener('click', () => {
+          ToolTariUI.hideError();
+          const val = rawInput.value;
+          if (!val) {
+            ToolTariUI.showError('Input text is empty.');
+            return;
+          }
+
+          try {
+            const res = ToolTariUtilityEngine.base64Encode(val);
+            resultArea.value = res;
+            ToolTariUI.addHistoryEntry('Base64 Converter', `Encode text (${val.length} chars)`, `Base64 string (${res.length} chars)`);
+          } catch (err) {
+            ToolTariUI.showError(err.message || 'Failed to encode.');
+          }
+        });
+      }
+
+      if (decodeBtn) {
+        decodeBtn.addEventListener('click', () => {
+          ToolTariUI.hideError();
+          const val = rawInput.value.trim();
+          if (!val) {
+            ToolTariUI.showError('Input text is empty.');
+            return;
+          }
+
+          try {
+            const res = ToolTariUtilityEngine.base64Decode(val);
+            resultArea.value = res;
+            ToolTariUI.addHistoryEntry('Base64 Converter', `Decode Base64 (${val.length} chars)`, `Text (${res.length} chars)`);
+          } catch (err) {
+            ToolTariUI.showError(err.message || 'Failed to decode. Verify the string is valid Base64.');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

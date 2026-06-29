@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3097658772821429" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Online Code Compiler - Execute Python & Web Code - ToolTari</title>
+  <meta name="description" content="A client-side online compiler. Run Python code in Pyodide WebAssembly and test HTML/CSS/JS in a sandboxed iframe. Secure, fast, and no server uploads.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .compiler-layout-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @media (min-width: 992px) {
+      .compiler-layout-grid {
+        grid-template-columns: 1.2fr 1fr;
+      }
+    }
+    .workspace-pane {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .pane-header {
+      padding: 0.75rem 1.25rem;
+      background: #f1f5f9;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .pane-header-tabs {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .header-tab {
+      border: none;
+      background: none;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      color: var(--text-light);
+      transition: var(--transition);
+    }
+    .header-tab.active {
+      background-color: var(--accent);
+      color: white;
+    }
+    .header-tab.web-active {
+      background-color: var(--secondary);
+      color: white;
+    }
+    .editor-wrapper {
+      flex-grow: 1;
+      height: 480px;
+      position: relative;
+    }
+    .console-display {
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: 'Fira Code', 'Courier New', monospace;
+      padding: 1.25rem;
+      height: 400px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+    .console-display .std-out { color: #4ade80; }
+    .console-display .std-err { color: #f87171; }
+    .console-display .std-sys { color: #38bdf8; }
+    
+    .iframe-display {
+      width: 100%;
+      height: 400px;
+      border: none;
+      background: white;
+      display: none;
+    }
+    .compiler-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1.25rem;
+      background: #f8fafc;
+      border-top: 1px solid var(--border-color);
+    }
+    .controls-left {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .select-control {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-card);
+      font-size: 0.9rem;
+      outline: none;
+      cursor: pointer;
+    }
+    .btn-run {
+      background-color: var(--success);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: var(--transition);
+      box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+    }
+    .btn-run:hover {
+      background-color: #059669;
+      transform: translateY(-1px);
+    }
+    .btn-run:active {
+      transform: translateY(0);
+    }
+    .btn-clear {
+      background: none;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-clear:hover {
+      background-color: #f1f5f9;
+      color: var(--text-dark);
+    }
+  </style>
+</head>
+<body class="theme-dev">
+
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo-link">
+        <i class="fa-solid fa-screwdriver-wrench logo-icon"></i>
+        <span>ToolTari</span>
+      </a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tool-workspace animate-fade-in">
+    <div class="breadcrumb">
+      <a href="/">Home</a> <i class="fa-solid fa-chevron-right"></i> <span>Developer Tools</span> <i class="fa-solid fa-chevron-right"></i> <span>Code Compiler</span>
+    </div>
+
+    <div class="tool-header-block">
+      <h1 style="color:var(--accent)"><i class="fa-solid fa-terminal" style="color:var(--accent)"></i> Online Code Compiler</h1>
+      <p>Compile and run Python or HTML/CSS/JS code locally inside your browser memory cache.</p>
+    </div>
+
+    <div class="security-guard-banner">
+      <i class="fa-solid fa-shield-halved" style="color:var(--success)"></i>
+      <div>
+        <div class="security-title" style="color:#065f46">100% In-Browser Execution Sandbox</div>
+        <div class="security-desc" style="color:#047857">Compiler engines run locally using WebAssembly. Your algorithms are entirely secure and never uploaded to servers.</div>
+      </div>
+    </div>
+
+    <!-- Compiler Interface -->
+    <div class="compiler-layout-grid">
+      
+      <!-- Left pane: Editor -->
+      <div class="workspace-pane">
+        <div class="pane-header">
+          <span>Source Code Editor</span>
+          <select id="compilerMode" class="select-control" aria-label="Compiler mode selection">
+            <option value="python">Python (WASM Engine)</option>
+            <option value="html">HTML / CSS / JS Sandbox</option>
+          </select>
+        </div>
+        <div class="editor-wrapper">
+          <div id="editorContainer" style="width:100%; height:100%;"></div>
+        </div>
+        <div class="compiler-controls">
+          <div class="controls-left">
+            <button id="btnRunCode" class="btn-run"><i class="fa-solid fa-play"></i> Run Code</button>
+          </div>
+          <button id="btnResetCode" class="btn-clear"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+        </div>
+      </div>
+
+      <!-- Right pane: Console / Iframe Output -->
+      <div class="workspace-pane">
+        <div class="pane-header">
+          <div class="pane-header-tabs" id="outputTabs">
+            <button class="header-tab active" id="tabConsole"><i class="fa-solid fa-terminal"></i> Console Output</button>
+            <button class="header-tab" id="tabPreview" style="display:none"><i class="fa-solid fa-globe"></i> Web Preview</button>
+          </div>
+          <button id="btnClearConsole" class="btn-clear" style="padding: 0.3rem 0.75rem; font-size: 0.8rem;"><i class="fa-solid fa-trash-can"></i> Clear Console</button>
+        </div>
+        
+        <!-- Text Console Output -->
+        <div id="consoleOutput" class="console-display">
+          <span class="std-sys">[System] Console initialized. Select Python or Web mode and click 'Run Code'.</span>
+        </div>
+
+        <!-- HTML IFrame Output -->
+        <iframe id="iframeOutput" class="iframe-display" title="HTML Output Sandbox"></iframe>
+      </div>
+
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-info">
+        <h3>ToolTari</h3>
+        <p>Fast, secure, and private client-side utility suite. Your files stay with you.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms of Service</a></li>
+          <li><a href="/disclaimer.html">Disclaimer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="/about.html">Our Story</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ToolTari. All rights reserved.</p>
+      <p>Powered by local browser-native WebAssembly technology.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  
+  <!-- Monaco Editor Loader -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs/loader.min.js"></script>
+  
+  <!-- Pyodide Python WASM Loader (loaded dynamically when Python executes) -->
+  <script>
+    const compilerTemplates = {
+      python: `# Python WASM Execution\n\ndef fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)\n\nprint("--- Fibonacci Sequence ---")\nfor i in range(10):\n    print(f"Fibonacci({i}) = {fibonacci(i)}")\n`,
+      html: `<!-- Live Web Preview Sandbox -->\n<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body {\n      font-family: sans-serif;\n      text-align: center;\n      padding-top: 50px;\n      background: #f0fdf4;\n    }\n    h1 {\n      color: #16a34a;\n    }\n    button {\n      padding: 10px 20px;\n      background: #15803d;\n      color: white;\n      border: none;\n      border-radius: 5px;\n      cursor: pointer;\n    }\n  </style>\n</head>\n<body>\n  <h1>Welcome to ToolTari Web Sandbox</h1>\n  <p>Modify HTML, CSS, or JS and click 'Run Code' to see live results!</p>\n  <button onclick="alert('Hello from sandbox!')">Click Me</button>\n</body>\n</html>`
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const selectMode = document.getElementById('compilerMode');
+      const btnRun = document.getElementById('btnRunCode');
+      const btnReset = document.getElementById('btnResetCode');
+      const btnClearConsole = document.getElementById('btnClearConsole');
+      const consoleOutput = document.getElementById('consoleOutput');
+      const iframeOutput = document.getElementById('iframeOutput');
+      
+      const tabConsole = document.getElementById('tabConsole');
+      const tabPreview = document.getElementById('tabPreview');
+      
+      let pyodideInstance = null;
+      let pyodideLoading = false;
+      let currentMode = 'python';
+
+      // Load Monaco Editor
+      require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs' } });
+      require(['vs/editor/editor.main'], function () {
+        window.editor = monaco.editor.create(document.getElementById('editorContainer'), {
+          value: compilerTemplates.python,
+          language: 'python',
+          theme: 'vs-dark',
+          automaticLayout: true,
+          fontSize: 14,
+          fontFamily: "'Fira Code', 'Courier New', monospace",
+          minimap: { enabled: false },
+          tabSize: 4
+        });
+
+        ToolTariUI.addHistoryEntry('Code Compiler', 'Open empty compiler', 'Compiler Workspace Loaded');
+      });
+
+      // Handle mode switching
+      selectMode.addEventListener('change', () => {
+        currentMode = selectMode.value;
+        const model = window.editor.getModel();
+        
+        if (currentMode === 'python') {
+          monaco.editor.setModelLanguage(model, 'python');
+          window.editor.setValue(compilerTemplates.python);
+          tabPreview.style.display = 'none';
+          switchTab('console');
+        } else {
+          monaco.editor.setModelLanguage(model, 'html');
+          window.editor.setValue(compilerTemplates.html);
+          tabPreview.style.display = 'inline-block';
+          switchTab('preview');
+        }
+      });
+
+      // Tabs switching
+      tabConsole.addEventListener('click', () => switchTab('console'));
+      tabPreview.addEventListener('click', () => switchTab('preview'));
+
+      function switchTab(tab) {
+        if (tab === 'console') {
+          tabConsole.className = 'header-tab active';
+          tabPreview.className = 'header-tab';
+          consoleOutput.style.display = 'block';
+          iframeOutput.style.display = 'none';
+        } else {
+          tabConsole.className = 'header-tab';
+          tabPreview.className = 'header-tab web-active';
+          consoleOutput.style.display = 'none';
+          iframeOutput.style.display = 'block';
+        }
+      }
+
+      function appendToConsole(text, type = 'std-out') {
+        const span = document.createElement('span');
+        span.className = type;
+        span.textContent = text;
+        consoleOutput.appendChild(span);
+        consoleOutput.scrollTop = consoleOutput.scrollHeight;
+      }
+
+      // Clear console
+      btnClearConsole.addEventListener('click', () => {
+        consoleOutput.innerHTML = '';
+        appendToConsole('[System] Console cleared.\n', 'std-sys');
+      });
+
+      // Reset code
+      btnReset.addEventListener('click', () => {
+        if (confirm('Reset source code to default template?')) {
+          window.editor.setValue(compilerTemplates[currentMode]);
+        }
+      });
+
+      // Run code execution
+      btnRun.addEventListener('click', async () => {
+        const codeVal = window.editor.getValue();
+        if (!codeVal) return;
+
+        if (currentMode === 'html') {
+          // Web Execution mode
+          try {
+            switchTab('preview');
+            iframeOutput.srcdoc = codeVal;
+            appendToConsole('\n[System] Rendered web sandbox updated.\n', 'std-sys');
+            ToolTariUI.addHistoryEntry('Code Compiler', 'Run HTML/CSS/JS Sandbox', 'Successfully rendered web sandbox');
+          } catch (e) {
+            appendToConsole(`\n[System Error] ${e.message}\n`, 'std-err');
+          }
+        } else {
+          // Python execution mode
+          switchTab('console');
+          appendToConsole('\n[System] Running Python script...\n', 'std-sys');
+
+          if (!pyodideInstance) {
+            if (pyodideLoading) return;
+            pyodideLoading = true;
+            appendToConsole('[System] Loading Pyodide WASM environments (requires internet connection)... This may take a few seconds.\n', 'std-sys');
+            
+            try {
+              // Load Pyodide script dynamically
+              await loadScript('https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js');
+              pyodideInstance = await loadPyodide();
+              
+              // Set up stdout/stderr redirect capturing
+              pyodideInstance.setStdout({
+                write: (text) => {
+                  appendToConsole(text, 'std-out');
+                  return text.length;
+                }
+              });
+              pyodideInstance.setStderr({
+                write: (text) => {
+                  appendToConsole(text, 'std-err');
+                  return text.length;
+                }
+              });
+              
+              pyodideLoading = false;
+              appendToConsole('[System] Pyodide environment loaded successfully!\n', 'std-sys');
+            } catch (err) {
+              pyodideLoading = false;
+              appendToConsole(`[System Error] Failed to load Pyodide: ${err.message}\n`, 'std-err');
+              return;
+            }
+          }
+
+          try {
+            // Run script
+            const result = await pyodideInstance.runPythonAsync(codeVal);
+            if (result !== undefined) {
+              appendToConsole(`\n[Returned] ${result}\n`, 'std-sys');
+            }
+            appendToConsole('[System] Script finished successfully.\n', 'std-sys');
+            
+            // Log to history
+            ToolTariUI.addHistoryEntry('Code Compiler', 'Run Python Script', `WASM execution completed successfully`);
+          } catch (err) {
+            appendToConsole(`\n[Traceback Error]\n${err.message}\n`, 'std-err');
+            ToolTariUI.addHistoryEntry('Code Compiler', 'Run Python Script', `WASM execution failed`, 'Error');
+          }
+        }
+      });
+
+      // Script loader utility
+      function loadScript(src) {
+        return new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = src;
+          script.onload = () => resolve();
+          script.onerror = (e) => reject(new Error('Script load failed: ' + src));
+          document.head.appendChild(script);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

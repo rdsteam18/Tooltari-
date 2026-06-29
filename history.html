@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3097658772821429" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Activity History - ToolTari</title>
+  <meta name="description" content="View your client-side activity history on ToolTari. Keep track of processed files, utilities run, and local browser-native operations.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="theme-text">
+
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo-link">
+        <i class="fa-solid fa-screwdriver-wrench logo-icon"></i>
+        <span>ToolTari</span>
+      </a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tool-workspace animate-fade-in">
+    <div class="breadcrumb">
+      <a href="/">Home</a> <i class="fa-solid fa-chevron-right"></i> <span>Activity History</span>
+    </div>
+
+    <div class="history-title-block">
+      <h1 style="color:var(--info)"><i class="fa-solid fa-clock-rotate-left" style="color:var(--info)"></i> Tool Activity History</h1>
+      <p>Track your local processing tasks. This log is stored 100% locally in your browser and never uploaded to servers.</p>
+    </div>
+
+    <div class="security-guard-banner">
+      <i class="fa-solid fa-shield-halved" style="color:var(--success)"></i>
+      <div>
+        <div class="security-title" style="color:#065f46">100% Private Local Log</div>
+        <div class="security-desc" style="color:#047857">Your operations history exists only in your local localStorage sandbox. Clearing browser cache or clicking "Clear All" will purge it instantly.</div>
+      </div>
+    </div>
+
+    <!-- History Container -->
+    <div id="historyTableContainer" class="history-table-container" style="display:none">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Tool Name</th>
+            <th>Date & Time</th>
+            <th>Input Parameters</th>
+            <th>Result / Output</th>
+            <th>Status</th>
+            <th style="width: 50px;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="historyTableBody">
+          <!-- JS dynamic row injection -->
+        </tbody>
+      </table>
+      
+      <div style="padding: 1.25rem; display: flex; justify-content: flex-end; border-top: 1px solid var(--border-color); background: #f8fafc;">
+        <button id="btnClearAll" class="btn-reset" style="background-color: var(--danger); color: white; border: none; margin: 0; box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.2);"><i class="fa-solid fa-trash-can" style="margin-right: 0.5rem"></i> Clear All History</button>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyHistoryState" class="processing-dashboard empty-history-screen" style="display:none">
+      <i class="fa-solid fa-folder-open"></i>
+      <h3>No Activity Recorded Yet</h3>
+      <p>Start using our PDF, Image, Developer, or Text tools, and your local actions will appear here.</p>
+      <a href="/" class="btn-select-files" style="display:inline-block; margin-top:1.5rem; text-decoration:none;"><i class="fa-solid fa-screwdriver-wrench" style="margin-right: 0.5rem"></i> Explore Tools</a>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-info">
+        <h3>ToolTari</h3>
+        <p>Fast, secure, and private client-side utility suite. Your files stay with you.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms of Service</a></li>
+          <li><a href="/disclaimer.html">Disclaimer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="/about.html">Our Story</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ToolTari. All rights reserved.</p>
+      <p>Powered by local browser-native WebAssembly technology.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tableContainer = document.getElementById('historyTableContainer');
+      const tableBody = document.getElementById('historyTableBody');
+      const emptyState = document.getElementById('emptyHistoryState');
+      const btnClearAll = document.getElementById('btnClearAll');
+
+      function formatTimestamp(isoStr) {
+        try {
+          const date = new Date(isoStr);
+          return date.toLocaleDateString(undefined, { 
+            month: 'short', 
+            day: 'numeric', 
+            year: 'numeric' 
+          }) + ' ' + date.toLocaleTimeString(undefined, { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+          });
+        } catch (e) {
+          return isoStr;
+        }
+      }
+
+      function loadHistory() {
+        const history = JSON.parse(localStorage.getItem('tooltari_history') || '[]');
+        
+        if (history.length === 0) {
+          tableContainer.style.display = 'none';
+          emptyState.style.display = 'block';
+          emptyState.classList.add('animate-fade-in');
+          return;
+        }
+
+        emptyState.style.display = 'none';
+        tableContainer.style.display = 'block';
+        tableBody.innerHTML = '';
+
+        history.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.className = 'animate-fade-in';
+          
+          tr.innerHTML = `
+            <td style="font-weight: 700; color: var(--text-dark);">${item.toolName}</td>
+            <td>${formatTimestamp(item.timestamp)}</td>
+            <td style="font-family: monospace; font-size: 0.85rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${item.input}">${item.input}</td>
+            <td style="font-family: monospace; font-size: 0.85rem; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${item.result}">${item.result}</td>
+            <td><span class="badge-status ${item.status.toLowerCase()}">${item.status}</span></td>
+            <td style="text-align: center;">
+              <button class="btn-delete-history" data-id="${item.id}" title="Remove entry">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          `;
+          
+          tableBody.appendChild(tr);
+        });
+
+        // Bind delete buttons
+        const deleteButtons = tableBody.querySelectorAll('.btn-delete-history');
+        deleteButtons.forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = btn.getAttribute('data-id');
+            deleteEntry(id);
+          });
+        });
+      }
+
+      function deleteEntry(id) {
+        let history = JSON.parse(localStorage.getItem('tooltari_history') || '[]');
+        history = history.filter(item => item.id !== id);
+        localStorage.setItem('tooltari_history', JSON.stringify(history));
+        loadHistory();
+      }
+
+      if (btnClearAll) {
+        btnClearAll.addEventListener('click', () => {
+          if (confirm('Are you sure you want to clear your entire activity history? This cannot be undone.')) {
+            localStorage.removeItem('tooltari_history');
+            loadHistory();
+          }
+        });
+      }
+
+      // Initial load
+      loadHistory();
+    });
+  </script>
+</body>
+</html>

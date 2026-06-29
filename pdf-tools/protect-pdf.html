@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3097658772821429" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Protect PDF Online Free - Password Protect PDF - ToolTari</title>
+  <meta name="description" content="Add secure password protection to your PDF documents. Encrypt your files client-side in browser RAM for maximum confidentiality. No server uploads.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Protect PDF Online Free",
+    "description": "Password protect and encrypt PDF files locally inside the browser.",
+    "url": "https://tooltari.netlify.app/pdf-tools/protect-pdf",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All modern platforms",
+    "browserRequirements": "Requires JavaScript.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo-link">
+        <i class="fa-solid fa-screwdriver-wrench logo-icon"></i>
+        <span>ToolTari</span>
+      </a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tool-workspace">
+    
+    <div class="breadcrumb">
+      <a href="/">Home</a> <i class="fa-solid fa-chevron-right"></i> <span>PDF Tools</span> <i class="fa-solid fa-chevron-right"></i> <span>Protect PDF</span>
+    </div>
+
+    <div class="tool-header-block">
+      <h1><i class="fa-solid fa-lock"></i> Protect PDF</h1>
+      <p>Secure your PDF documents by setting user and owner password encryption restrictions.</p>
+    </div>
+
+    <div class="security-guard-banner">
+      <i class="fa-solid fa-shield-halved"></i>
+      <div>
+        <div class="security-title">Local Browser-Native Protection</div>
+        <div class="security-desc">Your document is encrypted locally in your computer's RAM. We never receive or store your document or password.</div>
+      </div>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <div id="uploadPanel" class="dropzone">
+      <div class="dropzone-icon"><i class="fa-solid fa-file-arrow-up"></i></div>
+      <div class="dropzone-text">
+        <h3>Drag & drop PDF to encrypt</h3>
+        <p>or select file from your system</p>
+      </div>
+      <button class="btn-select-files">Select File</button>
+      <input type="file" id="fileInput" accept=".pdf" style="display:none">
+    </div>
+
+    <div id="dashboardPanel" class="processing-dashboard" style="display:none">
+      <div class="setting-group">
+        <label>Selected PDF File</label>
+        <div class="file-list" id="fileList"></div>
+      </div>
+      
+      <div class="tool-settings">
+        <div class="setting-group">
+          <label for="pdfPassword">Set Protection Password</label>
+          <input type="password" id="pdfPassword" class="setting-input" placeholder="Type document access password...">
+        </div>
+        
+        <div class="alert-error" id="errorAlert" style="display:none">
+          <i class="fa-solid fa-circle-exclamation"></i> <span id="errorMessage"></span>
+        </div>
+      </div>
+      
+      <button id="btnActionTrigger" class="btn-action-trigger">
+        <i class="fa-solid fa-lock"></i> Encrypt PDF Now
+      </button>
+      <button id="btnReset" class="btn-reset">Cancel and Clear</button>
+    </div>
+
+    <div id="progressPanel" class="processing-dashboard" style="display:none">
+      <div class="progress-container">
+        <div class="progress-spinner"><i class="fa-solid fa-spinner"></i></div>
+        <div class="progress-text" id="progressMessage">Applying security locks...</div>
+        <div style="background-color:#e2e8f0; border-radius:4px; height:8px; width:100%; margin-top:1rem; overflow:hidden">
+          <div id="progressBarFill" style="background-color:var(--primary); height:100%; width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="successPanel" class="processing-dashboard" style="display:none">
+      <div class="success-screen">
+        <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <h3>PDF Protected Natively!</h3>
+        <p>128-bit encryption keys have been written onto the document catalog elements.</p>
+        <a id="downloadAnchor" class="btn-download"><i class="fa-solid fa-download"></i> Download Locked PDF</a>
+        <button onclick="location.reload()" class="btn-reset"><i class="fa-solid fa-rotate-left"></i> Protect Another PDF</button>
+      </div>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <article class="tool-info-article">
+      <div class="info-block">
+        <h2>How to Protect your PDF with a password</h2>
+        <ol>
+          <li>Drag your document into the box or choose <strong>Select File</strong>.</li>
+          <li>Enter a secure password in the input field.</li>
+          <li>Click on <strong>Encrypt PDF Now</strong>. ToolTari wraps the file locally.</li>
+          <li>Save the locked PDF. Opening it will now request the password.</li>
+        </ol>
+      </div>
+
+      <div class="info-block">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-grid">
+          <details class="faq-item" open>
+            <summary>What encryption standard is used?</summary>
+            <p>ToolTari utilizes the standard PDF document user and owner protection algorithm provided by <code>pdf-lib</code>. This creates a standard PDF permissions dictionary block which is recognized by Chrome, Adobe Reader, and all standard PDF decoders.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Can ToolTari recover my password if I forget it?</summary>
+            <p>No. Because all computation is client-side and we do not store passwords or documents, we have absolutely no way to access or recover forgotten credentials.</p>
+          </details>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-info">
+        <h3>ToolTari</h3>
+        <p>Fast, secure, and private client-side utility suite. Your files stay with you.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms of Service</a></li>
+          <li><a href="/disclaimer.html">Disclaimer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="/about.html">Our Story</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ToolTari. All rights reserved.</p>
+      <p>Powered by local browser-native WebAssembly technology.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/pdf-engine.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const trigger = document.getElementById('btnActionTrigger');
+      const passwordInput = document.getElementById('pdfPassword');
+
+      if (trigger) {
+        trigger.addEventListener('click', async () => {
+          const files = ToolTariUI.UI.selectedFiles;
+          if (files.length === 0) {
+            ToolTariUI.showError('No PDF selected.');
+            return;
+          }
+
+          const password = passwordInput.value.trim();
+          if (!password) {
+            ToolTariUI.showError('Please set a password to lock the document.');
+            return;
+          }
+
+          try {
+            ToolTariUI.showProgress(40, 'Applying encryption matrices...');
+            const protectedBlob = await ToolTariPDFEngine.protectPDF(files[0], password, (percent, msg) => {
+              ToolTariUI.showProgress(percent, msg);
+            });
+            
+            const downloadUrl = URL.createObjectURL(protectedBlob);
+            ToolTariUI.showSuccess(downloadUrl, files[0].name.replace(/\.[^/.]+$/, "") + '_protected.pdf');
+          } catch (err) {
+            ToolTariUI.resetWorkspace();
+            ToolTariUI.showError(err.message || 'An error occurred while locking your PDF.');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

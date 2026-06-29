@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3097658772821429" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Rotate PDF Online Free - Turn PDF Pages - ToolTari</title>
+  <meta name="description" content="Rotate pages in your PDF document online for free. Adjust orientation clockwise or counter-clockwise locally in your browser memory for total privacy.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Rotate PDF Online Free",
+    "description": "Rotate PDF pages 90, 180, or 270 degrees locally inside the browser.",
+    "url": "https://tooltari.netlify.app/pdf-tools/rotate-pdf",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All platforms",
+    "browserRequirements": "Requires JavaScript.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo-link">
+        <i class="fa-solid fa-screwdriver-wrench logo-icon"></i>
+        <span>ToolTari</span>
+      </a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tool-workspace">
+    
+    <div class="breadcrumb">
+      <a href="/">Home</a> <i class="fa-solid fa-chevron-right"></i> <span>PDF Tools</span> <i class="fa-solid fa-chevron-right"></i> <span>Rotate PDF</span>
+    </div>
+
+    <div class="tool-header-block">
+      <h1><i class="fa-solid fa-rotate"></i> Rotate PDF</h1>
+      <p>Rotate all page streams in your PDF document. Re-align upside-down scans instantly.</p>
+    </div>
+
+    <div class="security-guard-banner">
+      <i class="fa-solid fa-shield-halved"></i>
+      <div>
+        <div class="security-title">Private Browser Processing</div>
+        <div class="security-desc">We never upload your files. PDF rotation coordinate matrices are adjusted locally inside browser RAM.</div>
+      </div>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <div id="uploadPanel" class="dropzone">
+      <div class="dropzone-icon"><i class="fa-solid fa-file-arrow-up"></i></div>
+      <div class="dropzone-text">
+        <h3>Drag & drop PDF here to rotate</h3>
+        <p>or select file from your local storage</p>
+      </div>
+      <button class="btn-select-files">Select File</button>
+      <input type="file" id="fileInput" accept=".pdf" style="display:none">
+    </div>
+
+    <div id="dashboardPanel" class="processing-dashboard" style="display:none">
+      <div class="setting-group">
+        <label>Selected PDF File</label>
+        <div class="file-list" id="fileList"></div>
+      </div>
+      
+      <div class="tool-settings">
+        <div class="setting-group">
+          <label for="rotateAngle">Rotation Angle</label>
+          <select id="rotateAngle" class="setting-input">
+            <option value="90">90° Clockwise</option>
+            <option value="180">180° Flip</option>
+            <option value="270">90° Counter-Clockwise (270°)</option>
+          </select>
+        </div>
+        
+        <div class="alert-error" id="errorAlert" style="display:none">
+          <i class="fa-solid fa-circle-exclamation"></i> <span id="errorMessage"></span>
+        </div>
+      </div>
+      
+      <button id="btnActionTrigger" class="btn-action-trigger">
+        <i class="fa-solid fa-rotate"></i> Rotate PDF Now
+      </button>
+      <button id="btnReset" class="btn-reset">Cancel and Clear</button>
+    </div>
+
+    <div id="progressPanel" class="processing-dashboard" style="display:none">
+      <div class="progress-container">
+        <div class="progress-spinner"><i class="fa-solid fa-spinner"></i></div>
+        <div class="progress-text" id="progressMessage">Rotating page layers...</div>
+        <div style="background-color:#e2e8f0; border-radius:4px; height:8px; width:100%; margin-top:1rem; overflow:hidden">
+          <div id="progressBarFill" style="background-color:var(--primary); height:100%; width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="successPanel" class="processing-dashboard" style="display:none">
+      <div class="success-screen">
+        <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <h3>PDF Pages Rotated!</h3>
+        <p>Page rotation angles have been successfully updated. Save your file below:</p>
+        <a id="downloadAnchor" class="btn-download"><i class="fa-solid fa-download"></i> Download Rotated PDF</a>
+        <button onclick="location.reload()" class="btn-reset"><i class="fa-solid fa-rotate-left"></i> Rotate Another PDF</button>
+      </div>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <article class="tool-info-article">
+      <div class="info-block">
+        <h2>How to Rotate PDF pages online</h2>
+        <ol>
+          <li>Upload your document by clicking <strong>Select File</strong> or dragging it in.</li>
+          <li>Choose your rotation angle: <strong>90° Clockwise</strong>, <strong>180°</strong>, or <strong>90° Counter-Clockwise</strong>.</li>
+          <li>Click on <strong>Rotate PDF Now</strong>. ToolTari updates page catalog vectors.</li>
+          <li>Download your rotated document.</li>
+        </ol>
+      </div>
+
+      <div class="info-block">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-grid">
+          <details class="faq-item" open>
+            <summary>Will this change the layout elements of my file?</summary>
+            <p>No. This operation simply modifies the internal page rotation parameter dictionary block. It does not compress, re-arrange, or alter structural vectors of your pages.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Does this work with scanned documents?</summary>
+            <p>Yes. It works perfectly with scanned sheets, contract agreements, and book slides.</p>
+          </details>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-info">
+        <h3>ToolTari</h3>
+        <p>Fast, secure, and private client-side utility suite. Your files stay with you.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms of Service</a></li>
+          <li><a href="/disclaimer.html">Disclaimer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="/about.html">Our Story</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ToolTari. All rights reserved.</p>
+      <p>Powered by local browser-native WebAssembly technology.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/pdf-engine.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const trigger = document.getElementById('btnActionTrigger');
+      const angleSelect = document.getElementById('rotateAngle');
+
+      if (trigger) {
+        trigger.addEventListener('click', async () => {
+          const files = ToolTariUI.UI.selectedFiles;
+          if (files.length === 0) {
+            ToolTariUI.showError('No PDF file selected.');
+            return;
+          }
+
+          const angle = parseInt(angleSelect.value, 10) || 90;
+
+          try {
+            ToolTariUI.showProgress(40, 'Re-writing coordinate streams...');
+            const rotatedBlob = await ToolTariPDFEngine.rotatePDF(files[0], angle, (percent, msg) => {
+              ToolTariUI.showProgress(percent, msg);
+            });
+            
+            const downloadUrl = URL.createObjectURL(rotatedBlob);
+            ToolTariUI.showSuccess(downloadUrl, files[0].name.replace(/\.[^/.]+$/, "") + `_rotated_${angle}.pdf`);
+          } catch (err) {
+            ToolTariUI.resetWorkspace();
+            ToolTariUI.showError(err.message || 'An error occurred while rotating PDF pages.');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

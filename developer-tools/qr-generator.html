@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3097658772821429" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>QR Code Generator Online Free - ToolTari</title>
+  <meta name="description" content="Generate QR codes online for free. Convert URLs and text to downloadble QR code graphics client-side in browser RAM for total safety.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- CDN QR Code Generation Script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/davidshimjs-qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "QR Code Generator Online Free",
+    "description": "Convert links or text to custom QR code images locally in browser.",
+    "url": "https://tooltari.netlify.app/developer-tools/qr-generator",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All modern operating systems",
+    "browserRequirements": "Requires JavaScript.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+</head>
+<body class="theme-dev">
+
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo-link">
+        <i class="fa-solid fa-screwdriver-wrench logo-icon"></i>
+        <span>ToolTari</span>
+      </a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tool-workspace">
+    
+    <div class="breadcrumb">
+      <a href="/">Home</a> <i class="fa-solid fa-chevron-right"></i> <span>Developer Tools</span> <i class="fa-solid fa-chevron-right"></i> <span>QR Code Generator</span>
+    </div>
+
+    <div class="tool-header-block">
+      <h1 style="color:var(--accent)"><i class="fa-solid fa-qrcode" style="color:var(--accent)"></i> QR Code Generator</h1>
+      <p>Convert links, contact details, or credentials into a printable QR code immediately.</p>
+    </div>
+
+    <div class="security-guard-banner">
+      <i class="fa-solid fa-shield-halved" style="color:var(--success)"></i>
+      <div>
+        <div class="security-title" style="color:#065f46">100% Client-Side Vectors</div>
+        <div class="security-desc" style="color:#047857">The QR image code compiles inside your browser memory cache. None of your URL strings or inputs are uploaded to servers.</div>
+      </div>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- Interface Workspace -->
+    <div class="processing-dashboard" style="max-width:600px; margin: 0 auto;">
+      <div class="setting-group">
+        <label for="qrInputText">Enter Text or URL Link</label>
+        <input type="text" id="qrInputText" class="setting-input" placeholder="e.g. https://tooltari.netlify.app" value="https://tooltari.netlify.app">
+      </div>
+      
+      <button id="btnActionTrigger" class="btn-action-trigger" style="background-color:var(--accent); box-shadow:0 4px 10px rgba(139,92,246,0.15)">
+        <i class="fa-solid fa-qrcode"></i> Generate QR Code Now
+      </button>
+
+      <!-- Canvas holder -->
+      <div id="qrcode-canvas-container"></div>
+      
+      <div id="successPanel" style="display:none; text-align:center; margin-top:1rem;">
+        <button id="btnSaveQR" class="btn-download" style="background-color:#10b981; font-size:0.95rem; padding:0.6rem 1.5rem;"><i class="fa-solid fa-download"></i> Save QR Image</button>
+      </div>
+
+      <div class="alert-error" id="errorAlert" style="display:none; margin-top:1rem;">
+        <i class="fa-solid fa-circle-exclamation"></i> <span id="errorMessage"></span>
+      </div>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <article class="tool-info-article">
+      <div class="info-block">
+        <h2>How to Generate a QR Code</h2>
+        <ol>
+          <li>Type or paste your link or text parameters into the <strong>Text or URL Link</strong> field.</li>
+          <li>Click on <strong>Generate QR Code Now</strong>. ToolTari draws the graphic instantly.</li>
+          <li>View the generated code layout in the center canvas container.</li>
+          <li>Click on <strong>Save QR Image</strong> to save the high-resolution PNG on your device.</li>
+        </ol>
+      </div>
+
+      <div class="info-block">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-grid">
+          <details class="faq-item" open>
+            <summary>What occurs if my text contains Unicode or non-English characters?</summary>
+            <p>Our generator translates string sets into standard UTF-8 indices before compiling vectors, allowing you to convert messages, links, and passwords in any language perfectly.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Is this secure?</summary>
+            <p>Yes. Because the graphic compiles local pixel arrays in-browser, no information is leaked onto servers.</p>
+          </details>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-info">
+        <h3>ToolTari</h3>
+        <p>Fast, secure, and private client-side utility suite. Your files stay with you.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms of Service</a></li>
+          <li><a href="/disclaimer.html">Disclaimer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="/about.html">Our Story</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ToolTari. All rights reserved.</p>
+      <p>Powered by local browser-native WebAssembly technology.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/utility-engine.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const trigger = document.getElementById('btnActionTrigger');
+      const inputEl = document.getElementById('qrInputText');
+      const canvasContainer = document.getElementById('qrcode-canvas-container');
+      const successBlock = document.getElementById('successPanel');
+      const saveBtn = document.getElementById('btnSaveQR');
+
+      async function buildQR() {
+        ToolTariUI.hideError();
+        const val = inputEl.value.trim();
+        if (!val) {
+          ToolTariUI.showError('Please type some text or URL.');
+          successBlock.style.display = 'none';
+          return;
+        }
+
+        try {
+          await ToolTariUtilityEngine.generateQRCode(val, canvasContainer, {
+            width: 200,
+            height: 200
+          });
+          
+          successBlock.style.display = 'block';
+          ToolTariUI.addHistoryEntry('QR Code Generator', val.length > 30 ? val.substring(0, 30) + '...' : val, 'Generated QR Code Image');
+        } catch (err) {
+          ToolTariUI.showError(err.message || 'Failed to construct QR image.');
+          successBlock.style.display = 'none';
+        }
+      }
+
+      if (trigger) {
+        trigger.addEventListener('click', buildQR);
+      }
+
+      if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+          const img = canvasContainer.querySelector('img');
+          if (img) {
+            const anchor = document.createElement('a');
+            anchor.href = img.src;
+            anchor.download = 'tooltari_qrcode.png';
+            anchor.click();
+          } else {
+            // Check canvas element fallback
+            const cvs = canvasContainer.querySelector('canvas');
+            if (cvs) {
+              const anchor = document.createElement('a');
+              anchor.href = cvs.toDataURL('image/png');
+              anchor.download = 'tooltari_qrcode.png';
+              anchor.click();
+            }
+          }
+        });
+      }
+
+      // Generate a default code on load
+      setTimeout(buildQR, 300);
+    });
+  </script>
+</body>
+</html>

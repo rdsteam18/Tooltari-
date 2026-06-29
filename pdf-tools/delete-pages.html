@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3097658772821429" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Delete PDF Pages Free Online - Remove Pages - ToolTari</title>
+  <meta name="description" content="Delete pages from a PDF online for free. Remove unwanted page indexes from your document client-side in browser memory instantly.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Delete PDF Pages Online Free",
+    "description": "Delete page indexes from PDF documents locally inside the browser.",
+    "url": "https://tooltari.netlify.app/pdf-tools/delete-pages",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All modern browser platforms",
+    "browserRequirements": "Requires JavaScript.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo-link">
+        <i class="fa-solid fa-screwdriver-wrench logo-icon"></i>
+        <span>ToolTari</span>
+      </a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tool-workspace">
+    
+    <div class="breadcrumb">
+      <a href="/">Home</a> <i class="fa-solid fa-chevron-right"></i> <span>PDF Tools</span> <i class="fa-solid fa-chevron-right"></i> <span>Delete Pages</span>
+    </div>
+
+    <div class="tool-header-block">
+      <h1><i class="fa-solid fa-trash-can"></i> Delete PDF Pages</h1>
+      <p>Remove unwanted page sheets or slides from your PDF documents easily in seconds.</p>
+    </div>
+
+    <div class="security-guard-banner">
+      <i class="fa-solid fa-shield-halved"></i>
+      <div>
+        <div class="security-title">Local Browser Execution</div>
+        <div class="security-desc">Your document does not upload. Pages are deleted locally from your browser sandbox memory.</div>
+      </div>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <div id="uploadPanel" class="dropzone">
+      <div class="dropzone-icon"><i class="fa-solid fa-file-arrow-up"></i></div>
+      <div class="dropzone-text">
+        <h3>Drag & drop PDF to delete pages</h3>
+        <p>or select file from your local storage</p>
+      </div>
+      <button class="btn-select-files">Select File</button>
+      <input type="file" id="fileInput" accept=".pdf" style="display:none">
+    </div>
+
+    <div id="dashboardPanel" class="processing-dashboard" style="display:none">
+      <div class="setting-group">
+        <label>Selected PDF File</label>
+        <div class="file-list" id="fileList"></div>
+      </div>
+      
+      <div class="tool-settings">
+        <div class="setting-group">
+          <label for="deleteIndices">Pages to Delete (e.g. 2, 4, 6)</label>
+          <input type="text" id="deleteIndices" class="setting-input" placeholder="e.g. 2, 5, 8">
+          <p style="font-size:0.8rem; color:var(--text-light); margin-top:0.25rem;">Type the exact page numbers you wish to remove, separated by commas.</p>
+        </div>
+        
+        <div class="alert-error" id="errorAlert" style="display:none">
+          <i class="fa-solid fa-circle-exclamation"></i> <span id="errorMessage"></span>
+        </div>
+      </div>
+      
+      <button id="btnActionTrigger" class="btn-action-trigger">
+        <i class="fa-solid fa-trash-can"></i> Delete Pages Now
+      </button>
+      <button id="btnReset" class="btn-reset">Cancel and Clear</button>
+    </div>
+
+    <div id="progressPanel" class="processing-dashboard" style="display:none">
+      <div class="progress-container">
+        <div class="progress-spinner"><i class="fa-solid fa-spinner"></i></div>
+        <div class="progress-text" id="progressMessage">Purging page catalogs...</div>
+        <div style="background-color:#e2e8f0; border-radius:4px; height:8px; width:100%; margin-top:1rem; overflow:hidden">
+          <div id="progressBarFill" style="background-color:var(--primary); height:100%; width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="successPanel" class="processing-dashboard" style="display:none">
+      <div class="success-screen">
+        <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <h3>PDF Pages Deleted!</h3>
+        <p>Unwanted pages have been stripped from the file structure. Download the new version below:</p>
+        <a id="downloadAnchor" class="btn-download"><i class="fa-solid fa-download"></i> Download Modified PDF</a>
+        <button onclick="location.reload()" class="btn-reset"><i class="fa-solid fa-rotate-left"></i> Delete Pages from Another PDF</button>
+      </div>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <article class="tool-info-article">
+      <div class="info-block">
+        <h2>How to delete pages from PDF documents</h2>
+        <ol>
+          <li>Drag your document into the drop zone or choose <strong>Select File</strong>.</li>
+          <li>Specify the exact page numbers you want to remove (e.g. <strong>2, 4</strong>).</li>
+          <li>Click on <strong>Delete Pages Now</strong>. ToolTari deletes target elements.</li>
+          <li>Download the new PDF with deleted pages omitted.</li>
+        </ol>
+      </div>
+
+      <div class="info-block">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-grid">
+          <details class="faq-item" open>
+            <summary>Can I delete multiple pages at once?</summary>
+            <p>Yes. Just list the page numbers separated by commas. For example: <code>1, 3, 5</code> will remove pages 1, 3, and 5 from your document.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Are my documents secure?</summary>
+            <p>Yes, all editing processes run locally on your browser. Your files are never uploaded.</p>
+          </details>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-info">
+        <h3>ToolTari</h3>
+        <p>Fast, secure, and private client-side utility suite. Your files stay with you.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms of Service</a></li>
+          <li><a href="/disclaimer.html">Disclaimer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="/about.html">Our Story</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ToolTari. All rights reserved.</p>
+      <p>Powered by local browser-native WebAssembly technology.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/pdf-engine.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const trigger = document.getElementById('btnActionTrigger');
+      const deleteInput = document.getElementById('deleteIndices');
+
+      if (trigger) {
+        trigger.addEventListener('click', async () => {
+          const files = ToolTariUI.UI.selectedFiles;
+          if (files.length === 0) {
+            ToolTariUI.showError('No PDF selected.');
+            return;
+          }
+
+          const deleteList = deleteInput.value.trim();
+          if (!deleteList) {
+            ToolTariUI.showError('Please specify page numbers to remove.');
+            return;
+          }
+
+          try {
+            ToolTariUI.showProgress(40, 'Re-building PDF structure...');
+            const modifiedBlob = await ToolTariPDFEngine.deletePages(files[0], deleteList, (percent, msg) => {
+              ToolTariUI.showProgress(percent, msg);
+            });
+            
+            const downloadUrl = URL.createObjectURL(modifiedBlob);
+            ToolTariUI.showSuccess(downloadUrl, files[0].name.replace(/\.[^/.]+$/, "") + '_modified.pdf');
+          } catch (err) {
+            ToolTariUI.resetWorkspace();
+            ToolTariUI.showError(err.message || 'An error occurred while deleting PDF pages.');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

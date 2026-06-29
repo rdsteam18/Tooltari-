@@ -1,0 +1,19 @@
+[[redirects]]
+  from = "/pdf-tools/:tool"
+  to = "/pdf-tools/:tool.html"
+  status = 200
+
+[[redirects]]
+  from = "/image-tools/:tool"
+  to = "/image-tools/:tool.html"
+  status = 200
+
+[[redirects]]
+  from = "/developer-tools/:tool"
+  to = "/developer-tools/:tool.html"
+  status = 200
+
+[[redirects]]
+  from = "/text-tools/:tool"
+  to = "/text-tools/:tool.html"
+  status = 200

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3097658772821429" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Rotate Image Online Free - Flip Image Orientation - ToolTari</title>
+  <meta name="description" content="Rotate JPG, PNG, and WebP images online for free. Adjust page orientation degrees client-side inside your browser for total file security.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Rotate Image Online Free",
+    "description": "Rotate JPG, PNG, and WebP images 90, 180, or 270 degrees locally.",
+    "url": "https://tooltari.netlify.app/image-tools/rotate-image",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All platforms",
+    "browserRequirements": "Requires JavaScript.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+</head>
+<body class="theme-image">
+
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo-link">
+        <i class="fa-solid fa-screwdriver-wrench logo-icon"></i>
+        <span>ToolTari</span>
+      </a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tool-workspace">
+    
+    <div class="breadcrumb">
+      <a href="/">Home</a> <i class="fa-solid fa-chevron-right"></i> <span>Image Tools</span> <i class="fa-solid fa-chevron-right"></i> <span>Rotate Image</span>
+    </div>
+
+    <div class="tool-header-block">
+      <h1 style="color:var(--secondary)"><i class="fa-solid fa-arrows-rotate" style="color:var(--secondary)"></i> Rotate Image</h1>
+      <p>Rotate image orientation coordinates. Correct sideward snapshots instantly.</p>
+    </div>
+
+    <div class="security-guard-banner">
+      <i class="fa-solid fa-shield-halved" style="color:var(--success)"></i>
+      <div>
+        <div class="security-title" style="color:#065f46">Local Safe Image Rotation</div>
+        <div class="security-desc" style="color:#047857">All rendering matrices are rotated locally on your browser canvas. We never upload or view your photos.</div>
+      </div>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <div id="uploadPanel" class="dropzone dropzone-theme-image">
+      <div class="dropzone-icon"><i class="fa-solid fa-file-image"></i></div>
+      <div class="dropzone-text">
+        <h3>Drag & drop your image here</h3>
+        <p>PNG, JPG, JPEG, WEBP files supported</p>
+      </div>
+      <button class="btn-select-files">Select Image</button>
+      <input type="file" id="fileInput" accept="image/*" style="display:none">
+    </div>
+
+    <div id="dashboardPanel" class="processing-dashboard" style="display:none">
+      <div class="setting-group">
+        <label>Selected Image File</label>
+        <div class="file-list" id="fileList"></div>
+      </div>
+      
+      <div class="tool-settings">
+        <div class="setting-group">
+          <label for="rotateAngle">Rotation Degrees</label>
+          <select id="rotateAngle" class="setting-input">
+            <option value="90">90° Clockwise</option>
+            <option value="180">180° Flip</option>
+            <option value="270">90° Counter-Clockwise (270°)</option>
+          </select>
+        </div>
+        
+        <div class="alert-error" id="errorAlert" style="display:none">
+          <i class="fa-solid fa-circle-exclamation"></i> <span id="errorMessage"></span>
+        </div>
+      </div>
+      
+      <button id="btnActionTrigger" class="btn-action-trigger">
+        <i class="fa-solid fa-arrows-rotate"></i> Rotate Image Now
+      </button>
+      <button id="btnReset" class="btn-reset">Cancel and Clear</button>
+    </div>
+
+    <div id="progressPanel" class="processing-dashboard" style="display:none">
+      <div class="progress-container">
+        <div class="progress-spinner" style="color:var(--secondary)"><i class="fa-solid fa-spinner"></i></div>
+        <div class="progress-text" id="progressMessage">Rotating image canvas...</div>
+        <div style="background-color:#e2e8f0; border-radius:4px; height:8px; width:100%; margin-top:1rem; overflow:hidden">
+          <div id="progressBarFill" style="background-color:var(--secondary); height:100%; width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="successPanel" class="processing-dashboard" style="display:none">
+      <div class="success-screen">
+        <div class="success-icon" style="color:var(--success); background-color:rgba(16, 185, 129, 0.15)"><i class="fa-solid fa-circle-check"></i></div>
+        <h3>Image Rotated!</h3>
+        <p>Coordinate directions have been adjusted. Download the new image below:</p>
+        <a id="downloadAnchor" class="btn-download" style="background-color:#10b981"><i class="fa-solid fa-download"></i> Download Rotated Image</a>
+        <button onclick="location.reload()" class="btn-reset"><i class="fa-solid fa-rotate-left"></i> Rotate Another Image</button>
+      </div>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <article class="tool-info-article">
+      <div class="info-block">
+        <h2>How to Rotate Images online</h2>
+        <ol>
+          <li>Drag your image into the dropzone or choose <strong>Select Image</strong>.</li>
+          <li>Choose your rotation angle: <strong>90° Clockwise</strong>, <strong>180°</strong>, or <strong>270°</strong>.</li>
+          <li>Click on <strong>Rotate Image Now</strong>. ToolTari translates canvas buffers locally.</li>
+          <li>Save the rotated image.</li>
+        </ol>
+      </div>
+
+      <div class="info-block">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-grid">
+          <details class="faq-item" open>
+            <summary>Does rotation affect photo dimensions?</summary>
+            <p>Yes. Rotating by 90° or 270° swaps the width and height dimensions of your image. For example, a portrait image of 800x1200 will be exported as a landscape image of 1200x800. Flipped (180°) images preserve original dimension sizes.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Is this file-safe?</summary>
+            <p>Yes. All operations execute locally in browser memory. No data leaves your machine.</p>
+          </details>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-info">
+        <h3>ToolTari</h3>
+        <p>Fast, secure, and private client-side utility suite. Your files stay with you.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms of Service</a></li>
+          <li><a href="/disclaimer.html">Disclaimer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="/about.html">Our Story</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ToolTari. All rights reserved.</p>
+      <p>Powered by local browser-native WebAssembly technology.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/image-engine.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const trigger = document.getElementById('btnActionTrigger');
+      const angleSelect = document.getElementById('rotateAngle');
+
+      if (trigger) {
+        trigger.addEventListener('click', async () => {
+          const files = ToolTariUI.UI.selectedFiles;
+          if (files.length === 0) {
+            ToolTariUI.showError('No image selected.');
+            return;
+          }
+
+          const angle = parseInt(angleSelect.value, 10) || 90;
+
+          try {
+            ToolTariUI.showProgress(40, 'Rotating canvas layout...');
+            const result = await ToolTariImageEngine.rotateImage(files[0], angle, (percent, msg) => {
+              ToolTariUI.showProgress(percent, msg);
+            });
+            
+            const downloadUrl = URL.createObjectURL(result.blob);
+            ToolTariUI.showSuccess(downloadUrl, result.filename);
+          } catch (err) {
+            ToolTariUI.resetWorkspace();
+            ToolTariUI.showError(err.message || 'An error occurred during canvas rotation.');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

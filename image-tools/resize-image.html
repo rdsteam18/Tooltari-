@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3097658772821429" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Resize Image Online Free - Scale Image Dimensions - ToolTari</title>
+  <meta name="description" content="Resize image dimensions online for free. Custom scale width and height pixel boundaries locally inside your browser memory for 100% security.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Resize Image Online Free",
+    "description": "Resize image width and height pixel limits client-side in browser.",
+    "url": "https://tooltari.netlify.app/image-tools/resize-image",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All modern browsers",
+    "browserRequirements": "Requires JavaScript.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+</head>
+<body class="theme-image">
+
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo-link">
+        <i class="fa-solid fa-screwdriver-wrench logo-icon"></i>
+        <span>ToolTari</span>
+      </a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tool-workspace">
+    
+    <div class="breadcrumb">
+      <a href="/">Home</a> <i class="fa-solid fa-chevron-right"></i> <span>Image Tools</span> <i class="fa-solid fa-chevron-right"></i> <span>Resize Image</span>
+    </div>
+
+    <div class="tool-header-block">
+      <h1 style="color:var(--secondary)"><i class="fa-solid fa-crop-simple" style="color:var(--secondary)"></i> Resize Image</h1>
+      <p>Resize pixel dimensions of your images. Change width and height ratios locally in seconds.</p>
+    </div>
+
+    <div class="security-guard-banner">
+      <i class="fa-solid fa-shield-halved" style="color:var(--success)"></i>
+      <div>
+        <div class="security-title" style="color:#065f46">100% Private Image Resizing</div>
+        <div class="security-desc" style="color:#047857">All graphic resampling calculations run locally in browser cache. No photos ever leave your local computer memory.</div>
+      </div>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <div id="uploadPanel" class="dropzone dropzone-theme-image">
+      <div class="dropzone-icon"><i class="fa-solid fa-file-image"></i></div>
+      <div class="dropzone-text">
+        <h3>Drag & drop your image here</h3>
+        <p>or select file from device storage</p>
+      </div>
+      <button class="btn-select-files">Select Image</button>
+      <input type="file" id="fileInput" accept="image/*" style="display:none">
+    </div>
+
+    <div id="dashboardPanel" class="processing-dashboard" style="display:none">
+      <div class="setting-group">
+        <label>Selected Image File</label>
+        <div class="file-list" id="fileList"></div>
+      </div>
+      
+      <div class="tool-settings">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom:1rem;">
+          <div class="setting-group">
+            <label for="resizeWidth">Width (pixels)</label>
+            <input type="number" id="resizeWidth" class="setting-input" value="800">
+          </div>
+          <div class="setting-group">
+            <label for="resizeHeight">Height (pixels)</label>
+            <input type="number" id="resizeHeight" class="setting-input" value="600">
+          </div>
+        </div>
+        
+        <div class="alert-error" id="errorAlert" style="display:none">
+          <i class="fa-solid fa-circle-exclamation"></i> <span id="errorMessage"></span>
+        </div>
+      </div>
+      
+      <button id="btnActionTrigger" class="btn-action-trigger">
+        <i class="fa-solid fa-crop-simple"></i> Resize Image Now
+      </button>
+      <button id="btnReset" class="btn-reset">Cancel and Clear</button>
+    </div>
+
+    <div id="progressPanel" class="processing-dashboard" style="display:none">
+      <div class="progress-container">
+        <div class="progress-spinner" style="color:var(--secondary)"><i class="fa-solid fa-spinner"></i></div>
+        <div class="progress-text" id="progressMessage">Rescaling pixels...</div>
+        <div style="background-color:#e2e8f0; border-radius:4px; height:8px; width:100%; margin-top:1rem; overflow:hidden">
+          <div id="progressBarFill" style="background-color:var(--secondary); height:100%; width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="successPanel" class="processing-dashboard" style="display:none">
+      <div class="success-screen">
+        <div class="success-icon" style="color:var(--success); background-color:rgba(16, 185, 129, 0.15)"><i class="fa-solid fa-circle-check"></i></div>
+        <h3>Image Resized!</h3>
+        <p>New dimension attributes have been written onto the canvas buffer. Save your file:</p>
+        <a id="downloadAnchor" class="btn-download" style="background-color:#10b981"><i class="fa-solid fa-download"></i> Download Resized Image</a>
+        <button onclick="location.reload()" class="btn-reset"><i class="fa-solid fa-rotate-left"></i> Resize Another Image</button>
+      </div>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <article class="tool-info-article">
+      <div class="info-block">
+        <h2>How to Resize Images online</h2>
+        <ol>
+          <li>Drag your image into the dropzone or choose <strong>Select Image</strong>.</li>
+          <li>Enter your target <strong>Width</strong> and <strong>Height</strong> boundary values in the inputs.</li>
+          <li>Click on <strong>Resize Image Now</strong>. ToolTari resamples coordinates locally.</li>
+          <li>Download the scaled image file.</li>
+        </ol>
+      </div>
+
+      <div class="info-block">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-grid">
+          <details class="faq-item" open>
+            <summary>Does resizing preserve transparency?</summary>
+            <p>Yes. Resizing PNG or WebP files preserves transparency layers perfectly. The canvas preserves alpha parameters.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Is this file size-limited?</summary>
+            <p>No, there are no file size restrictions. All computations run client-side on your local device RAM.</p>
+          </details>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-info">
+        <h3>ToolTari</h3>
+        <p>Fast, secure, and private client-side utility suite. Your files stay with you.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms of Service</a></li>
+          <li><a href="/disclaimer.html">Disclaimer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="/about.html">Our Story</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ToolTari. All rights reserved.</p>
+      <p>Powered by local browser-native WebAssembly technology.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/image-engine.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const trigger = document.getElementById('btnActionTrigger');
+      const widthInput = document.getElementById('resizeWidth');
+      const heightInput = document.getElementById('resizeHeight');
+      
+      // Auto fill width & height on select
+      const originalFileInput = document.getElementById('fileInput');
+      originalFileInput.addEventListener('change', async () => {
+        const file = originalFileInput.files[0];
+        if (file) {
+          try {
+            const img = await ToolTariImageEngine.loadImage(file);
+            widthInput.value = img.naturalWidth;
+            heightInput.value = img.naturalHeight;
+          } catch (e) {
+            console.warn('Failed to load image attributes', e);
+          }
+        }
+      });
+
+      if (trigger) {
+        trigger.addEventListener('click', async () => {
+          const files = ToolTariUI.UI.selectedFiles;
+          if (files.length === 0) {
+            ToolTariUI.showError('No image selected.');
+            return;
+          }
+
+          const width = parseInt(widthInput.value, 10);
+          const height = parseInt(heightInput.value, 10);
+
+          if (isNaN(width) || width <= 0 || isNaN(height) || height <= 0) {
+            ToolTariUI.showError('Width and Height must be valid positive pixel dimensions.');
+            return;
+          }
+
+          try {
+            ToolTariUI.showProgress(40, 'Resampling graphic layers...');
+            const result = await ToolTariImageEngine.resizeImage(files[0], width, height, (percent, msg) => {
+              ToolTariUI.showProgress(percent, msg);
+            });
+            
+            const downloadUrl = URL.createObjectURL(result.blob);
+            ToolTariUI.showSuccess(downloadUrl, result.filename);
+          } catch (err) {
+            ToolTariUI.resetWorkspace();
+            ToolTariUI.showError(err.message || 'An error occurred during resizing.');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

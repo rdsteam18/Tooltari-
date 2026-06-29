@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3097658772821429" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Online Code Editor - Edit HTML, CSS, JS, Python - ToolTari</title>
+  <meta name="description" content="A powerful online code editor. Write and edit HTML, CSS, JavaScript, Python, and JSON client-side inside your browser with syntax highlighting.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .editor-controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .select-control {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-card);
+      font-size: 0.9rem;
+      outline: none;
+      cursor: pointer;
+    }
+    .btn-editor-action {
+      background-color: #f1f5f9;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: var(--transition);
+    }
+    .btn-editor-action:hover {
+      background-color: #e2e8f0;
+    }
+    .btn-editor-action.btn-accent-color {
+      background-color: var(--accent);
+      color: white;
+      border: none;
+    }
+    .btn-editor-action.btn-accent-color:hover {
+      background-color: var(--accent-hover);
+    }
+    #editorContainer {
+      width: 100%;
+      height: 550px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+  </style>
+</head>
+<body class="theme-dev">
+
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo-link">
+        <i class="fa-solid fa-screwdriver-wrench logo-icon"></i>
+        <span>ToolTari</span>
+      </a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tool-workspace animate-fade-in">
+    <div class="breadcrumb">
+      <a href="/">Home</a> <i class="fa-solid fa-chevron-right"></i> <span>Developer Tools</span> <i class="fa-solid fa-chevron-right"></i> <span>Code Editor</span>
+    </div>
+
+    <div class="tool-header-block">
+      <h1 style="color:var(--accent)"><i class="fa-solid fa-code" style="color:var(--accent)"></i> Online Code Editor</h1>
+      <p>Write, format, and download code entirely in your browser memory. Supports HTML, CSS, JS, Python, and more.</p>
+    </div>
+
+    <div class="security-guard-banner">
+      <i class="fa-solid fa-shield-halved" style="color:var(--success)"></i>
+      <div>
+        <div class="security-title" style="color:#065f46">100% Secure Client-Side Editor</div>
+        <div class="security-desc" style="color:#047857">Your code stays inside your browser tab and is never transmitted to external servers. Absolute security and privacy.</div>
+      </div>
+    </div>
+
+    <!-- Active Workspace -->
+    <div class="processing-dashboard">
+      <div class="editor-controls-row">
+        <!-- Language Select -->
+        <select id="editorLang" class="select-control" aria-label="Language selection">
+          <option value="javascript">JavaScript</option>
+          <option value="html">HTML</option>
+          <option value="css">CSS</option>
+          <option value="python">Python</option>
+          <option value="json">JSON</option>
+          <option value="typescript">TypeScript</option>
+          <option value="markdown">Markdown</option>
+        </select>
+
+        <!-- Theme Select -->
+        <select id="editorTheme" class="select-control" aria-label="Theme selection">
+          <option value="vs-dark">Dark Theme</option>
+          <option value="vs-light">Light Theme</option>
+        </select>
+
+        <!-- Actions -->
+        <button id="btnFormat" class="btn-editor-action"><i class="fa-solid fa-align-left"></i> Format Code</button>
+        <button id="btnDownload" class="btn-editor-action btn-accent-color"><i class="fa-solid fa-download"></i> Download</button>
+        <button id="btnUploadTrigger" class="btn-editor-action"><i class="fa-solid fa-upload"></i> Open File</button>
+        <input type="file" id="fileImporter" style="display:none">
+        <button id="btnClear" class="btn-editor-action" style="color: var(--danger);"><i class="fa-solid fa-trash-can"></i> Clear</button>
+      </div>
+
+      <!-- Editor Container -->
+      <div id="editorContainer"></div>
+      
+      <!-- Alerts -->
+      <div class="alert-error" id="errorAlert" style="display:none; margin-top: 1rem;">
+        <i class="fa-solid fa-circle-exclamation"></i> <span id="errorMessage"></span>
+      </div>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-info">
+        <h3>ToolTari</h3>
+        <p>Fast, secure, and private client-side utility suite. Your files stay with you.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms of Service</a></li>
+          <li><a href="/disclaimer.html">Disclaimer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="/about.html">Our Story</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ToolTari. All rights reserved.</p>
+      <p>Powered by local browser-native WebAssembly technology.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  
+  <!-- Monaco Editor loader -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs/loader.min.js"></script>
+  <script>
+    const defaultTemplates = {
+      javascript: `// JavaScript Code Template\n\nfunction greet(name) {\n  console.log("Hello, " + name + "!");\n}\n\ngreet("ToolTari");`,
+      html: `<!-- HTML Template -->\n<!DOCTYPE html>\n<html>\n<head>\n  <title>My Web Page</title>\n</head>\n<body>\n  <h1>Hello, ToolTari!</h1>\n</body>\n</html>`,
+      css: `/* CSS Template */\n\nbody {\n  font-family: sans-serif;\n  background: #f8fafc;\n  color: #0f172a;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  height: 100vh;\n}`,
+      python: `# Python Code Template\n\ndef greet(name):\n    print(f"Hello, {name}!")\n\ngreet("ToolTari")`,
+      json: `{\n  "projectName": "ToolTari Code Workspace",\n  "version": "1.0.0",\n  "description": "Secure client-side coding environments",\n  "private": true\n}`,
+      typescript: `// TypeScript Code Template\n\ninterface User {\n  name: string;\n  id: number;\n}\n\nconst user: User = {\n  name: "ToolTari",\n  id: 1\n};\nconsole.log(user);`,
+      markdown: `# Markdown Documentation\n\n## ToolTari Online Editor\n- 100% Private\n- Client-Side Executions\n- Light and Dark modes`
+    };
+
+    const fileExtensions = {
+      javascript: 'js',
+      html: 'html',
+      css: 'css',
+      python: 'py',
+      json: 'json',
+      typescript: 'ts',
+      markdown: 'md'
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const selectLang = document.getElementById('editorLang');
+      const selectTheme = document.getElementById('editorTheme');
+      const btnFormat = document.getElementById('btnFormat');
+      const btnDownload = document.getElementById('btnDownload');
+      const btnClear = document.getElementById('btnClear');
+      const btnUploadTrigger = document.getElementById('btnUploadTrigger');
+      const fileImporter = document.getElementById('fileImporter');
+
+      let currentLang = 'javascript';
+
+      // Load Monaco Editor
+      require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs' } });
+      require(['vs/editor/editor.main'], function () {
+        // Initialize Editor
+        window.editor = monaco.editor.create(document.getElementById('editorContainer'), {
+          value: defaultTemplates.javascript,
+          language: 'javascript',
+          theme: 'vs-dark',
+          automaticLayout: true,
+          fontSize: 14,
+          fontFamily: "'Fira Code', 'Courier New', monospace",
+          minimap: { enabled: true },
+          tabSize: 2
+        });
+
+        // Track when file editor successfully loads
+        ToolTariUI.addHistoryEntry('Code Editor', 'Open empty editor', 'Editor Workspace Loaded');
+
+        // Language change event
+        selectLang.addEventListener('change', () => {
+          currentLang = selectLang.value;
+          const model = window.editor.getModel();
+          monaco.editor.setModelLanguage(model, currentLang);
+          window.editor.setValue(defaultTemplates[currentLang] || '');
+        });
+
+        // Theme change event
+        selectTheme.addEventListener('change', () => {
+          monaco.editor.setTheme(selectTheme.value);
+        });
+
+        // Format action event
+        btnFormat.addEventListener('click', () => {
+          window.editor.getAction('editor.action.formatDocument').run();
+        });
+
+        // Clear editor action
+        btnClear.addEventListener('click', () => {
+          if (confirm('Clear all contents of the editor?')) {
+            window.editor.setValue('');
+          }
+        });
+
+        // File upload trigger
+        btnUploadTrigger.addEventListener('click', () => {
+          fileImporter.click();
+        });
+
+        fileImporter.addEventListener('change', () => {
+          const file = fileImporter.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            window.editor.setValue(e.target.result);
+            
+            // Try to auto-resolve language by file extension
+            const ext = file.name.split('.').pop().toLowerCase();
+            const langEntry = Object.keys(fileExtensions).find(key => fileExtensions[key] === ext);
+            if (langEntry) {
+              selectLang.value = langEntry;
+              currentLang = langEntry;
+              const model = window.editor.getModel();
+              monaco.editor.setModelLanguage(model, currentLang);
+            }
+            
+            ToolTariUI.addHistoryEntry('Code Editor', `Open file: ${file.name}`, `Imported successfully (${file.size} bytes)`);
+          };
+          reader.readAsText(file);
+        });
+
+        // File download action
+        btnDownload.addEventListener('click', () => {
+          const codeVal = window.editor.getValue();
+          if (!codeVal) {
+            ToolTariUI.showError('Editor is empty. Cannot download empty file.');
+            return;
+          }
+
+          const blob = new Blob([codeVal], { type: 'text/plain;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const ext = fileExtensions[currentLang] || 'txt';
+          const filename = `tooltari_script.${ext}`;
+
+          const anchor = document.createElement('a');
+          anchor.href = url;
+          anchor.download = filename;
+          anchor.click();
+
+          // Log to history
+          ToolTariUI.addHistoryEntry('Code Editor', `Download code as ${ext.toUpperCase()}`, `File: ${filename}`);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

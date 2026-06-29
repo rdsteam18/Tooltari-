@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3097658772821429" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  
+  <!-- SEO Meta -->
+  <title>Merge PDF Online Free - Combine PDF Files - ToolTari</title>
+  <meta name="description" content="Merge multiple PDF files into one document online for free. Drag, drop, and reorder files easily. Processes entirely client-side for 100% security. No registration needed.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://tooltari.netlify.app/pdf-tools/merge-pdf">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- CDN PDF Manipulation and Drag Sorting Scripts -->
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+
+  <!-- Schema.org WebApplication Structure (AEO/GEO/LLMO) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Merge PDF Online Free",
+    "description": "Combine multiple PDF files into a single document locally in browser memory.",
+    "url": "https://tooltari.netlify.app/pdf-tools/merge-pdf",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All modern browsers (Windows, macOS, iOS, Android, Linux)",
+    "browserRequirements": "Requires JavaScript and HTML5 canvas capabilities.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo-link">
+        <i class="fa-solid fa-screwdriver-wrench logo-icon"></i>
+        <span>ToolTari</span>
+      </a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tool-workspace">
+    
+    <div class="breadcrumb">
+      <a href="/">Home</a> <i class="fa-solid fa-chevron-right"></i> <span>PDF Tools</span> <i class="fa-solid fa-chevron-right"></i> <span>Merge PDF</span>
+    </div>
+
+    <div class="tool-header-block">
+      <h1><i class="fa-solid fa-object-group"></i> Merge PDF</h1>
+      <p>Combine multiple PDF files into one document in seconds. Drag and drop cards to reorder pages.</p>
+    </div>
+
+    <!-- Security Flag EEAT -->
+    <div class="security-guard-banner">
+      <i class="fa-solid fa-shield-halved"></i>
+      <div>
+        <div class="security-title">100% In-Browser Privacy Protection</div>
+        <div class="security-desc">Your PDF documents never touch external cloud servers. All parsing, copying, and merging execute locally on your computer’s CPU threads.</div>
+      </div>
+    </div>
+
+    <!-- ADSENSE HORIZONTAL SLOT 1 -->
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- Dropzone Panel -->
+    <div id="uploadPanel" class="dropzone">
+      <div class="dropzone-icon"><i class="fa-solid fa-file-arrow-up"></i></div>
+      <div class="dropzone-text">
+        <h3>Drag & drop PDF files here</h3>
+        <p>or select files from your computer</p>
+      </div>
+      <button class="btn-select-files">Select Files</button>
+      <input type="file" id="fileInput" accept=".pdf" multiple style="display:none">
+    </div>
+
+    <!-- Workspace Dashboard Panel (Active when files selected) -->
+    <div id="dashboardPanel" class="processing-dashboard" style="display:none">
+      <div class="setting-group">
+        <label>File Merge Queue (Drag items to reorder)</label>
+      </div>
+      
+      <!-- Reorderable List -->
+      <div class="file-list" id="fileList"></div>
+      
+      <div class="tool-settings">
+        <div class="alert-error" id="errorAlert" style="display:none">
+          <i class="fa-solid fa-circle-exclamation"></i> <span id="errorMessage"></span>
+        </div>
+      </div>
+      
+      <button id="btnActionTrigger" class="btn-action-trigger">
+        <i class="fa-solid fa-object-group"></i> Merge PDFs Now
+      </button>
+      <button id="btnReset" class="btn-reset">Cancel and Clear</button>
+    </div>
+
+    <!-- Processing Progress Panel -->
+    <div id="progressPanel" class="processing-dashboard" style="display:none">
+      <div class="progress-container">
+        <div class="progress-spinner"><i class="fa-solid fa-spinner"></i></div>
+        <div class="progress-text" id="progressMessage">Processing PDFs...</div>
+        <div style="background-color:#e2e8f0; border-radius:4px; height:8px; width:100%; margin-top:1rem; overflow:hidden">
+          <div id="progressBarFill" style="background-color:var(--primary); height:100%; width:0%; transition:width 0.2s ease"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Processing Success Panel -->
+    <div id="successPanel" class="processing-dashboard" style="display:none">
+      <div class="success-screen">
+        <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <h3>PDF Files Merged!</h3>
+        <p>All page streams have been successfully compiled in browser memory.</p>
+        <a id="downloadAnchor" class="btn-download"><i class="fa-solid fa-download"></i> Download Merged PDF</a>
+        <button onclick="location.reload()" class="btn-reset"><i class="fa-solid fa-rotate-left"></i> Merge Another Queue</button>
+      </div>
+    </div>
+
+    <!-- ADSENSE AD SLOT 2 -->
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- SEO / AEO Optimized Guide Article -->
+    <article class="tool-info-article">
+      <div class="info-block">
+        <h2>How to Merge PDF Files Online</h2>
+        <ol>
+          <li>Click on <strong>Select Files</strong> or drag and drop your PDF documents directly into the box.</li>
+          <li>Once loaded, you will see a list representing the merge order. <strong>Drag cards up and down</strong> to re-align page layout flows.</li>
+          <li>Click on <strong>Merge PDFs Now</strong>. ToolTari merges document structures locally using your browser.</li>
+          <li>Your compiled PDF will download instantly onto your computer.</li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section (FAQPage Schema compatible) -->
+      <div class="info-block">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-grid">
+          <details class="faq-item" open>
+            <summary>Is there a file limit size for merging PDFs?</summary>
+            <p>Because ToolTari works entirely client-side using browser memory, file sizes are restricted only by your computer’s RAM resources. For optimal performance, we recommend keeping combined files below 350MB.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Are my files uploaded when using this tool?</summary>
+            <p>No. Your files are processed 100% locally inside your web browser. None of your document data is sent to external servers, guaranteeing maximum security and privacy.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Does this tool work on mobile devices?</summary>
+            <p>Yes. The entire responsive dashboard operates natively on Android and iOS browsers, making it extremely easy to combine files directly from your smartphone or tablet.</p>
+          </details>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-info">
+        <h3>ToolTari</h3>
+        <p>Fast, secure, and private client-side utility suite. Your files stay with you.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms of Service</a></li>
+          <li><a href="/disclaimer.html">Disclaimer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="/about.html">Our Story</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ToolTari. All rights reserved.</p>
+      <p>Powered by local browser-native WebAssembly technology.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/pdf-engine.js"></script>
+  
+  <!-- Sortable JS logic integration -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const listEl = document.getElementById('fileList');
+      if (listEl && typeof Sortable !== 'undefined') {
+        Sortable.create(listEl, {
+          animation: 250,
+          handle: '.file-details', // drag by details card area
+          onEnd: () => {
+            // Re-order UI.selectedFiles index matching DOM cards
+            const items = listEl.querySelectorAll('.btn-remove-file');
+            const newSelection = [];
+            items.forEach(item => {
+              const oldIdx = parseInt(item.getAttribute('data-index'), 10);
+              newSelection.push(ToolTariUI.UI.selectedFiles[oldIdx]);
+            });
+            ToolTariUI.UI.selectedFiles = newSelection;
+            // Redraw remove button data indices
+            const removeButtons = listEl.querySelectorAll('.btn-remove-file');
+            removeButtons.forEach((btn, idx) => {
+              btn.setAttribute('data-index', idx);
+            });
+          }
+        });
+      }
+
+      // Merge Execution Binding
+      const trigger = document.getElementById('btnActionTrigger');
+      if (trigger) {
+        trigger.addEventListener('click', async () => {
+          const files = ToolTariUI.UI.selectedFiles;
+          if (files.length < 2) {
+            ToolTariUI.showError('Please select at least 2 PDF files to merge.');
+            return;
+          }
+
+          try {
+            const mergedBlob = await ToolTariPDFEngine.mergePDFs(files, (percent, msg) => {
+              ToolTariUI.showProgress(percent, msg);
+            });
+            
+            const downloadUrl = URL.createObjectURL(mergedBlob);
+            ToolTariUI.showSuccess(downloadUrl, 'merged_document.pdf');
+          } catch (err) {
+            ToolTariUI.resetWorkspace();
+            ToolTariUI.showError(err.message || 'An error occurred while merging your PDF files.');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

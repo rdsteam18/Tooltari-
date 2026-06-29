@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3097658772821429" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Compress Image Online Free - Reduce Image Size - ToolTari</title>
+  <meta name="description" content="Reduce JPG, PNG, and WebP image file sizes online for free. Adjust quality sliders and compress images client-side for 100% data safety.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Compress Image Online Free",
+    "description": "Compress JPEG, PNG, and WebP images client-side inside the browser.",
+    "url": "https://tooltari.netlify.app/image-tools/compress-image",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All modern browsers",
+    "browserRequirements": "Requires JavaScript.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+</head>
+<body class="theme-image">
+
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo-link">
+        <i class="fa-solid fa-screwdriver-wrench logo-icon"></i>
+        <span>ToolTari</span>
+      </a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tool-workspace">
+    
+    <div class="breadcrumb">
+      <a href="/">Home</a> <i class="fa-solid fa-chevron-right"></i> <span>Image Tools</span> <i class="fa-solid fa-chevron-right"></i> <span>Compress Image</span>
+    </div>
+
+    <div class="tool-header-block">
+      <h1 style="color:var(--secondary)"><i class="fa-solid fa-compress" style="color:var(--secondary)"></i> Compress Image</h1>
+      <p>Reduce the storage footprint of your images without losing visual details. Compress JPG, PNG, and WebP files.</p>
+    </div>
+
+    <div class="security-guard-banner">
+      <i class="fa-solid fa-shield-halved" style="color:var(--success)"></i>
+      <div>
+        <div class="security-title" style="color:#065f46">100% In-Browser Privacy Protection</div>
+        <div class="security-desc" style="color:#047857">All pixel compression calculations execute inside your local browser memory buffer. Your images are never uploaded to the cloud.</div>
+      </div>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <div id="uploadPanel" class="dropzone dropzone-theme-image">
+      <div class="dropzone-icon"><i class="fa-solid fa-file-image"></i></div>
+      <div class="dropzone-text">
+        <h3>Drag & drop your image here</h3>
+        <p>Supports PNG, JPEG, JPG, WebP</p>
+      </div>
+      <button class="btn-select-files">Select Image</button>
+      <input type="file" id="fileInput" accept="image/*" style="display:none">
+    </div>
+
+    <div id="dashboardPanel" class="processing-dashboard" style="display:none">
+      <div class="setting-group">
+        <label>Selected Image File</label>
+        <div class="file-list" id="fileList"></div>
+      </div>
+      
+      <div class="tool-settings">
+        <div class="setting-group">
+          <label for="qualitySlider">Compression Quality</label>
+          <input type="range" id="qualitySlider" min="0.1" max="1" step="0.05" value="0.75" style="width:100%; accent-color:var(--secondary);">
+          <div class="range-display">
+            <span>Compression factor: <strong style="color:var(--secondary)" id="qualityDisplay">75%</strong></span>
+          </div>
+          <p style="font-size:0.8rem; color:var(--text-light); margin-top:0.25rem;">Lower values reduce file size more but may degrade image details.</p>
+        </div>
+        
+        <div class="alert-error" id="errorAlert" style="display:none">
+          <i class="fa-solid fa-circle-exclamation"></i> <span id="errorMessage"></span>
+        </div>
+      </div>
+      
+      <button id="btnActionTrigger" class="btn-action-trigger">
+        <i class="fa-solid fa-compress"></i> Compress Image Now
+      </button>
+      <button id="btnReset" class="btn-reset">Cancel and Clear</button>
+    </div>
+
+    <div id="progressPanel" class="processing-dashboard" style="display:none">
+      <div class="progress-container">
+        <div class="progress-spinner" style="color:var(--secondary)"><i class="fa-solid fa-spinner"></i></div>
+        <div class="progress-text" id="progressMessage">Executing compression...</div>
+        <div style="background-color:#e2e8f0; border-radius:4px; height:8px; width:100%; margin-top:1rem; overflow:hidden">
+          <div id="progressBarFill" style="background-color:var(--secondary); height:100%; width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="successPanel" class="processing-dashboard" style="display:none">
+      <div class="success-screen">
+        <div class="success-icon" style="color:var(--success); background-color:rgba(16, 185, 129, 0.15)"><i class="fa-solid fa-circle-check"></i></div>
+        <h3>Image Compressed!</h3>
+        <p>Pixel streams have been successfully compiled in browser RAM.</p>
+        <a id="downloadAnchor" class="btn-download" style="background-color:#10b981"><i class="fa-solid fa-download"></i> Download Compressed Image</a>
+        <button onclick="location.reload()" class="btn-reset"><i class="fa-solid fa-rotate-left"></i> Compress Another Image</button>
+      </div>
+    </div>
+
+    <div class="adsense-slot responsive-slot">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <article class="tool-info-article">
+      <div class="info-block">
+        <h2>How to Compress Images online</h2>
+        <ol>
+          <li>Drag your image into the dropzone or choose <strong>Select Image</strong>.</li>
+          <li>Adjust the <strong>Quality Slider</strong> (e.g. 75% is the sweet spot for web use).</li>
+          <li>Click on <strong>Compress Image Now</strong>. ToolTari processes pixel data locally.</li>
+          <li>Download the optimized image file.</li>
+        </ol>
+      </div>
+
+      <div class="info-block">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-grid">
+          <details class="faq-item" open>
+            <summary>Why does the tool convert PNG to JPG?</summary>
+            <p>PNG is a lossless format and does not support typical slider compression parameters without extreme color table reductions. To achieve significant file size drops, our tool converts transparent PNGs to high-efficiency JPEG formats when compression sliders are triggered.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Are my photos uploaded to any server?</summary>
+            <p>No. Your photos remain 100% private. All manipulations run locally inside your browser memory buffer.</p>
+          </details>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-info">
+        <h3>ToolTari</h3>
+        <p>Fast, secure, and private client-side utility suite. Your files stay with you.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms of Service</a></li>
+          <li><a href="/disclaimer.html">Disclaimer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="/about.html">Our Story</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ToolTari. All rights reserved.</p>
+      <p>Powered by local browser-native WebAssembly technology.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/image-engine.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const trigger = document.getElementById('btnActionTrigger');
+      const qualitySlider = document.getElementById('qualitySlider');
+      const qualityDisplay = document.getElementById('qualityDisplay');
+
+      if (qualitySlider && qualityDisplay) {
+        qualitySlider.addEventListener('input', () => {
+          qualityDisplay.textContent = Math.round(parseFloat(qualitySlider.value) * 100) + '%';
+        });
+      }
+
+      if (trigger) {
+        trigger.addEventListener('click', async () => {
+          const files = ToolTariUI.UI.selectedFiles;
+          if (files.length === 0) {
+            ToolTariUI.showError('No image selected.');
+            return;
+          }
+
+          const quality = parseFloat(qualitySlider.value) || 0.75;
+
+          try {
+            ToolTariUI.showProgress(40, 'Compiling pixel buffers...');
+            const result = await ToolTariImageEngine.compressImage(files[0], quality, (percent, msg) => {
+              ToolTariUI.showProgress(percent, msg);
+            });
+            
+            const downloadUrl = URL.createObjectURL(result.blob);
+            
+            const sizeOriginal = files[0].size;
+            const sizeCompressed = result.blob.size;
+            const savings = Math.round(((sizeOriginal - sizeCompressed) / sizeOriginal) * 100);
+            
+            let reportMsg = `Original size: ${ToolTariUI.formatSize(sizeOriginal)} | Optimized size: ${ToolTariUI.formatSize(sizeCompressed)}.`;
+            if (savings > 0) {
+              reportMsg = `Compressed by ${savings}%! ` + reportMsg;
+            }
+            
+            const successDesc = document.querySelector('#successPanel p');
+            if (successDesc) {
+              successDesc.textContent = reportMsg;
+            }
+
+            ToolTariUI.showSuccess(downloadUrl, result.filename);
+          } catch (err) {
+            ToolTariUI.resetWorkspace();
+            ToolTariUI.showError(err.message || 'An error occurred during compression.');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
