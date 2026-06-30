@@ -378,5 +378,153 @@
     }
   };
 
+  // Dynamic Share Bar and Favicon Injection
+  function initGlobalEnhancements() {
+    // 1. Dynamic Favicon Injection (if missing or incorrect)
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      link.type = 'image/svg+xml';
+      document.head.appendChild(link);
+    }
+    link.href = '/favicon.svg';
+    link.type = 'image/svg+xml';
+
+    // 2. CSS Style Injection for Floating Share Bar
+    const shareStyle = document.createElement('style');
+    shareStyle.textContent = `
+      .tooltari-share-bar {
+        position: fixed;
+        left: 20px;
+        top: 55%;
+        transform: translateY(-50%);
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        border-radius: 99px;
+        padding: 0.75rem 0.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        z-index: 9999;
+        transition: all 0.3s ease;
+      }
+      .tooltari-share-bar .share-title {
+        color: #64748b;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 30px;
+      }
+      .tooltari-share-bar .share-divider {
+        width: 24px;
+        height: 1px;
+        background: #e2e8f0;
+        margin: 0;
+        border: none;
+      }
+      .tooltari-share-btn {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 1.2rem;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        cursor: pointer;
+      }
+      .tooltari-share-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      .tooltari-share-whatsapp {
+        background-color: #25d366;
+      }
+      .tooltari-share-telegram {
+        background-color: #0088cc;
+      }
+      .tooltari-share-x {
+        background-color: #0f172a;
+      }
+      .tooltari-share-copy {
+        background-color: #eef2ff;
+        color: #4f46e5;
+      }
+      @media (max-width: 768px) {
+        .tooltari-share-bar {
+          left: 50%;
+          top: auto;
+          bottom: 20px;
+          transform: translateX(-50%);
+          flex-direction: row;
+          padding: 0.5rem 0.75rem;
+          height: auto;
+          box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.12);
+        }
+        .tooltari-share-bar .share-title {
+          height: 40px;
+          width: 30px;
+        }
+        .tooltari-share-bar .share-divider {
+          width: 1px;
+          height: 24px;
+        }
+      }
+    `;
+    document.head.appendChild(shareStyle);
+
+    // 3. HTML Share Bar Elements Building
+    const currentUrl = window.location.href;
+    const currentTitle = document.title || 'ToolTari - Free online tools';
+
+    const shareBar = document.createElement('div');
+    shareBar.className = 'tooltari-share-bar';
+    shareBar.innerHTML = `
+      <div class="share-title" title="Share this Tool"><i class="fa-solid fa-share-nodes"></i></div>
+      <div class="share-divider"></div>
+      <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(currentTitle + ' ' + currentUrl)}" target="_blank" class="tooltari-share-btn tooltari-share-whatsapp" title="Share on WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+      </a>
+      <a href="https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(currentTitle)}" target="_blank" class="tooltari-share-btn tooltari-share-telegram" title="Share on Telegram">
+        <i class="fa-brands fa-telegram"></i>
+      </a>
+      <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(currentTitle)}" target="_blank" class="tooltari-share-btn tooltari-share-x" title="Share on X (Twitter)">
+        <i class="fa-brands fa-x-twitter"></i>
+      </a>
+      <button class="tooltari-share-btn tooltari-share-copy" id="btnTooltariGlobalShareCopy" title="Copy Tool Link">
+        <i class="fa-solid fa-link"></i>
+      </button>
+    `;
+
+    document.body.appendChild(shareBar);
+
+    // Copy action binding
+    const globalCopyBtn = document.getElementById('btnTooltariGlobalShareCopy');
+    if (globalCopyBtn) {
+      globalCopyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(currentUrl).then(() => {
+          alert('Tool URL copied to clipboard!');
+        }).catch(err => {
+          console.error('Failed to copy share link:', err);
+        });
+      });
+    }
+  }
+
+  // Bind to DOM loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGlobalEnhancements);
+  } else {
+    initGlobalEnhancements();
+  }
+
   console.log('ToolTari UI Orchestration logic initialized.');
 })();

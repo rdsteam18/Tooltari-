@@ -148,8 +148,10 @@
       color: var(--text-dark);
     }
   </style>
+  <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
 </head>
 <body class="theme-dev">
+  <amp-auto-ads type="adsense" data-ad-client="ca-pub-3097658772821429"></amp-auto-ads>
 
   <header>
     <div class="header-container">
@@ -237,7 +239,7 @@
       <ins class="adsbygoogle"
            style="display:block"
            data-ad-client="ca-pub-3097658772821429"
-           data-ad-slot="9876543210"
+           data-ad-slot="3175027470"
            data-ad-format="auto"
            data-full-width-responsive="true"></ins>
       <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
@@ -281,7 +283,9 @@
   <script>
     const compilerTemplates = {
       python: `# Python WASM Execution\n\ndef fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)\n\nprint("--- Fibonacci Sequence ---")\nfor i in range(10):\n    print(f"Fibonacci({i}) = {fibonacci(i)}")\n`,
-      html: `<!-- Live Web Preview Sandbox -->\n<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body {\n      font-family: sans-serif;\n      text-align: center;\n      padding-top: 50px;\n      background: #f0fdf4;\n    }\n    h1 {\n      color: #16a34a;\n    }\n    button {\n      padding: 10px 20px;\n      background: #15803d;\n      color: white;\n      border: none;\n      border-radius: 5px;\n      cursor: pointer;\n    }\n  </style>\n</head>\n<body>\n  <h1>Welcome to ToolTari Web Sandbox</h1>\n  <p>Modify HTML, CSS, or JS and click 'Run Code' to see live results!</p>\n  <button onclick="alert('Hello from sandbox!')">Click Me</button>\n</body>\n</html>`
+      html: `<!-- Live Web Preview Sandbox -->\n<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body {\n      font-family: sans-serif;\n      text-align: center;\n      padding-top: 50px;\n      background: #f0fdf4;\n    }\n    h1 {\n      color: #16a34a;\n    }\n    button {\n      padding: 10px 20px;\n      background: #15803d;\n      color: white;\n      border: none;\n      border-radius: 5px;\n      cursor: pointer;\n    }\n  </style>\n  <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
+</head>\n<body>
+  <amp-auto-ads type="adsense" data-ad-client="ca-pub-3097658772821429"></amp-auto-ads>\n  <h1>Welcome to ToolTari Web Sandbox</h1>\n  <p>Modify HTML, CSS, or JS and click 'Run Code' to see live results!</p>\n  <button onclick="alert('Hello from sandbox!')">Click Me</button>\n</body>\n</html>`
     };
 
     document.addEventListener('DOMContentLoaded', () => {

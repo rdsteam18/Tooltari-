@@ -59,8 +59,10 @@
       box-shadow: var(--shadow-sm);
     }
   </style>
+  <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
 </head>
 <body class="theme-dev">
+  <amp-auto-ads type="adsense" data-ad-client="ca-pub-3097658772821429"></amp-auto-ads>
 
   <header>
     <div class="header-container">
@@ -141,7 +143,7 @@
       <ins class="adsbygoogle"
            style="display:block"
            data-ad-client="ca-pub-3097658772821429"
-           data-ad-slot="9876543210"
+           data-ad-slot="3175027470"
            data-ad-format="auto"
            data-full-width-responsive="true"></ins>
       <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
@@ -183,7 +185,9 @@
   <script>
     const defaultTemplates = {
       javascript: `// JavaScript Code Template\n\nfunction greet(name) {\n  console.log("Hello, " + name + "!");\n}\n\ngreet("ToolTari");`,
-      html: `<!-- HTML Template -->\n<!DOCTYPE html>\n<html>\n<head>\n  <title>My Web Page</title>\n</head>\n<body>\n  <h1>Hello, ToolTari!</h1>\n</body>\n</html>`,
+      html: `<!-- HTML Template -->\n<!DOCTYPE html>\n<html>\n<head>\n  <title>My Web Page</title>\n  <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
+</head>\n<body>
+  <amp-auto-ads type="adsense" data-ad-client="ca-pub-3097658772821429"></amp-auto-ads>\n  <h1>Hello, ToolTari!</h1>\n</body>\n</html>`,
       css: `/* CSS Template */\n\nbody {\n  font-family: sans-serif;\n  background: #f8fafc;\n  color: #0f172a;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  height: 100vh;\n}`,
       python: `# Python Code Template\n\ndef greet(name):\n    print(f"Hello, {name}!")\n\ngreet("ToolTari")`,
       json: `{\n  "projectName": "ToolTari Code Workspace",\n  "version": "1.0.0",\n  "description": "Secure client-side coding environments",\n  "private": true\n}`,
