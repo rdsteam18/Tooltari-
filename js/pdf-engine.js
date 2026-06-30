@@ -104,23 +104,133 @@
     }
 
     // 3. COMPRESS PDF
-    async compressPDF(file, onProgress) {
+    async compressPDF(file, compressionLevel = 'recommended', onProgress) {
       const ok = await this.init();
       if (!ok) throw new Error('PDF library is not loaded.');
 
-      onProgress?.(30, 'Analyzing internal PDF structures...');
+      let quality = 0.65;
+      let maxDimension = 1200;
+      if (compressionLevel === 'low') {
+        quality = 0.85;
+        maxDimension = 1600;
+      } else if (compressionLevel === 'extreme') {
+        quality = 0.4;
+        maxDimension = 800;
+      }
+
+      onProgress?.(10, 'Reading PDF structure...');
       const fileBytes = await file.arrayBuffer();
       const doc = await this.pdfLib.PDFDocument.load(fileBytes);
 
-      onProgress?.(60, 'Re-compressing byte arrays...');
-      // Compress using pdf-lib compression save flags
+      const enumeratedObjects = doc.context.enumerateIndirectObjects();
+      const imageRefs = [];
+
+      onProgress?.(25, 'Analyzing image streams...');
+      for (const [ref, obj] of enumeratedObjects) {
+        if (obj instanceof this.pdfLib.PDFRawStream) {
+          const subtype = obj.dict.get(this.pdfLib.PDFName.of('Subtype'));
+          if (subtype?.toString() === '/Image') {
+            imageRefs.push({ ref, obj });
+          }
+        }
+      }
+
+      let compressedCount = 0;
+      const totalImages = imageRefs.length;
+      onProgress?.(35, `Found ${totalImages} image(s) to optimize...`);
+
+      for (let i = 0; i < totalImages; i++) {
+        const { ref, obj } = imageRefs[i];
+        const percent = 35 + Math.floor((i / totalImages) * 55);
+        onProgress?.(percent, `Optimizing image ${i + 1} of ${totalImages}...`);
+
+        try {
+          const filter = obj.dict.get(this.pdfLib.PDFName.of('Filter'));
+          const isDCT = filter?.toString() === '/DCTDecode' || 
+                        (filter instanceof this.pdfLib.PDFArray && filter.toString().includes('/DCTDecode'));
+          
+          if (isDCT) {
+            const rawBytes = obj.contents;
+            const compressed = await this.compressImageBytes(rawBytes, quality, maxDimension);
+            
+            const newDict = obj.dict.clone(doc.context);
+            newDict.set(this.pdfLib.PDFName.of('Length'), this.pdfLib.PDFNumber.of(compressed.bytes.length));
+            newDict.set(this.pdfLib.PDFName.of('Width'), this.pdfLib.PDFNumber.of(compressed.width));
+            newDict.set(this.pdfLib.PDFName.of('Height'), this.pdfLib.PDFNumber.of(compressed.height));
+            
+            const newStream = this.pdfLib.PDFRawStream.of(newDict, compressed.bytes);
+            doc.context.assign(ref, newStream);
+            compressedCount++;
+          }
+        } catch (err) {
+          console.warn(`Failed to compress image ${i + 1}:`, err);
+        }
+      }
+
+      onProgress?.(90, 'Re-building visual layouts and saving...');
       const compressedBytes = await doc.save({
         useObjectStreams: true,
         addOriginalMetadata: false
       });
 
       onProgress?.(100, 'Compression completed!');
-      return new Blob([compressedBytes], { type: 'application/pdf' });
+      return {
+        blob: new Blob([compressedBytes], { type: 'application/pdf' }),
+        imagesProcessed: totalImages,
+        imagesCompressed: compressedCount
+      };
+    }
+
+    // Helper to compress image byte arrays in-browser via canvas
+    compressImageBytes(bytes, quality, maxDimension) {
+      return new Promise((resolve, reject) => {
+        const blob = new Blob([bytes], { type: 'image/jpeg' });
+        const url = URL.createObjectURL(blob);
+        const img = new Image();
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > maxDimension || height > maxDimension) {
+            if (width > height) {
+              height = Math.round((height * maxDimension) / width);
+              width = maxDimension;
+            } else {
+              width = Math.round((width * maxDimension) / height);
+              height = maxDimension;
+            }
+          }
+          
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          canvas.toBlob((resultBlob) => {
+            if (!resultBlob) {
+              reject(new Error('Canvas conversion returned null'));
+              return;
+            }
+            const reader = new FileReader();
+            reader.onload = () => {
+              resolve({
+                bytes: new Uint8Array(reader.result),
+                width: width,
+                height: height
+              });
+            };
+            reader.onerror = () => reject(reader.error);
+            reader.readAsArrayBuffer(resultBlob);
+          }, 'image/jpeg', quality);
+        };
+        img.onerror = (err) => {
+          URL.revokeObjectURL(url);
+          reject(err);
+        };
+        img.src = url;
+      });
     }
 
     // 4. PROTECT PDF (ENCRYPT)

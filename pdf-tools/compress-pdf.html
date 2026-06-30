@@ -27,7 +27,45 @@
       "priceCurrency": "USD"
     }
   }
-  </script>
+  <style>
+    /* Styling for the compression selector */
+    .compression-select {
+      width: 100%;
+      padding: 0.85rem 1.25rem;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      background-color: var(--bg-body);
+      color: var(--text-dark);
+      font-size: 1rem;
+      font-weight: 500;
+      outline: none;
+      transition: var(--transition);
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1.25rem center;
+      background-size: 1.25rem;
+      padding-right: 3rem;
+    }
+    .compression-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.08);
+      background-color: var(--bg-card);
+    }
+    
+    /* Report card custom animations */
+    .report-card {
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .report-card.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 <body>
 
@@ -98,8 +136,17 @@
       
       <div class="tool-settings">
         <div class="setting-group">
-          <label>Compression Mode</label>
-          <p style="font-size:0.9rem; color:var(--text-light);">Standard client-side object stream optimization. Safely cleans catalog links without reducing image resolutions.</p>
+          <label for="compressionLevel">Compression Level</label>
+          <div style="position: relative; margin-top: 0.25rem;">
+            <select id="compressionLevel" class="compression-select">
+              <option value="recommended">Recommended (Balanced Quality & Size)</option>
+              <option value="extreme">Extreme Compression (Low Quality, Smallest Size)</option>
+              <option value="low">Low Compression (High Quality, Largest Size)</option>
+            </select>
+          </div>
+          <p id="compressionDesc" style="font-size:0.85rem; color:var(--text-light); margin-top:0.5rem; transition: var(--transition);">
+            Optimizes document structures and resizes images to max 1200px at 65% quality. Recommended for most users.
+          </p>
         </div>
         
         <div class="alert-error" id="errorAlert" style="display:none">
@@ -127,7 +174,51 @@
       <div class="success-screen">
         <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
         <h3>PDF Compressed Successfully!</h3>
-        <p>Object stream catalog entries have been optimized. You can download the output file now.</p>
+        <p>Object stream catalog entries and images have been optimized. You can download the output file now.</p>
+        
+        <!-- Premium compression report card -->
+        <div id="compressionStats" class="report-card" style="margin: 2rem auto; max-width: 500px; text-align: left; background: var(--bg-card); padding: 1.75rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
+          <h4 style="margin-top: 0; margin-bottom: 1.25rem; color: var(--text-dark); font-family: var(--font-title); font-weight: 700; font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-square-poll-vertical" style="color: var(--primary); font-size: 1.25rem;"></i> Compression Report
+          </h4>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+            <div style="background: var(--bg-body); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <span style="font-size: 0.775rem; color: var(--text-light); font-weight: 600; display: block; text-transform: uppercase; letter-spacing: 0.05em;">Original Size</span>
+              <strong id="statOriginalSize" style="font-size: 1.2rem; color: var(--text-dark); font-family: var(--font-title);">-</strong>
+            </div>
+            <div style="background: var(--bg-body); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <span style="font-size: 0.775rem; color: var(--text-light); font-weight: 600; display: block; text-transform: uppercase; letter-spacing: 0.05em;">Compressed Size</span>
+              <strong id="statCompressedSize" style="font-size: 1.2rem; color: var(--success); font-family: var(--font-title);">-</strong>
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 1.25rem; background: var(--bg-body); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <div style="display: flex; justify-content: space-between; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">
+              <span style="color: var(--text-dark);">Space Saved</span>
+              <span id="statSavingsPercent" style="color: var(--success); font-weight: 700;">-</span>
+            </div>
+            <div style="background: var(--border-color); border-radius: 999px; height: 10px; overflow: hidden; width: 100%; box-shadow: inset 0 1px 2px rgba(0,0,0,0.06);">
+              <div id="statSavingsBar" style="background: linear-gradient(90deg, var(--success), #34d399); height: 100%; width: 0%; border-radius: 999px; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);"></div>
+            </div>
+          </div>
+          
+          <div style="font-size: 0.9rem; border-top: 1px solid var(--border-color); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.65rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: var(--text-light); font-weight: 500;">Images Compressed</span>
+              <span id="statImagesCount" style="color: var(--text-dark); font-weight: 600; background: rgba(15, 23, 42, 0.05); padding: 0.15rem 0.6rem; border-radius: 999px; font-size: 0.8rem;">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: var(--text-light); font-weight: 500;">Compression Level</span>
+              <span id="statProfile" style="color: var(--text-dark); font-weight: 600; text-transform: capitalize; background: rgba(15, 23, 42, 0.05); padding: 0.15rem 0.6rem; border-radius: 999px; font-size: 0.8rem;">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: var(--text-light); font-weight: 500;">Status</span>
+              <span class="badge-status success" id="statStatus" style="font-size: 0.75rem; letter-spacing: 0.03em;">Success</span>
+            </div>
+          </div>
+        </div>
+
         <a id="downloadAnchor" class="btn-download"><i class="fa-solid fa-download"></i> Download Compressed PDF</a>
         <button onclick="location.reload()" class="btn-reset"><i class="fa-solid fa-rotate-left"></i> Compress Another PDF</button>
       </div>
@@ -205,6 +296,22 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const trigger = document.getElementById('btnActionTrigger');
+      const compressionLevel = document.getElementById('compressionLevel');
+      const compressionDesc = document.getElementById('compressionDesc');
+
+      // Update description on dropdown change
+      if (compressionLevel && compressionDesc) {
+        compressionLevel.addEventListener('change', () => {
+          const val = compressionLevel.value;
+          if (val === 'recommended') {
+            compressionDesc.textContent = 'Optimizes document structures and resizes images to max 1200px at 65% quality. Recommended for most users.';
+          } else if (val === 'extreme') {
+            compressionDesc.textContent = 'Resizes all images to max 800px at 40% quality. Low visual clarity, but extremely small file size.';
+          } else if (val === 'low') {
+            compressionDesc.textContent = 'Resizes images to max 1600px at 85% quality. Keeps visual fidelity clean while achieving minor size reduction.';
+          }
+        });
+      }
 
       if (trigger) {
         trigger.addEventListener('click', async () => {
@@ -214,12 +321,16 @@
             return;
           }
 
+          const level = compressionLevel ? compressionLevel.value : 'recommended';
+
           try {
-            ToolTariUI.showProgress(40, 'Re-indexing document structures...');
-            const compressedBlob = await ToolTariPDFEngine.compressPDF(files[0], (percent, msg) => {
+            ToolTariUI.showProgress(10, 'Initializing compression engine...');
+            
+            const result = await ToolTariPDFEngine.compressPDF(files[0], level, (percent, msg) => {
               ToolTariUI.showProgress(percent, msg);
             });
             
+            const compressedBlob = result.blob;
             const downloadUrl = URL.createObjectURL(compressedBlob);
             const sizeOriginal = files[0].size;
             const sizeCompressed = compressedBlob.size;
@@ -232,15 +343,94 @@
             
             const successDesc = document.querySelector('#successPanel p');
             if (successDesc) {
-              successDesc.textContent = `${message} Original size: ${ToolTariUI.formatSize(sizeOriginal)} | Compressed size: ${ToolTariUI.formatSize(sizeCompressed)}.`;
+              successDesc.textContent = `${message} File structure rebuilt and compressed successfully.`;
+            }
+
+            // Populate Stats Report Card
+            document.getElementById('statOriginalSize').textContent = ToolTariUI.formatSize(sizeOriginal);
+            document.getElementById('statCompressedSize').textContent = ToolTariUI.formatSize(sizeCompressed);
+            document.getElementById('statSavingsPercent').textContent = percentReduction > 0 ? `${percentReduction}%` : '0% (Already Optimized)';
+            
+            const savingsBar = document.getElementById('statSavingsBar');
+            if (savingsBar) {
+              savingsBar.style.width = '0%';
             }
             
+            document.getElementById('statImagesCount').textContent = `${result.imagesCompressed} / ${result.imagesProcessed}`;
+            document.getElementById('statProfile').textContent = level === 'recommended' ? 'Recommended' : level === 'extreme' ? 'Extreme' : 'Low';
+            
             ToolTariUI.showSuccess(downloadUrl, files[0].name.replace(/\.[^/.]+$/, "") + '_compressed.pdf');
+
+            // Trigger animations
+            setTimeout(() => {
+              const statsCard = document.getElementById('compressionStats');
+              if (statsCard) {
+                statsCard.classList.add('show');
+              }
+              if (savingsBar) {
+                savingsBar.style.width = Math.max(0, percentReduction) + '%';
+              }
+            }, 100);
+
           } catch (err) {
             ToolTariUI.resetWorkspace();
             ToolTariUI.showError(err.message || 'An error occurred during compression.');
           }
         });
+      }
+
+      // Automated Integration Test Runner
+      if (window.location.search.includes('test=true')) {
+        console.log('Test mode detected. Initializing test run...');
+        
+        const banner = document.createElement('div');
+        banner.id = 'testBanner';
+        banner.style.position = 'fixed';
+        banner.style.bottom = '20px';
+        banner.style.right = '20px';
+        banner.style.background = 'var(--accent)';
+        banner.style.color = 'white';
+        banner.style.padding = '0.75rem 1.25rem';
+        banner.style.borderRadius = 'var(--radius-md)';
+        banner.style.boxShadow = 'var(--shadow-lg)';
+        banner.style.fontWeight = '600';
+        banner.style.zIndex = '9999';
+        banner.style.display = 'flex';
+        banner.style.alignItems = 'center';
+        banner.style.gap = '0.5rem';
+        banner.innerHTML = '<i class="fa-solid fa-vial-circle-check"></i> Running Automated Integration Test...';
+        document.body.appendChild(banner);
+
+        setTimeout(async () => {
+          try {
+            console.log('Fetching sample PDF...');
+            const res = await fetch('/sample.pdf');
+            if (!res.ok) throw new Error('Failed to fetch test sample.pdf from web root');
+            const blob = await res.blob();
+            
+            const testFile = new File([blob], 'sample.pdf', { type: 'application/pdf' });
+            
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(testFile);
+            ToolTariUI.UI.fileInput.files = dataTransfer.files;
+            ToolTariUI.UI.fileInput.dispatchEvent(new Event('change'));
+
+            if (compressionLevel) {
+              compressionLevel.value = 'extreme';
+              compressionLevel.dispatchEvent(new Event('change'));
+            }
+
+            console.log('Triggering compression click event...');
+            setTimeout(() => {
+              if (trigger) trigger.click();
+            }, 1500);
+
+          } catch (err) {
+            console.error('Test run failed:', err);
+            banner.style.background = 'var(--danger)';
+            banner.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Test Failed: ${err.message}`;
+          }
+        }, 1000);
       }
     });
   </script>

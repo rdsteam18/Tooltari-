@@ -13,7 +13,7 @@
     // Core Elements
     hamburger: document.getElementById('hamburgerBtn'),
     mainNav: document.getElementById('mainNav'),
-    dropzone: document.getElementById('dropzone'),
+    dropzone: document.getElementById('dropzone') || document.querySelector('.dropzone'),
     fileInput: document.getElementById('fileInput'),
     
     // Panels
