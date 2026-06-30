@@ -10,6 +10,10 @@
   <link rel="stylesheet" href="/css/style.css">
 
   <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script async custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+  </script>
 
   <script type="application/ld+json">
   {
@@ -27,47 +31,455 @@
       "priceCurrency": "USD"
     }
   }
+  </script>
   <style>
-    /* Styling for the compression selector */
-    .compression-select {
-      width: 100%;
-      padding: 0.85rem 1.25rem;
-      border: 2px solid var(--border-color);
+    /* Premium file preview card */
+    .file-preview-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
-      background-color: var(--bg-body);
-      color: var(--text-dark);
-      font-size: 1rem;
-      font-weight: 500;
-      outline: none;
-      transition: var(--transition);
-      cursor: pointer;
-      appearance: none;
-      -webkit-appearance: none;
-      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 1.25rem center;
-      background-size: 1.25rem;
-      padding-right: 3rem;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-sm);
     }
-    .compression-select:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.08);
-      background-color: var(--bg-card);
+    .file-preview-thumbnail {
+      width: 60px;
+      height: 75px;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      position: relative;
+    }
+    .file-preview-thumbnail canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .file-preview-thumbnail i {
+      font-size: 2.25rem;
+      color: var(--primary);
+    }
+    .file-preview-info {
+      flex-grow: 1;
+      text-align: left;
+    }
+    .file-preview-info h4 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.25rem;
+      word-break: break-all;
+    }
+    .file-preview-info p {
+      font-size: 0.875rem;
+      color: var(--text-light);
+    }
+
+    /* Compression Mode Option Cards */
+    .compression-options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .compression-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      gap: 1rem;
+      box-shadow: var(--shadow-sm);
+      user-select: none;
+      text-align: left;
+    }
+    .compression-card:hover {
+      border-color: #cbd5e1;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .compression-card.active {
+      border-color: #0061ff;
+      border-width: 2px;
+      padding: calc(1.5rem - 1px);
+      background-color: rgba(0, 97, 255, 0.01);
+      box-shadow: 0 10px 15px -3px rgba(0, 97, 255, 0.05);
     }
     
-    /* Report card custom animations */
-    .report-card {
-      opacity: 0;
-      transform: translateY(15px);
-      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    .compression-radio {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border-color);
+      border-radius: 50%;
+      margin-top: 0.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: var(--transition);
     }
-    .report-card.show {
-      opacity: 1;
-      transform: translateY(0);
+    .compression-card.active .compression-radio {
+      border-color: #0061ff;
+    }
+    .compression-radio::after {
+      content: '';
+      width: 10px;
+      height: 10px;
+      background-color: #0061ff;
+      border-radius: 50%;
+      transform: scale(0);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .compression-card.active .compression-radio::after {
+      transform: scale(1);
+    }
+
+    .compression-card-content {
+      flex-grow: 1;
+    }
+    .compression-card-content h4 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .compression-card-content p {
+      font-size: 0.875rem;
+      color: var(--text-light);
+      line-height: 1.4;
+      margin-bottom: 0.5rem;
+    }
+    .compression-card-content .estimated-size {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-light);
+    }
+    .compression-card.active .compression-card-content .estimated-size {
+      color: #0061ff;
+    }
+    
+    .best-compression-badge {
+      position: absolute;
+      top: 0;
+      right: 1.5rem;
+      transform: translateY(-50%);
+      background: #facc15;
+      color: #000;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .action-buttons-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .btn-action-cancel {
+      background: transparent;
+      border: 2px solid var(--text-dark);
+      color: var(--text-dark);
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.75rem 2rem;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-action-cancel:hover {
+      background: rgba(15, 23, 42, 0.05);
+    }
+    .btn-action-compress {
+      background: #0061ff;
+      border: none;
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.75rem 2.25rem;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 10px rgba(0, 97, 255, 0.2);
+    }
+    .btn-action-compress:hover {
+      background: #004ecc;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(0, 97, 255, 0.3);
+    }
+
+    /* Progress Page animations */
+    .progress-cloud-animation {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 2rem 0;
+      position: relative;
+      height: 140px;
+    }
+    .animated-cloud-left {
+      position: absolute;
+      left: calc(50% - 130px);
+      width: 100px;
+      opacity: 0.85;
+      animation: floatLeft 6s ease-in-out infinite;
+    }
+    .animated-cloud-right {
+      position: absolute;
+      right: calc(50% - 130px);
+      width: 100px;
+      opacity: 0.85;
+      animation: floatRight 6s ease-in-out infinite;
+    }
+    .animated-doc-icon {
+      z-index: 10;
+      font-size: 4rem;
+      color: #ef4444;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+      animation: docPulse 2s ease-in-out infinite;
+    }
+    @keyframes floatLeft {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-10px, -5px); }
+    }
+    @keyframes floatRight {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(10px, 5px); }
+    }
+    @keyframes docPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .progress-status-container {
+      width: 100%;
+      margin: 1.5rem 0;
+    }
+    .progress-status-text-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+    }
+    .linear-progress-bar {
+      background-color: #e2e8f0;
+      border-radius: 999px;
+      height: 8px;
+      width: 100%;
+      overflow: hidden;
+    }
+    .linear-progress-bar-fill {
+      background-color: #0061ff;
+      height: 100%;
+      width: 0%;
+      transition: width 0.2s ease;
+    }
+
+    /* Side-by-Side Split Success Screen */
+    .success-split-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    @media (min-width: 992px) {
+      .success-split-layout {
+        grid-template-columns: 1.2fr 1.8fr;
+      }
+    }
+    
+    .success-control-panel {
+      text-align: left;
+      padding-right: 1rem;
+    }
+    .success-control-panel h3 {
+      font-family: var(--font-title);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+      line-height: 1.25;
+    }
+    .success-control-panel .size-transition {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+    }
+    .success-control-panel .size-transition strong {
+      color: #0061ff;
+    }
+    
+    .download-action-row {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .btn-download-premium {
+      flex-grow: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      background-color: #0061ff;
+      color: white;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 0.9rem 2rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 4px 10px rgba(0, 97, 255, 0.15);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .btn-download-premium:hover {
+      background-color: #004ecc;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(0, 97, 255, 0.25);
+    }
+    .btn-link-action {
+      width: 50px;
+      height: 50px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: var(--text-dark);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-link-action:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+    
+    .privacy-notice-text {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      line-height: 1.4;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .success-navigation-block {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .success-navigation-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+      text-align: left;
+    }
+    .success-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      padding: 0.5rem 0;
+      transition: var(--transition);
+      text-align: left;
+    }
+    .success-nav-link:hover {
+      color: #0061ff;
+      transform: translateX(3px);
+    }
+    .success-nav-link i {
+      width: 20px;
+      color: var(--text-light);
+    }
+    .success-nav-link:hover i {
+      color: #0061ff;
+    }
+    
+    .success-preview-column {
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      height: 480px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.04);
+      position: relative;
+    }
+    .preview-header-bar {
+      width: 100%;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .preview-filename-pill {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .preview-page-canvas {
+      width: 100%;
+      max-width: 480px;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      box-shadow: 0 4px 10px rgba(15,23,42,0.06);
+      margin-bottom: 1.5rem;
     }
   </style>
 </head>
 <body>
+  <amp-auto-ads type="adsense"
+          data-ad-client="ca-pub-3097658772821429">
+  </amp-auto-ads>
 
   <header>
     <div class="header-container">
@@ -109,13 +521,18 @@
     </div>
 
     <div class="adsense-slot responsive-slot">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3097658772821429"
+           crossorigin="anonymous"></script>
+      <!-- tooltari netlify antigravity1 -->
       <ins class="adsbygoogle"
            style="display:block"
            data-ad-client="ca-pub-3097658772821429"
-           data-ad-slot="9876543210"
+           data-ad-slot="3175027470"
            data-ad-format="auto"
            data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
     </div>
 
     <div id="uploadPanel" class="dropzone">
@@ -129,109 +546,166 @@
     </div>
 
     <div id="dashboardPanel" class="processing-dashboard" style="display:none">
-      <div class="setting-group">
-        <label>Selected PDF File</label>
-        <div class="file-list" id="fileList"></div>
+      <!-- File Preview Card -->
+      <div class="file-preview-card">
+        <div class="file-preview-thumbnail" id="dashboardThumbnail">
+          <i class="fa-solid fa-file-pdf"></i>
+        </div>
+        <div class="file-preview-info">
+          <h4 id="dashboardFileName">-</h4>
+          <p id="dashboardFileSize">-</p>
+        </div>
       </div>
-      
-      <div class="tool-settings">
-        <div class="setting-group">
-          <label for="compressionLevel">Compression Level</label>
-          <div style="position: relative; margin-top: 0.25rem;">
-            <select id="compressionLevel" class="compression-select">
-              <option value="recommended">Recommended (Balanced Quality & Size)</option>
-              <option value="extreme">Extreme Compression (Low Quality, Smallest Size)</option>
-              <option value="low">Low Compression (High Quality, Largest Size)</option>
-            </select>
+
+      <div style="text-align: left; margin-bottom: 1rem; font-weight: 600; color: var(--text-dark); font-size: 0.95rem;">
+        Select compression level:
+      </div>
+
+      <!-- Option Cards -->
+      <div class="compression-options-grid">
+        <!-- High Card -->
+        <div class="compression-card active" data-level="extreme" id="cardExtreme">
+          <span class="best-compression-badge">Best compression</span>
+          <div class="compression-radio"></div>
+          <div class="compression-card-content">
+            <h4>High</h4>
+            <p>Smallest size, standard quality</p>
+            <div class="estimated-size" id="estExtremeSize">Estimated -</div>
           </div>
-          <p id="compressionDesc" style="font-size:0.85rem; color:var(--text-light); margin-top:0.5rem; transition: var(--transition);">
-            Optimizes document structures and resizes images to max 1200px at 65% quality. Recommended for most users.
-          </p>
         </div>
-        
-        <div class="alert-error" id="errorAlert" style="display:none">
-          <i class="fa-solid fa-circle-exclamation"></i> <span id="errorMessage"></span>
+
+        <!-- Medium Card -->
+        <div class="compression-card" data-level="recommended" id="cardRecommended">
+          <div class="compression-radio"></div>
+          <div class="compression-card-content">
+            <h4>Medium</h4>
+            <p>Medium size, better quality</p>
+            <div class="estimated-size" id="estRecommendedSize">Estimated -</div>
+          </div>
+        </div>
+
+        <!-- Low Card -->
+        <div class="compression-card" data-level="low" id="cardLow">
+          <div class="compression-radio"></div>
+          <div class="compression-card-content">
+            <h4>Low</h4>
+            <p>Larger size, highest quality</p>
+            <div class="estimated-size" id="estLowSize">Estimated -</div>
+          </div>
         </div>
       </div>
-      
-      <button id="btnActionTrigger" class="btn-action-trigger">
-        <i class="fa-solid fa-file-contract"></i> Compress PDF Now
-      </button>
-      <button id="btnReset" class="btn-reset">Cancel and Clear</button>
+
+      <div class="alert-error" id="errorAlert" style="display:none">
+        <i class="fa-solid fa-circle-exclamation"></i> <span id="errorMessage"></span>
+      </div>
+
+      <div class="action-buttons-row">
+        <button id="btnReset" class="btn-action-cancel">Cancel</button>
+        <button id="btnActionTrigger" class="btn-action-compress">Compress</button>
+      </div>
     </div>
 
-    <div id="progressPanel" class="processing-dashboard" style="display:none">
-      <div class="progress-container">
-        <div class="progress-spinner"><i class="fa-solid fa-spinner"></i></div>
-        <div class="progress-text" id="progressMessage">Compressing objects...</div>
-        <div style="background-color:#e2e8f0; border-radius:4px; height:8px; width:100%; margin-top:1rem; overflow:hidden">
-          <div id="progressBarFill" style="background-color:var(--primary); height:100%; width:0%"></div>
+    <div id="progressPanel" class="processing-dashboard" style="display:none; text-align: center;">
+      <h2 style="font-family: var(--font-title); font-size: 2.2rem; font-weight: 800; color: var(--text-dark); margin-bottom: 1.5rem;">Compress a PDF</h2>
+      
+      <!-- Premium Cloud-PDF animation wrapper -->
+      <div class="progress-cloud-animation">
+        <svg class="animated-cloud-left" viewBox="0 0 24 24" fill="none" stroke="#bfdbfe" stroke-width="2"><path d="M17.5 19A3.5 3.5 0 0 0 21 15.5c0-2.79-2.54-4.5-5-4.5-.48 0-.96.06-1.41.17A5.5 5.5 0 0 0 5 13c0 3 2.5 5 5.5 5h7z" fill="#eff6ff"/></svg>
+        <svg class="animated-cloud-right" viewBox="0 0 24 24" fill="none" stroke="#bfdbfe" stroke-width="2"><path d="M17.5 19A3.5 3.5 0 0 0 21 15.5c0-2.79-2.54-4.5-5-4.5-.48 0-.96.06-1.41.17A5.5 5.5 0 0 0 5 13c0 3 2.5 5 5.5 5h7z" fill="#eff6ff"/></svg>
+        
+        <div class="animated-doc-icon">
+          <i class="fa-solid fa-file-pdf"></i>
         </div>
       </div>
+
+      <div class="progress-status-container">
+        <div class="progress-status-text-row">
+          <span id="progressMessage">Compressing...</span>
+          <span id="progressPercentText">0%</span>
+        </div>
+        <div class="linear-progress-bar">
+          <div id="progressBarFill" class="linear-progress-bar-fill"></div>
+        </div>
+      </div>
+
+      <button id="btnCancelProgress" class="btn-action-cancel" style="margin-top: 1rem;">Cancel</button>
     </div>
 
     <div id="successPanel" class="processing-dashboard" style="display:none">
-      <div class="success-screen">
-        <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
-        <h3>PDF Compressed Successfully!</h3>
-        <p>Object stream catalog entries and images have been optimized. You can download the output file now.</p>
+      <div class="success-split-layout">
+        <!-- Left Side Control Panel -->
+        <div class="success-control-panel">
+          <h3>Your compressed PDF is ready</h3>
+          <div class="size-transition">
+            <span id="labelSuccessOrigSize">-</span> &rarr; <strong id="labelSuccessCompSize">-</strong>
+          </div>
+          
+          <div class="download-action-row">
+            <a id="downloadAnchor" class="btn-download-premium">
+              <i class="fa-solid fa-download"></i> Download
+            </a>
+            <button class="btn-link-action" id="btnCopyDownloadLink" title="Copy Download Link">
+              <i class="fa-solid fa-link"></i>
+            </button>
+          </div>
+          
+          <div class="privacy-notice-text">
+            Your file remains 100% private and secure. It is processed locally inside your browser memory and never uploaded to any server.
+          </div>
+          
+          <div class="success-navigation-block">
+            <div class="success-navigation-title">Continue working with your PDF. It's free.</div>
+            <a href="/pdf-tools/rotate-pdf.html" class="success-nav-link">
+              <i class="fa-solid fa-rotate"></i> Edit PDF / Rotate pages
+            </a>
+            <a href="/pdf-tools/split-pdf.html" class="success-nav-link">
+              <i class="fa-solid fa-scissors"></i> PDF converter / Split PDF
+            </a>
+            <a href="/pdf-tools/merge-pdf.html" class="success-nav-link">
+              <i class="fa-solid fa-object-group"></i> Merge PDFs
+            </a>
+            <a href="/pdf-tools/delete-pages.html" class="success-nav-link">
+              <i class="fa-solid fa-trash-can"></i> Organize pages / Delete pages
+            </a>
+          </div>
+          
+          <a href="javascript:location.reload()" class="success-nav-link" style="color: var(--text-light); font-weight: 500; font-size: 0.9rem; margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+            <i class="fa-solid fa-rotate-left"></i> Compress another PDF
+          </a>
+        </div>
         
-        <!-- Premium compression report card -->
-        <div id="compressionStats" class="report-card" style="margin: 2rem auto; max-width: 500px; text-align: left; background: var(--bg-card); padding: 1.75rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
-          <h4 style="margin-top: 0; margin-bottom: 1.25rem; color: var(--text-dark); font-family: var(--font-title); font-weight: 700; font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem;">
-            <i class="fa-solid fa-square-poll-vertical" style="color: var(--primary); font-size: 1.25rem;"></i> Compression Report
-          </h4>
-          
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
-            <div style="background: var(--bg-body); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-              <span style="font-size: 0.775rem; color: var(--text-light); font-weight: 600; display: block; text-transform: uppercase; letter-spacing: 0.05em;">Original Size</span>
-              <strong id="statOriginalSize" style="font-size: 1.2rem; color: var(--text-dark); font-family: var(--font-title);">-</strong>
+        <!-- Right Side Scrolling Page Previewer -->
+        <div class="success-preview-column">
+          <div class="preview-header-bar">
+            <div class="preview-filename-pill" id="previewFilenameLabel">
+              <i class="fa-solid fa-file-pdf" style="color: var(--primary);"></i>
+              <span id="previewFilenameText">file_compressed.pdf</span>
             </div>
-            <div style="background: var(--bg-body); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-              <span style="font-size: 0.775rem; color: var(--text-light); font-weight: 600; display: block; text-transform: uppercase; letter-spacing: 0.05em;">Compressed Size</span>
-              <strong id="statCompressedSize" style="font-size: 1.2rem; color: var(--success); font-family: var(--font-title);">-</strong>
-            </div>
+            <button class="btn-remove-file" style="padding: 0; font-size: 0.9rem;" title="Edit name" onclick="alert('Rename functionality: Click download to save with your custom name!')">
+              <i class="fa-solid fa-pen"></i>
+            </button>
           </div>
           
-          <div style="margin-bottom: 1.25rem; background: var(--bg-body); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-            <div style="display: flex; justify-content: space-between; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">
-              <span style="color: var(--text-dark);">Space Saved</span>
-              <span id="statSavingsPercent" style="color: var(--success); font-weight: 700;">-</span>
-            </div>
-            <div style="background: var(--border-color); border-radius: 999px; height: 10px; overflow: hidden; width: 100%; box-shadow: inset 0 1px 2px rgba(0,0,0,0.06);">
-              <div id="statSavingsBar" style="background: linear-gradient(90deg, var(--success), #34d399); height: 100%; width: 0%; border-radius: 999px; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);"></div>
-            </div>
-          </div>
-          
-          <div style="font-size: 0.9rem; border-top: 1px solid var(--border-color); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.65rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="color: var(--text-light); font-weight: 500;">Images Compressed</span>
-              <span id="statImagesCount" style="color: var(--text-dark); font-weight: 600; background: rgba(15, 23, 42, 0.05); padding: 0.15rem 0.6rem; border-radius: 999px; font-size: 0.8rem;">-</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="color: var(--text-light); font-weight: 500;">Compression Level</span>
-              <span id="statProfile" style="color: var(--text-dark); font-weight: 600; text-transform: capitalize; background: rgba(15, 23, 42, 0.05); padding: 0.15rem 0.6rem; border-radius: 999px; font-size: 0.8rem;">-</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="color: var(--text-light); font-weight: 500;">Status</span>
-              <span class="badge-status success" id="statStatus" style="font-size: 0.75rem; letter-spacing: 0.03em;">Success</span>
-            </div>
+          <div id="pdfPagesPreviewContainer" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+            <!-- Rendered canvases will be injected here -->
           </div>
         </div>
-
-        <a id="downloadAnchor" class="btn-download"><i class="fa-solid fa-download"></i> Download Compressed PDF</a>
-        <button onclick="location.reload()" class="btn-reset"><i class="fa-solid fa-rotate-left"></i> Compress Another PDF</button>
       </div>
     </div>
 
     <div class="adsense-slot responsive-slot">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3097658772821429"
+           crossorigin="anonymous"></script>
+      <!-- 5 tooltari -->
       <ins class="adsbygoogle"
            style="display:block"
            data-ad-client="ca-pub-3097658772821429"
-           data-ad-slot="9876543210"
+           data-ad-slot="6733596163"
            data-ad-format="auto"
            data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
     </div>
 
     <article class="tool-info-article">
@@ -259,6 +733,34 @@
         </div>
       </div>
     </article>
+
+    <div class="adsense-slot responsive-slot" style="margin-top: 3rem;">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3097658772821429"
+           crossorigin="anonymous"></script>
+      <!-- 6 -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="6360849627"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+
+    <div class="adsense-slot responsive-slot" style="margin-top: 3rem;">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3097658772821429"
+           crossorigin="anonymous"></script>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="autorelaxed"
+           data-ad-client="ca-pub-3097658772821429"
+           data-ad-slot="4494445635"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
 
   </main>
 
@@ -296,23 +798,101 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const trigger = document.getElementById('btnActionTrigger');
-      const compressionLevel = document.getElementById('compressionLevel');
-      const compressionDesc = document.getElementById('compressionDesc');
+      const fileInput = document.getElementById('fileInput');
+      const dropzone = document.getElementById('uploadPanel');
+      const cards = document.querySelectorAll('.compression-card');
+      const cancelProgress = document.getElementById('btnCancelProgress');
+      
+      let activeLevel = 'extreme'; // Default active card
 
-      // Update description on dropdown change
-      if (compressionLevel && compressionDesc) {
-        compressionLevel.addEventListener('change', () => {
-          const val = compressionLevel.value;
-          if (val === 'recommended') {
-            compressionDesc.textContent = 'Optimizes document structures and resizes images to max 1200px at 65% quality. Recommended for most users.';
-          } else if (val === 'extreme') {
-            compressionDesc.textContent = 'Resizes all images to max 800px at 40% quality. Low visual clarity, but extremely small file size.';
-          } else if (val === 'low') {
-            compressionDesc.textContent = 'Resizes images to max 1600px at 85% quality. Keeps visual fidelity clean while achieving minor size reduction.';
+      // Override ToolTariUI.showProgress to support our linear bar & percent text
+      window.ToolTariUI.showProgress = (percent, msg) => {
+        if (ToolTariUI.UI.dashboardPanel) ToolTariUI.UI.dashboardPanel.style.display = 'none';
+        if (ToolTariUI.UI.progressPanel) {
+          ToolTariUI.UI.progressPanel.style.display = 'block';
+        }
+        
+        const fill = document.getElementById('progressBarFill');
+        if (fill) fill.style.width = percent + '%';
+        const percentText = document.getElementById('progressPercentText');
+        if (percentText) percentText.textContent = Math.round(percent) + '%';
+        
+        const msgEl = document.getElementById('progressMessage');
+        if (msgEl) msgEl.textContent = msg;
+      };
+
+      // Hook up card selection clicks
+      cards.forEach(card => {
+        card.addEventListener('click', () => {
+          cards.forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          activeLevel = card.getAttribute('data-level');
+        });
+      });
+
+      // Selection handler: render page-1 thumbnail & calculate estimates
+      const handleFileSelected = async (file) => {
+        if (!file) return;
+        
+        document.getElementById('dashboardFileName').textContent = file.name;
+        document.getElementById('dashboardFileSize').textContent = `PDF - ${ToolTariUI.formatSize(file.size)}`;
+
+        // Calculate and render estimates
+        document.getElementById('estExtremeSize').textContent = `Estimated ${ToolTariUI.formatSize(Math.round(file.size * 0.45))}`;
+        document.getElementById('estRecommendedSize').textContent = `Estimated ${ToolTariUI.formatSize(Math.round(file.size * 0.68))}`;
+        document.getElementById('estLowSize').textContent = `Estimated ${ToolTariUI.formatSize(Math.round(file.size * 0.85))}`;
+
+        // Render page 1 thumbnail
+        try {
+          const thumbnailDiv = document.getElementById('dashboardThumbnail');
+          thumbnailDiv.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; color: var(--primary);"></i>';
+
+          const arrayBuffer = await file.arrayBuffer();
+          const pdfjsLib = window['pdfjs-dist/build/pdf'];
+          pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          const page = await pdf.getPage(1);
+
+          const viewport = page.getViewport({ scale: 0.25 });
+          const canvas = document.createElement('canvas');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          const ctx = canvas.getContext('2d');
+
+          await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+          thumbnailDiv.innerHTML = '';
+          thumbnailDiv.appendChild(canvas);
+        } catch (err) {
+          console.warn('Could not generate PDF thumbnail:', err);
+          document.getElementById('dashboardThumbnail').innerHTML = '<i class="fa-solid fa-file-pdf"></i>';
+        }
+      };
+
+      // Listen for selection events to trigger thumbnail renderer
+      if (fileInput) {
+        fileInput.addEventListener('change', () => {
+          if (fileInput.files && fileInput.files.length > 0) {
+            handleFileSelected(fileInput.files[0]);
           }
         });
       }
 
+      if (dropzone) {
+        dropzone.addEventListener('drop', (e) => {
+          if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            handleFileSelected(e.dataTransfer.files[0]);
+          }
+        });
+      }
+
+      if (cancelProgress) {
+        cancelProgress.addEventListener('click', () => {
+          location.reload();
+        });
+      }
+
+      // Compression Trigger logic
       if (trigger) {
         trigger.addEventListener('click', async () => {
           const files = ToolTariUI.UI.selectedFiles;
@@ -321,12 +901,10 @@
             return;
           }
 
-          const level = compressionLevel ? compressionLevel.value : 'recommended';
-
           try {
             ToolTariUI.showProgress(10, 'Initializing compression engine...');
             
-            const result = await ToolTariPDFEngine.compressPDF(files[0], level, (percent, msg) => {
+            const result = await ToolTariPDFEngine.compressPDF(files[0], activeLevel, (percent, msg) => {
               ToolTariUI.showProgress(percent, msg);
             });
             
@@ -334,43 +912,64 @@
             const downloadUrl = URL.createObjectURL(compressedBlob);
             const sizeOriginal = files[0].size;
             const sizeCompressed = compressedBlob.size;
-            const percentReduction = Math.round(((sizeOriginal - sizeCompressed) / sizeOriginal) * 100);
-            
-            let message = 'Document size optimized!';
-            if (percentReduction > 0) {
-              message = `Successfully reduced file size by ${percentReduction}%!`;
-            }
-            
-            const successDesc = document.querySelector('#successPanel p');
-            if (successDesc) {
-              successDesc.textContent = `${message} File structure rebuilt and compressed successfully.`;
-            }
 
-            // Populate Stats Report Card
-            document.getElementById('statOriginalSize').textContent = ToolTariUI.formatSize(sizeOriginal);
-            document.getElementById('statCompressedSize').textContent = ToolTariUI.formatSize(sizeCompressed);
-            document.getElementById('statSavingsPercent').textContent = percentReduction > 0 ? `${percentReduction}%` : '0% (Already Optimized)';
+            // Fill size transitions & details
+            document.getElementById('labelSuccessOrigSize').textContent = ToolTariUI.formatSize(sizeOriginal);
+            document.getElementById('labelSuccessCompSize').textContent = ToolTariUI.formatSize(sizeCompressed);
             
-            const savingsBar = document.getElementById('statSavingsBar');
-            if (savingsBar) {
-              savingsBar.style.width = '0%';
-            }
+            // Set filenames
+            document.getElementById('previewFilenameText').textContent = files[0].name.replace(/\.[^/.]+$/, "") + '_compressed.pdf';
             
-            document.getElementById('statImagesCount').textContent = `${result.imagesCompressed} / ${result.imagesProcessed}`;
-            document.getElementById('statProfile').textContent = level === 'recommended' ? 'Recommended' : level === 'extreme' ? 'Extreme' : 'Low';
-            
+            const previewContainer = document.getElementById('pdfPagesPreviewContainer');
+            previewContainer.innerHTML = '<div style="padding: 2rem; text-align: center; color: var(--text-light);"><i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block;"></i> Rendering PDF Preview...</div>';
+
+            // Trigger standard success mapping (for history logger)
             ToolTariUI.showSuccess(downloadUrl, files[0].name.replace(/\.[^/.]+$/, "") + '_compressed.pdf');
 
-            // Trigger animations
-            setTimeout(() => {
-              const statsCard = document.getElementById('compressionStats');
-              if (statsCard) {
-                statsCard.classList.add('show');
+            // Wire custom download & link buttons
+            const downloadAnchor = document.getElementById('downloadAnchor');
+            if (downloadAnchor) {
+              downloadAnchor.href = downloadUrl;
+              downloadAnchor.download = files[0].name.replace(/\.[^/.]+$/, "") + '_compressed.pdf';
+            }
+
+            const copyBtn = document.getElementById('btnCopyDownloadLink');
+            if (copyBtn) {
+              copyBtn.onclick = () => {
+                navigator.clipboard.writeText(downloadUrl);
+                alert('Download URL copied to clipboard!');
+              };
+            }
+
+            // Render PDF pages inside right preview column
+            try {
+              const arrayBuffer = await compressedBlob.arrayBuffer();
+              const pdfjsLib = window['pdfjs-dist/build/pdf'];
+              const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+              
+              previewContainer.innerHTML = '';
+              for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const canvas = document.createElement('canvas');
+                canvas.className = 'preview-page-canvas';
+                previewContainer.appendChild(canvas);
+                
+                const ctx = canvas.getContext('2d');
+                const viewport = page.getViewport({ scale: 1.0 });
+                
+                const containerWidth = previewContainer.clientWidth || 450;
+                const scale = Math.min(1.5, (containerWidth - 40) / viewport.width);
+                const scaledViewport = page.getViewport({ scale });
+                
+                canvas.width = scaledViewport.width;
+                canvas.height = scaledViewport.height;
+                
+                await page.render({ canvasContext: ctx, viewport: scaledViewport }).promise;
               }
-              if (savingsBar) {
-                savingsBar.style.width = Math.max(0, percentReduction) + '%';
-              }
-            }, 100);
+            } catch (renderErr) {
+              console.error('Failed to render PDF preview:', renderErr);
+              previewContainer.innerHTML = '<div style="padding: 2rem; text-align: center; color: var(--text-light);"><i class="fa-solid fa-triangle-exclamation"></i> Preview unavailable (PDF compressed successfully)</div>';
+            }
 
           } catch (err) {
             ToolTariUI.resetWorkspace();
@@ -415,9 +1014,10 @@
             ToolTariUI.UI.fileInput.files = dataTransfer.files;
             ToolTariUI.UI.fileInput.dispatchEvent(new Event('change'));
 
-            if (compressionLevel) {
-              compressionLevel.value = 'extreme';
-              compressionLevel.dispatchEvent(new Event('change'));
+            // Select extreme level (High)
+            const extremeCard = document.getElementById('cardExtreme');
+            if (extremeCard) {
+              extremeCard.click();
             }
 
             console.log('Triggering compression click event...');
