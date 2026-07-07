@@ -1,0 +1,466 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Online Compiler - C, C++, Python, Java & Web</title>
+    
+    <!-- Tailwind CSS for rapid UI styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow: hidden; /* Prevent body scrolling, manage scrolling in panes */
+            background-color: #1e1e1e;
+        }
+
+        /* IDE Layout */
+        .ide-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .ide-header {
+            height: 60px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+
+        .ide-workspace {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 60px);
+            background-color: #1e1e1e;
+        }
+
+        /* Panes */
+        .editor-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 4px solid #2d2d2d;
+            min-width: 0; /* Important for flex child to not overflow */
+        }
+
+        .output-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #0f111a;
+            min-width: 0;
+        }
+
+        /* Pane Headers */
+        .pane-header {
+            height: 40px;
+            background-color: #252526;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            padding: 0 1rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-bottom: 1px solid #333;
+            justify-content: space-between;
+        }
+
+        /* Actual Editor/Output areas */
+        #editor-container {
+            flex: 1;
+            width: 100%;
+        }
+
+        .terminal-container {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: #a6accd;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Iframe for Web mode */
+        #web-preview {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+            display: none;
+        }
+
+        /* Custom UI Elements */
+        .btn-run {
+            background-color: #2563eb;
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        
+        .btn-run:hover { background-color: #1d4ed8; }
+        .btn-run:active { transform: scale(0.97); }
+        .btn-run:disabled { background-color: #64748b; cursor: not-allowed; transform: none; }
+
+        .lang-select {
+            background-color: #f3f4f6;
+            border: 1px solid #d1d5db;
+            color: #374151;
+            padding: 0.4rem 2.5rem 0.4rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .lang-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Terminal Text Colors */
+        .text-sys { color: #89ddff; }
+        .text-err { color: #ff5370; }
+        .text-out { color: #c3e88d; }
+        
+        /* Spinner */
+        .spinner {
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* Responsive Layout */
+        @media (max-width: 768px) {
+            .ide-workspace { flex-direction: column; }
+            .editor-pane { border-right: none; border-bottom: 4px solid #2d2d2d; }
+            .ide-header { flex-wrap: wrap; height: auto; padding: 0.75rem; gap: 0.5rem; justify-content: center; }
+            .header-center { width: 100%; display: flex; justify-content: center; order: 3; margin-top: 0.5rem; }
+            .ide-workspace { height: calc(100vh - 100px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ide-container">
+        
+        <!-- Top Navigation / Toolbar -->
+        <header class="ide-header">
+            <div class="header-left flex items-center gap-3">
+                <div class="bg-blue-600 text-white p-2 rounded-lg flex items-center justify-center">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+                <h1 class="font-bold text-xl text-gray-800 tracking-tight hidden sm:block">CodeStudio</h1>
+            </div>
+
+            <div class="header-center flex items-center gap-3">
+                <span class="text-sm text-gray-500 font-medium">Language:</span>
+                <select id="language-selector" class="lang-select">
+                    <option value="python">Python 3</option>
+                    <option value="c">C (GCC)</option>
+                    <option value="cpp">C++ (GCC)</option>
+                    <option value="java">Java</option>
+                    <option value="javascript">Node.js</option>
+                    <option value="rust">Rust</option>
+                    <option value="go">Go</option>
+                    <option value="html">HTML/CSS/JS (Web)</option>
+                </select>
+            </div>
+
+            <div class="header-right flex items-center gap-4">
+                <button id="btn-reset" class="text-gray-500 hover:text-gray-800 transition" title="Reset Code">
+                    <i class="fa-solid fa-arrow-rotate-right"></i>
+                </button>
+                <button id="btn-run" class="btn-run shadow-md shadow-blue-500/30">
+                    <i class="fa-solid fa-play"></i>
+                    <span>Run</span>
+                    <i class="fa-solid fa-circle-notch spinner" id="run-spinner"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main IDE Workspace -->
+        <div class="ide-workspace">
+            
+            <!-- Left: Monaco Editor -->
+            <div class="editor-pane">
+                <div class="pane-header">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-regular fa-file-code"></i>
+                        <span id="file-name">main.py</span>
+                    </div>
+                </div>
+                <div id="editor-container"></div>
+            </div>
+
+            <!-- Right: Output Terminal / Browser -->
+            <div class="output-pane">
+                <div class="pane-header">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-terminal" id="output-icon"></i>
+                        <span id="output-title">Output Terminal</span>
+                    </div>
+                    <button id="btn-clear" class="text-gray-400 hover:text-white transition text-xs flex items-center gap-1">
+                        <i class="fa-solid fa-broom"></i> Clear
+                    </button>
+                </div>
+                
+                <!-- Code Execution Output -->
+                <div id="terminal" class="terminal-container">
+                    <span class="text-sys">Welcome to CodeStudio Compiler.</span><br>
+                    <span class="text-sys">Select a language and click 'Run' to execute code via Piston Engine.</span><br><br>
+                </div>
+
+                <!-- Web Sandbox Output -->
+                <iframe id="web-preview" title="HTML Output Sandbox"></iframe>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Monaco Editor Loader -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs/loader.min.js"></script>
+
+    <script>
+        // Language Configurations & Boilerplates
+        const languages = {
+            'python': {
+                name: 'Python', monacoId: 'python', filename: 'main.py',
+                pistonLang: 'python', pistonVersion: '3.10.0',
+                template: 'def greet(name):\n    print(f"Hello, {name}!")\n\nif __name__ == "__main__":\n    greet("World")\n    \n    # Calculate Fibonacci\n    a, b = 0, 1\n    for _ in range(10):\n        print(a, end=" ")\n        a, b = b, a + b\n'
+            },
+            'c': {
+                name: 'C', monacoId: 'c', filename: 'main.c',
+                pistonLang: 'c', pistonVersion: '10.2.0',
+                template: '#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\\n");\n    \n    for(int i=1; i<=5; i++) {\n        printf("Number: %d\\n", i);\n    }\n    \n    return 0;\n}'
+            },
+            'cpp': {
+                name: 'C++', monacoId: 'cpp', filename: 'main.cpp',
+                pistonLang: 'c++', pistonVersion: '10.2.0',
+                template: '#include <iostream>\n\nusing namespace std;\n\nint main() {\n    cout << "Hello, World!" << endl;\n    \n    for(int i=1; i<=5; i++) {\n        cout << "Number: " << i << endl;\n    }\n    \n    return 0;\n}'
+            },
+            'java': {
+                name: 'Java', monacoId: 'java', filename: 'Main.java',
+                pistonLang: 'java', pistonVersion: '15.0.2',
+                template: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, World!");\n        \n        for(int i=1; i<=5; i++) {\n            System.out.println("Number: " + i);\n        }\n    }\n}'
+            },
+            'javascript': {
+                name: 'Node.js', monacoId: 'javascript', filename: 'index.js',
+                pistonLang: 'javascript', pistonVersion: '18.15.0',
+                template: 'console.log("Hello, World!");\n\nconst arr = [1, 2, 3, 4, 5];\narr.forEach(num => {\n    console.log(`Number: ${num}`);\n});'
+            },
+            'rust': {
+                name: 'Rust', monacoId: 'rust', filename: 'main.rs',
+                pistonLang: 'rust', pistonVersion: '1.68.2',
+                template: 'fn main() {\n    println!("Hello, World!");\n    \n    for i in 1..=5 {\n        println!("Number: {}", i);\n    }\n}'
+            },
+            'go': {
+                name: 'Go', monacoId: 'go', filename: 'main.go',
+                pistonLang: 'go', pistonVersion: '1.16.2',
+                template: 'package main\n\nimport "fmt"\n\nfunc main() {\n    fmt.Println("Hello, World!")\n    \n    for i := 1; i <= 5; i++ {\n        fmt.Printf("Number: %d\\n", i)\n    }\n}'
+            },
+            'html': {
+                name: 'Web (HTML/JS/CSS)', monacoId: 'html', filename: 'index.html',
+                pistonLang: null, pistonVersion: null, // Runs locally
+                template: '<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <style>\n        body {\n            font-family: system-ui, sans-serif;\n            display: flex;\n            flex-direction: column;\n            align-items: center;\n            justify-content: center;\n            height: 100vh;\n            margin: 0;\n            background-color: #f0fdf4;\n            color: #166534;\n        }\n        h1 { font-size: 3rem; margin-bottom: 0.5rem; }\n        button {\n            padding: 10px 20px;\n            background-color: #15803d;\n            color: white;\n            border: none;\n            border-radius: 6px;\n            cursor: pointer;\n            font-weight: bold;\n            transition: background 0.2s;\n        }\n        button:hover { background-color: #166534; }\n    </style>\n</head>\n<body>\n    <h1>Hello World!</h1>\n    <p>Edit the HTML, CSS, or JS and click Run.</p>\n    <button onclick="alert(\'Sandbox is working!\')">Click Me</button>\n</body>\n</html>'
+            }
+        };
+
+        let editor;
+        let currentLang = 'python';
+
+        // DOM Elements
+        const langSelector = document.getElementById('language-selector');
+        const btnRun = document.getElementById('btn-run');
+        const btnReset = document.getElementById('btn-reset');
+        const btnClear = document.getElementById('btn-clear');
+        const terminal = document.getElementById('terminal');
+        const webPreview = document.getElementById('web-preview');
+        const runSpinner = document.getElementById('run-spinner');
+        const fileName = document.getElementById('file-name');
+        const outputTitle = document.getElementById('output-title');
+        const outputIcon = document.getElementById('output-icon');
+
+        // Initialize Monaco Editor
+        require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs' } });
+        require(['vs/editor/editor.main'], function () {
+            editor = monaco.editor.create(document.getElementById('editor-container'), {
+                value: languages[currentLang].template,
+                language: languages[currentLang].monacoId,
+                theme: 'vs-dark',
+                automaticLayout: true,
+                fontSize: 15,
+                fontFamily: "'Fira Code', 'Courier New', monospace",
+                minimap: { enabled: false },
+                padding: { top: 16 },
+                scrollBeyondLastLine: false,
+                smoothScrolling: true,
+                cursorBlinking: "smooth",
+                cursorSmoothCaretAnimation: true
+            });
+        });
+
+        // Handle Language Change
+        langSelector.addEventListener('change', (e) => {
+            const newLang = e.target.value;
+            
+            // Confirm if code was modified
+            const currentCode = editor.getValue();
+            if (currentCode !== languages[currentLang].template && currentCode.trim() !== '') {
+                if (!confirm(`Switching to ${languages[newLang].name} will replace your current code. Continue?`)) {
+                    e.target.value = currentLang; // Revert dropdown
+                    return;
+                }
+            }
+
+            currentLang = newLang;
+            const config = languages[currentLang];
+
+            // Update Monaco Mode & Code
+            monaco.editor.setModelLanguage(editor.getModel(), config.monacoId);
+            editor.setValue(config.template);
+            
+            // Update UI
+            fileName.innerText = config.filename;
+
+            if (currentLang === 'html') {
+                terminal.style.display = 'none';
+                webPreview.style.display = 'block';
+                outputTitle.innerText = 'Web Preview';
+                outputIcon.className = 'fa-solid fa-globe';
+                btnClear.style.display = 'none';
+            } else {
+                terminal.style.display = 'block';
+                webPreview.style.display = 'none';
+                outputTitle.innerText = 'Output Terminal';
+                outputIcon.className = 'fa-solid fa-terminal';
+                btnClear.style.display = 'flex';
+            }
+        });
+
+        // Terminal Helpers
+        function writeToTerminal(text, type = 'text-out') {
+            const span = document.createElement('span');
+            span.className = type;
+            span.textContent = text;
+            terminal.appendChild(span);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function clearTerminal() {
+            terminal.innerHTML = '';
+        }
+
+        btnClear.addEventListener('click', clearTerminal);
+
+        btnReset.addEventListener('click', () => {
+            if (confirm('Reset code to default template? Your changes will be lost.')) {
+                editor.setValue(languages[currentLang].template);
+            }
+        });
+
+        // Run Code Handler
+        btnRun.addEventListener('click', async () => {
+            const code = editor.getValue();
+            if (!code.trim()) return;
+
+            // Handle Web Mode (Local HTML Sandbox)
+            if (currentLang === 'html') {
+                webPreview.srcdoc = code;
+                return;
+            }
+
+            // Handle Backend Languages via Piston API
+            const config = languages[currentLang];
+            
+            // UI Loading State
+            btnRun.disabled = true;
+            runSpinner.style.display = 'inline-block';
+            btnRun.querySelector('.fa-play').style.display = 'none';
+            writeToTerminal(`\n> Executing ${config.name} code...\n`, 'text-sys');
+
+            try {
+                // Call Piston Engine API (Free, No Auth required for basic usage)
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        language: config.pistonLang,
+                        version: "*", // Automatically use the latest available version
+                        files: [{
+                            name: config.filename,
+                            content: code
+                        }]
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || 'Failed to connect to execution engine.');
+                }
+
+                const runResult = result.run;
+                
+                // Display compilation/execution errors
+                if (runResult.stderr) {
+                    writeToTerminal(runResult.stderr + '\n', 'text-err');
+                }
+                
+                // Display standard output
+                if (runResult.stdout) {
+                    writeToTerminal(runResult.stdout + '\n', 'text-out');
+                }
+
+                // Program exit code
+                if (runResult.code !== 0) {
+                    writeToTerminal(`> Program exited with code ${runResult.code}\n`, 'text-err');
+                } else {
+                    writeToTerminal(`> Execution finished successfully.\n`, 'text-sys');
+                }
+
+            } catch (error) {
+                writeToTerminal(`\n[Execution Error]: ${error.message}\n`, 'text-err');
+                writeToTerminal(`Make sure you have an active internet connection to reach the compiler API.\n`, 'text-sys');
+            } finally {
+                // Reset UI State
+                btnRun.disabled = false;
+                runSpinner.style.display = 'none';
+                btnRun.querySelector('.fa-play').style.display = 'inline-block';
+            }
+        });
+
+    </script>
+</body>
+</html>
+
+```
