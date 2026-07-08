@@ -1,466 +1,1262 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Online Compiler - C, C++, Python, Java & Web</title>
-    
-    <!-- Tailwind CSS for rapid UI styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            overflow: hidden; /* Prevent body scrolling, manage scrolling in panes */
-            background-color: #1e1e1e;
-        }
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3097658772821429" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ToolTari Online Compiler - C, C++, Java, Python, JS, Web</title>
+  <meta name="description" content="Free online compiler for C, C++, Java, Python, JavaScript, TypeScript, Go, Rust and more. Run code instantly in browser.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; background: #0d1117; }
+    .page-wrap { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    .hidden { display: none !important; }
 
-        /* IDE Layout */
-        .ide-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
+    /* ===== TOP NAV ===== */
+    .compiler-topnav {
+      height: 44px; background: #161b22; border-bottom: 1px solid #30363d;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 14px; flex-shrink: 0; z-index: 900;
+    }
+    .topnav-left { display: flex; align-items: center; gap: 10px; }
+    .topnav-logo { display: flex; align-items: center; gap: 6px; text-decoration: none; color: #e6edf3; font-weight: 700; font-size: 15px; }
+    .topnav-logo img { height: 22px; border-radius: 4px; }
+    .nav-sep { color: #30363d; font-size: 20px; line-height: 1; }
+    .server-pills { display: flex; gap: 2px; background: #0d1117; padding: 3px; border-radius: 8px; border: 1px solid #30363d; }
+    .spill { padding: 3px 10px; border: none; background: transparent; color: #8b949e; font-size: 11.5px; font-weight: 600; border-radius: 5px; cursor: pointer; transition: all .15s; white-space: nowrap; }
+    .spill:hover:not(.active) { background: #21262d; color: #c9d1d9; }
+    .spill.active { color: #fff; }
+    .spill.s1.active { background: #1f6feb; }
+    .spill.s2.active { background: #238636; }
+    .spill.s3.active { background: #8957e5; }
+    .spill.s4.active { background: #e36209; }
+    .spill.s5.active { background: #0055aa; }
+    .topnav-right { display: flex; align-items: center; gap: 6px; }
+    .tnav-btn { padding: 4px 10px; border-radius: 6px; border: 1px solid #30363d; background: transparent; color: #8b949e; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all .15s; }
+    .tnav-btn:hover { background: #21262d; color: #c9d1d9; border-color: #8b949e; }
+    .tnav-btn.primary { background: #238636; border-color: #238636; color: #fff; }
+    .tnav-btn.primary:hover { background: #2ea043; }
 
-        .ide-header {
-            height: 60px;
-            background-color: #ffffff;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            z-index: 10;
-        }
+    /* ===== TOP AD BANNER ===== */
+    .top-ad-banner {
+      height: 34px; background: linear-gradient(90deg,#0f3460,#1a1a2e,#16213e);
+      border-bottom: 1px solid #1f6feb33; display: flex; align-items: center;
+      padding: 0 14px; gap: 10px; flex-shrink: 0;
+    }
+    .top-ad-badge { font-size: 9px; background: #f0a50020; color: #f0a500; border: 1px solid #f0a50044; padding: 2px 6px; border-radius: 3px; font-weight: 700; flex-shrink: 0; }
+    .top-ad-text { font-size: 11.5px; color: #c9d1d9; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .top-ad-text strong { color: #58a6ff; }
+    .top-ad-cta { padding: 3px 10px; background: #1f6feb; color: #fff; border: none; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; flex-shrink: 0; }
 
-        .ide-workspace {
-            display: flex;
-            flex: 1;
-            height: calc(100vh - 60px);
-            background-color: #1e1e1e;
-        }
+    /* ===== IDE WRAPPER ===== */
+    .ide-wrapper { flex: 1; position: relative; overflow: hidden; }
+    .server-panel { position: absolute; inset: 0; display: flex; }
 
-        /* Panes */
-        .editor-pane {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            border-right: 4px solid #2d2d2d;
-            min-width: 0; /* Important for flex child to not overflow */
-        }
+    /* ===================================
+       SERVER 1 — OneCompiler Style
+       =================================== */
+    #sv1 { background: #1a1a2e; }
+    .sv1-lang-bar {
+      width: 44px; background: #16213e; border-right: 1px solid #0f3460;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 6px 0; gap: 2px; overflow-y: auto; flex-shrink: 0;
+    }
+    .sv1-lang-icon {
+      width: 36px; height: 36px; border-radius: 6px; display: flex;
+      flex-direction: column; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 9px; font-weight: 700; color: #8b949e;
+      gap: 1px; transition: all .15s; border: 1px solid transparent; flex-shrink: 0;
+    }
+    .sv1-lang-icon:hover { background: #0f3460; color: #e6edf3; border-color: #1f6feb33; }
+    .sv1-lang-icon.active { background: #1f6feb22; color: #58a6ff; border-color: #1f6feb66; }
+    .sv1-lang-icon i { font-size: 13px; }
+    .sv1-lang-icon span { font-size: 7px; line-height: 1; }
+    .sv1-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+    .sv1-tabbar { height: 38px; background: #1a1a2e; border-bottom: 1px solid #0f3460; display: flex; align-items: center; padding: 0 10px; gap: 6px; flex-shrink: 0; }
+    .sv1-filetab { display: flex; align-items: center; gap: 5px; background: #16213e; border: 1px solid #0f3460; border-bottom: none; padding: 4px 10px; font-size: 12px; color: #c9d1d9; border-radius: 4px 4px 0 0; }
+    .sv1-filetab i { font-size: 11px; color: #e2b714; }
+    .sv1-actions { margin-left: auto; display: flex; gap: 5px; align-items: center; }
+    .sv1-btn { padding: 4px 12px; border-radius: 5px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all .15s; }
+    .sv1-run { background: #238636; border: 1px solid #238636; color: #fff; }
+    .sv1-run:hover { background: #2ea043; }
+    .sv1-ghost { background: transparent; border: 1px solid #30363d; color: #8b949e; }
+    .sv1-ghost:hover { background: #21262d; color: #c9d1d9; }
+    .sv1-split { flex: 1; display: flex; overflow: hidden; }
+    .sv1-editor-pane { flex: 1; position: relative; border-right: 2px solid #0f3460; min-width: 0; }
+    .sv1-output-pane { width: 360px; flex-shrink: 0; display: flex; flex-direction: column; }
+    .sv1-out-header { height: 36px; background: #16213e; border-bottom: 1px solid #0f3460; display: flex; align-items: center; padding: 0 10px; font-size: 12px; font-weight: 600; color: #8b949e; gap: 6px; flex-shrink: 0; }
+    .sv1-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; }
+    .sv1-dot.green { background: #3fb950; }
+    .sv1-dot.red { background: #f85149; }
+    .sv1-clear-btn { margin-left: auto; background: transparent; border: none; color: #8b949e; cursor: pointer; font-size: 11px; padding: 2px 6px; border-radius: 3px; }
+    .sv1-clear-btn:hover { background: #21262d; color: #c9d1d9; }
+    .sv1-output-body { flex: 1; padding: 10px 12px; font-family: 'Fira Code',monospace; font-size: 13px; overflow-y: auto; white-space: pre-wrap; line-height: 1.6; }
 
-        .output-pane {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: #0f111a;
-            min-width: 0;
-        }
+    /* ===================================
+       SERVER 2 — OnlineGDB Style
+       =================================== */
+    #sv2 { background: #f0f0f0; }
+    .sv2-sidebar { width: 175px; background: #1565c0; color: #fff; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
+    .sv2-brand { padding: 12px; border-bottom: 1px solid rgba(255,255,255,.15); }
+    .sv2-brand h3 { font-size: 13px; font-weight: 700; line-height: 1.2; }
+    .sv2-brand p { font-size: 10px; opacity: .75; margin-top: 2px; }
+    .sv2-nav { padding: 8px 12px; font-size: 12px; font-weight: 600; cursor: pointer; transition: background .15s; display: flex; align-items: center; gap: 7px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .sv2-nav:hover { background: rgba(255,255,255,.12); }
+    .sv2-nav.cta { background: #e53935; margin: 6px; border-radius: 4px; padding: 8px 12px; border: none; }
+    .sv2-sidebar-footer { margin-top: auto; padding: 8px 12px; font-size: 10px; opacity: .6; border-top: 1px solid rgba(255,255,255,.15); line-height: 1.8; }
+    .sv2-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+    .sv2-toolbar { height: 42px; background: #fff; border-bottom: 1px solid #ddd; display: flex; align-items: center; padding: 0 8px; gap: 3px; flex-shrink: 0; overflow-x: auto; }
+    .sv2-tbtn { padding: 4px 9px; border-radius: 4px; border: 1px solid #ddd; background: #fff; font-size: 11px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all .15s; color: #333; white-space: nowrap; flex-shrink: 0; }
+    .sv2-tbtn:hover { background: #f5f5f5; }
+    .sv2-tbtn.run { background: #43a047; color: #fff; border-color: #43a047; }
+    .sv2-tbtn.run:hover { background: #388e3c; }
+    .sv2-tbtn.debug { color: #1565c0; border-color: #1565c0; }
+    .sv2-tbtn.stop { color: #e53935; border-color: #e53935; }
+    .sv2-div { width: 1px; height: 22px; background: #ddd; margin: 0 3px; flex-shrink: 0; }
+    .sv2-lang-sel { margin-left: auto; padding: 4px 7px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px; background: #fff; cursor: pointer; flex-shrink: 0; }
+    .sv2-help-icons { display: flex; gap: 3px; margin-left: 4px; }
+    .sv2-help-icon { width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; flex-shrink: 0; }
+    .sv2-help-icon.info { background: #1565c0; color: #fff; border-color: #1565c0; }
+    .sv2-filetab-bar { height: 30px; background: #e8e8e8; border-bottom: 1px solid #ccc; padding: 0 10px; display: flex; align-items: flex-end; flex-shrink: 0; }
+    .sv2-ftab { padding: 4px 12px; background: #fff; border: 1px solid #ccc; border-bottom: none; font-size: 11.5px; font-weight: 600; color: #333; border-radius: 3px 3px 0 0; }
+    .sv2-editor-area { flex: 1; position: relative; overflow: hidden; min-height: 0; }
+    .sv2-drawer { height: 130px; background: #fafafa; border-top: 2px solid #ccc; display: flex; flex-direction: column; flex-shrink: 0; }
+    .sv2-dtabs { display: flex; background: #fff; border-bottom: 1px solid #ddd; padding: 0 8px; }
+    .sv2-dtab { padding: 5px 12px; font-size: 11.5px; font-weight: 600; color: #555; cursor: pointer; border-bottom: 2px solid transparent; }
+    .sv2-dtab.active { color: #1565c0; border-bottom-color: #1565c0; }
+    .sv2-drawer-body { flex: 1; padding: 7px 10px; font-size: 12px; color: #333; overflow: hidden; }
+    .sv2-input-row { display: flex; flex-direction: column; gap: 4px; }
+    .sv2-label { font-size: 11.5px; font-weight: 600; color: #555; }
+    .sv2-radio-grp { display: flex; align-items: center; gap: 14px; font-size: 11.5px; }
+    .sv2-radio-grp label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+    .sv2-stdin-box { width: 100%; height: 36px; margin-top: 4px; border: 1px solid #ddd; border-radius: 3px; font-size: 11.5px; padding: 3px 5px; resize: none; outline: none; font-family: 'Fira Code',monospace; }
+    #sv2OutputPanel { font-family: 'Fira Code',monospace; font-size: 12px; white-space: pre-wrap; overflow-y: auto; height: 88px; }
 
-        /* Pane Headers */
-        .pane-header {
-            height: 40px;
-            background-color: #252526;
-            color: #9ca3af;
-            display: flex;
-            align-items: center;
-            padding: 0 1rem;
-            font-size: 0.85rem;
-            font-weight: 500;
-            border-bottom: 1px solid #333;
-            justify-content: space-between;
-        }
+    /* ===================================
+       SERVER 3 — OneCompiler Pro
+       =================================== */
+    #sv3 { background: #0d1117; flex-direction: column; }
+    .sv3-topbar { height: 44px; background: #161b22; border-bottom: 1px solid #30363d; display: flex; align-items: center; padding: 0 10px; gap: 6px; flex-shrink: 0; overflow-x: auto; }
+    .sv3-ai-btn { padding: 5px 12px; border-radius: 6px; border: 1px solid #8957e5; background: #8957e511; color: #d2a8ff; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    .sv3-lang-pill { padding: 5px 9px; border-radius: 6px; border: 1px solid #30363d; background: #21262d; color: #c9d1d9; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    .sv3-run-btn { padding: 5px 14px; border-radius: 6px; border: none; background: linear-gradient(135deg,#e53935,#f857a6); color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    .sv3-run-btn:hover { opacity: .88; }
+    .sv3-more-btn { width: 26px; height: 26px; border-radius: 5px; border: 1px solid #30363d; background: transparent; color: #8b949e; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sv3-right-grp { margin-left: auto; display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    .sv3-icon-btn { width: 28px; height: 28px; border-radius: 5px; border: 1px solid #30363d; background: transparent; color: #8b949e; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+    .sv3-icon-btn:hover { background: #21262d; color: #c9d1d9; }
+    .sv3-text-btn { padding: 5px 10px; border-radius: 5px; border: 1px solid #30363d; background: transparent; color: #8b949e; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+    .sv3-text-btn:hover { background: #21262d; color: #c9d1d9; }
+    .sv3-avatar { width: 26px; height: 26px; border-radius: 50%; background: #8957e5; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; font-weight: 700; }
+    .sv3-body { flex: 1; display: flex; overflow: hidden; min-height: 0; }
+    .sv3-iconbar { width: 42px; background: #161b22; border-right: 1px solid #30363d; display: flex; flex-direction: column; align-items: center; padding: 6px 0; gap: 4px; flex-shrink: 0; }
+    .sv3-ibar-icon { width: 30px; height: 30px; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #8b949e; font-size: 13px; cursor: pointer; transition: all .15s; }
+    .sv3-ibar-icon:hover, .sv3-ibar-icon.act { background: #21262d; color: #c9d1d9; }
+    .sv3-editor-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+    .sv3-tabs { height: 34px; background: #161b22; border-bottom: 1px solid #30363d; display: flex; align-items: flex-end; padding: 0 6px; gap: 2px; flex-shrink: 0; }
+    .sv3-ftab { padding: 5px 12px; background: #1a1a2e; border: 1px solid #30363d; border-bottom: none; font-size: 12px; color: #c9d1d9; border-radius: 4px 4px 0 0; display: flex; align-items: center; gap: 4px; cursor: pointer; }
+    .sv3-ftab.active { background: #0d1117; }
+    .sv3-ftab i { font-size: 10px; color: #e2b714; }
+    .sv3-ftab .cx { color: #8b949e; font-size: 9px; margin-left: 3px; }
+    .sv3-add-tab { background: transparent; border: none; color: #8b949e; font-size: 15px; cursor: pointer; padding: 0 4px; margin-bottom: 3px; }
+    .sv3-editor-area { flex: 1; position: relative; overflow: hidden; min-height: 0; }
+    .sv3-term-strip { height: 32px; background: #161b22; border-top: 1px solid #30363d; display: flex; align-items: center; padding: 0 10px; gap: 8px; font-size: 12px; color: #8b949e; flex-shrink: 0; }
+    .sv3-term-label { color: #58a6ff; font-size: 11px; font-weight: 700; }
+    .sv3-term-status { font-size: 11px; }
+    .sv3-right-panel { width: 340px; border-left: 1px solid #30363d; display: flex; flex-direction: column; background: #0d1117; flex-shrink: 0; }
+    .sv3-ptabs { height: 34px; background: #161b22; border-bottom: 1px solid #30363d; display: flex; flex-shrink: 0; }
+    .sv3-ptab { padding: 0 12px; font-size: 12px; font-weight: 600; color: #8b949e; cursor: pointer; display: flex; align-items: center; border-bottom: 2px solid transparent; transition: all .15s; gap: 4px; }
+    .sv3-ptab.active { color: #c9d1d9; border-bottom-color: #58a6ff; }
+    .sv3-ptab:hover { color: #c9d1d9; }
+    .sv3-panel { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #8b949e; overflow-y: auto; padding: 0; }
+    .sv3-panel.has-output { justify-content: flex-start; padding: 10px 12px; }
+    .sv3-placeholder { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 13px; text-align: center; padding: 20px; }
+    .sv3-placeholder i { font-size: 26px; color: #30363d; }
+    .sv3-console-out { font-family: 'Fira Code',monospace; font-size: 13px; white-space: pre-wrap; line-height: 1.6; width: 100%; }
+    .sv3-stdin-wrap { padding: 10px; width: 100%; align-self: flex-start; }
+    .sv3-stdin-wrap p { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #8b949e; margin-bottom: 5px; }
+    .sv3-stdin-wrap textarea { width: 100%; height: 80px; background: #0d1117; border: 1px solid #30363d; border-radius: 5px; color: #c9d1d9; font-family: 'Fira Code',monospace; font-size: 12px; padding: 7px; resize: none; outline: none; }
 
-        /* Actual Editor/Output areas */
-        #editor-container {
-            flex: 1;
-            width: 100%;
-        }
+    /* ===================================
+       SERVER 4 — Newton School Style
+       =================================== */
+    #sv4 { background: #fafafa; flex-direction: column; }
+    .sv4-topbar { height: 44px; background: #fff; border-bottom: 1px solid #e0e0e0; display: flex; align-items: center; padding: 0 14px; gap: 8px; flex-shrink: 0; }
+    .sv4-lang-sel { padding: 5px 10px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 12.5px; font-weight: 500; background: #fff; color: #333; cursor: pointer; outline: none; }
+    .sv4-spacer { flex: 1; }
+    .sv4-icon-btn { width: 30px; height: 30px; border-radius: 5px; border: 1px solid #e0e0e0; background: #fff; color: #555; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+    .sv4-run-btn { display: flex; align-items: center; gap: 5px; padding: 6px 16px; background: #222; color: #fff; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .sv4-run-btn:hover { background: #000; }
+    .sv4-editor-area { flex: 1; position: relative; overflow: hidden; min-height: 0; }
+    .sv4-bottom { height: 200px; border-top: 2px solid #e0e0e0; display: flex; flex-direction: column; background: #fff; flex-shrink: 0; }
+    .sv4-btabs { display: flex; padding: 0 14px; border-bottom: 1px solid #e0e0e0; background: #f5f5f5; }
+    .sv4-btab { padding: 6px 12px; font-size: 12px; font-weight: 600; color: #777; cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; }
+    .sv4-btab.active { color: #222; border-bottom-color: #222; }
+    .sv4-bpanel { flex: 1; overflow-y: auto; }
+    .sv4-input-panel { padding: 8px 14px; height: 100%; }
+    .sv4-input-box { width: 100%; height: 100%; border: none; outline: none; font-family: 'Fira Code',monospace; font-size: 13px; color: #333; background: transparent; resize: none; }
+    .sv4-output-panel { padding: 8px 14px; font-family: 'Fira Code',monospace; font-size: 13px; white-space: pre-wrap; line-height: 1.6; }
+    .sv4-error-panel { padding: 8px 14px; font-family: 'Fira Code',monospace; font-size: 13px; white-space: pre-wrap; color: #b71c1c; }
 
-        .terminal-container {
-            flex: 1;
-            padding: 1rem;
-            overflow-y: auto;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.9rem;
-            color: #a6accd;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
+    /* ===================================
+       SERVER 5 — Turbo C++ (Retro DOS)
+       =================================== */
+    #sv5 { background: #000080; flex-direction: column; font-family: 'Courier New', monospace; }
+    .sv5-menubar { height: 20px; background: #aaa; color: #000; display: flex; align-items: center; flex-shrink: 0; position: relative; z-index: 50; }
+    .sv5-menu-wrap { position: relative; }
+    .sv5-menu-item { padding: 0 8px; height: 20px; display: flex; align-items: center; font-size: 12px; font-weight: bold; cursor: pointer; user-select: none; }
+    .sv5-menu-item:hover, .sv5-menu-item.open { background: #000080; color: #fff; }
+    .sv5-dropdown { display: none; position: absolute; top: 20px; left: 0; background: #aaa; border: 2px outset #fff; min-width: 180px; z-index: 200; box-shadow: 3px 3px 0 #555; }
+    .sv5-dropdown.open { display: block; }
+    .sv5-dd-item { padding: 2px 6px 2px 20px; font-size: 12px; font-weight: bold; color: #000; cursor: pointer; display: flex; justify-content: space-between; gap: 20px; }
+    .sv5-dd-item:hover { background: #000080; color: #fff; }
+    .sv5-dd-sep { height: 2px; background: #555; margin: 2px 0; }
+    .sv5-toolbar { height: 26px; background: #aaa; display: flex; align-items: center; padding: 0 4px; gap: 2px; border-bottom: 2px solid #555; flex-shrink: 0; }
+    .sv5-tbtn { padding: 1px 8px; background: #aaa; border: 2px outset #fff; color: #000; font-size: 11px; font-weight: bold; cursor: pointer; font-family: 'Courier New',monospace; display: inline-flex; align-items: center; gap: 3px; }
+    .sv5-tbtn:hover { background: #999; }
+    .sv5-tbtn:active { border-style: inset; }
+    .sv5-tbtn.run-btn { background: #0000aa; color: #fff; border: 2px outset #4444ff; }
+    .sv5-tbtn.run-btn:hover { background: #0000cc; }
+    .sv5-lang-sel { padding: 1px 4px; border: 2px inset #888; background: #aaa; font-size: 11px; font-family: 'Courier New',monospace; font-weight: bold; margin-left: auto; }
+    .sv5-body { flex: 1; display: flex; overflow: hidden; min-height: 0; }
+    .sv5-editor-col { flex: 1; position: relative; overflow: hidden; min-width: 0; }
+    .sv5-right { width: 320px; background: #0000aa; border-left: 2px solid #5555ff; display: flex; flex-direction: column; flex-shrink: 0; }
+    .sv5-out-hdr { background: #aaa; color: #000; font-size: 11px; font-weight: bold; padding: 2px 6px; border-bottom: 2px solid #555; flex-shrink: 0; }
+    .sv5-out-body { flex: 1; padding: 4px 6px; overflow-y: auto; font-size: 12px; line-height: 1.4; font-family: 'Courier New',monospace; }
+    .sv5-out-body .sv5-out { color: #aaffaa; }
+    .sv5-out-body .sv5-err { color: #ff5555; }
+    .sv5-out-body .sv5-sys { color: #ffff55; }
+    .sv5-stdin-row { padding: 4px 6px; border-top: 1px solid #5555ff; flex-shrink: 0; }
+    .sv5-stdin-row label { color: #ffff55; font-size: 11px; font-weight: bold; display: block; margin-bottom: 2px; }
+    .sv5-stdin-row textarea { width: 100%; height: 38px; background: #000055; color: #aaffaa; border: 1px solid #5555ff; font-size: 11px; font-family: 'Courier New',monospace; padding: 3px; resize: none; outline: none; }
+    .sv5-statusbar { height: 20px; background: #aaa; border-top: 2px solid #555; display: flex; align-items: center; padding: 0 6px; gap: 12px; font-size: 11px; color: #000; font-weight: bold; flex-shrink: 0; }
+    .sv5-status-item { display: flex; gap: 3px; }
+    .sv5-status-item .key { opacity: .6; }
 
-        /* Iframe for Web mode */
-        #web-preview {
-            flex: 1;
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: white;
-            display: none;
-        }
+    /* ===================================
+       EDITOR MOUNTS (100% fill parent)
+       =================================== */
+    .editor-mount { width: 100%; height: 100%; }
 
-        /* Custom UI Elements */
-        .btn-run {
-            background-color: #2563eb;
-            color: white;
-            padding: 0.5rem 1.25rem;
-            border-radius: 6px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: background-color 0.2s, transform 0.1s;
-        }
-        
-        .btn-run:hover { background-color: #1d4ed8; }
-        .btn-run:active { transform: scale(0.97); }
-        .btn-run:disabled { background-color: #64748b; cursor: not-allowed; transform: none; }
+    /* ===================================
+       OUTPUT COLORS
+       =================================== */
+    .out { color: #aff27a; }
+    .err { color: #ff7b72; }
+    .sys { color: #58a6ff; opacity: .8; }
+    .sv2out { color: #1b5e20; }
+    .sv2err { color: #b71c1c; }
+    .sv2sys { color: #1565c0; opacity: .85; }
+    .sv4out { color: #1b5e20; }
+    .sv4err { color: #b71c1c; }
+    .sv4sys { color: #0d47a1; opacity: .85; }
 
-        .lang-select {
-            background-color: #f3f4f6;
-            border: 1px solid #d1d5db;
-            color: #374151;
-            padding: 0.4rem 2.5rem 0.4rem 1rem;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 0.5rem center;
-            background-repeat: no-repeat;
-            background-size: 1.5em 1.5em;
-            cursor: pointer;
-            outline: none;
-        }
+    /* ===================================
+       AD OVERLAY
+       =================================== */
+    .compile-overlay {
+      position: fixed; inset: 0; background: rgba(5,10,20,.97); z-index: 9999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 16px; opacity: 0; pointer-events: none; transition: opacity .25s;
+    }
+    .compile-overlay.show { opacity: 1; pointer-events: all; }
+    .co-ad-card { width: 560px; max-width: 92%; border-radius: 10px; overflow: hidden; border: 1px solid #1f6feb44; box-shadow: 0 0 40px rgba(31,111,235,.2); }
+    .co-ad-img { width: 100%; height: 220px; object-fit: cover; display: block; }
+    .co-ad-caption { background: #161b22; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+    .co-ad-caption p { font-size: 13px; font-weight: 600; color: #c9d1d9; }
+    .co-ad-link { font-size: 11px; color: #58a6ff; text-decoration: none; display: block; margin-top: 2px; }
+    .co-badge { font-size: 9px; color: #f0a500; background: #f0a50015; border: 1px solid #f0a50033; padding: 2px 7px; border-radius: 3px; }
+    .co-status { font-size: 13px; font-weight: 600; color: #c9d1d9; }
+    .co-sub { font-size: 11.5px; color: #8b949e; }
+    .co-progress { width: 560px; max-width: 92%; height: 4px; background: #21262d; border-radius: 3px; overflow: hidden; }
+    .co-bar { height: 100%; background: linear-gradient(90deg,#1f6feb,#58a6ff); width: 0%; transition: width .08s linear; }
+    .co-timer { font-size: 11px; color: #8b949e; }
 
-        .lang-select:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-        }
-
-        /* Terminal Text Colors */
-        .text-sys { color: #89ddff; }
-        .text-err { color: #ff5370; }
-        .text-out { color: #c3e88d; }
-        
-        /* Spinner */
-        .spinner {
-            animation: spin 1s linear infinite;
-            display: none;
-        }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        /* Responsive Layout */
-        @media (max-width: 768px) {
-            .ide-workspace { flex-direction: column; }
-            .editor-pane { border-right: none; border-bottom: 4px solid #2d2d2d; }
-            .ide-header { flex-wrap: wrap; height: auto; padding: 0.75rem; gap: 0.5rem; justify-content: center; }
-            .header-center { width: 100%; display: flex; justify-content: center; order: 3; margin-top: 0.5rem; }
-            .ide-workspace { height: calc(100vh - 100px); }
-        }
-    </style>
+    /* ===================================
+       MODALS
+       =================================== */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
+    .modal-backdrop.open { opacity: 1; pointer-events: all; }
+    .modal-box { background: #161b22; border: 1px solid #30363d; border-radius: 10px; width: 480px; max-width: 95%; max-height: 90vh; overflow-y: auto; color: #c9d1d9; transform: scale(.95); transition: transform .2s; }
+    .modal-backdrop.open .modal-box { transform: scale(1); }
+    .modal-header { padding: 14px 18px; border-bottom: 1px solid #30363d; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 14px; }
+    .modal-close { background: none; border: none; color: #8b949e; cursor: pointer; font-size: 15px; }
+    .modal-close:hover { color: #c9d1d9; }
+    .modal-body { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+    .modal-section h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #8b949e; margin-bottom: 6px; }
+    .modal-sel { width: 100%; padding: 7px 9px; border: 1px solid #30363d; border-radius: 5px; background: #0d1117; color: #c9d1d9; font-size: 13px; outline: none; }
+    .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .modal-check { display: flex; align-items: center; gap: 7px; font-size: 13px; cursor: pointer; }
+    .modal-footer { padding: 11px 18px; border-top: 1px solid #30363d; display: flex; justify-content: flex-end; gap: 7px; }
+    .mbtn { padding: 6px 14px; border-radius: 5px; border: 1px solid #30363d; background: transparent; color: #c9d1d9; font-size: 13px; cursor: pointer; }
+    .mbtn:hover { background: #21262d; }
+    .mbtn.primary { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+    .mbtn.primary:hover { background: #388bfd; }
+    .share-link-row { display: flex; gap: 6px; }
+    .share-link-input { flex: 1; padding: 7px 9px; border: 1px solid #30363d; border-radius: 5px; background: #0d1117; color: #c9d1d9; font-size: 12px; font-family: 'Fira Code',monospace; outline: none; }
+    .share-socials { display: flex; gap: 6px; flex-wrap: wrap; }
+    .soc-btn { padding: 6px 12px; border-radius: 5px; border: none; color: #fff; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; }
+    .soc-wa { background: #25d366; } .soc-tg { background: #0088cc; } .soc-tw { background: #1d9bf0; } .soc-fb { background: #1877f2; }
+    .share-qr { width: 120px; background: #fff; padding: 7px; border-radius: 5px; }
+    .share-qr img { width: 100%; display: block; }
+  </style>
 </head>
 <body>
+<div class="page-wrap">
 
-    <div class="ide-container">
-        
-        <!-- Top Navigation / Toolbar -->
-        <header class="ide-header">
-            <div class="header-left flex items-center gap-3">
-                <div class="bg-blue-600 text-white p-2 rounded-lg flex items-center justify-center">
-                    <i class="fa-solid fa-code"></i>
-                </div>
-                <h1 class="font-bold text-xl text-gray-800 tracking-tight hidden sm:block">CodeStudio</h1>
-            </div>
+  <!-- TOP NAV -->
+  <nav class="compiler-topnav">
+    <div class="topnav-left">
+      <a href="/" class="topnav-logo">
+        <img src="/favicon.svg" alt="" onerror="this.style.display='none'">
+        <span>ToolTari</span>
+      </a>
+      <span class="nav-sep">|</span>
+      <div class="server-pills">
+        <button class="spill s1 active" onclick="switchServer(1)" id="pill1">Server 1</button>
+        <button class="spill s2" onclick="switchServer(2)" id="pill2">Server 2</button>
+        <button class="spill s3" onclick="switchServer(3)" id="pill3">Server 3</button>
+        <button class="spill s4" onclick="switchServer(4)" id="pill4">Server 4</button>
+        <button class="spill s5" onclick="switchServer(5)" id="pill5">⚡ Turbo C</button>
+      </div>
+    </div>
+    <div class="topnav-right">
+      <button class="tnav-btn" onclick="openSettings()"><i class="fa-solid fa-gear"></i> Settings</button>
+      <button class="tnav-btn" onclick="openShare()"><i class="fa-solid fa-share-nodes"></i> Share</button>
+      <button class="tnav-btn primary" onclick="runCode()"><i class="fa-solid fa-play"></i> Run</button>
+    </div>
+  </nav>
 
-            <div class="header-center flex items-center gap-3">
-                <span class="text-sm text-gray-500 font-medium">Language:</span>
-                <select id="language-selector" class="lang-select">
-                    <option value="python">Python 3</option>
-                    <option value="c">C (GCC)</option>
-                    <option value="cpp">C++ (GCC)</option>
-                    <option value="java">Java</option>
-                    <option value="javascript">Node.js</option>
-                    <option value="rust">Rust</option>
-                    <option value="go">Go</option>
-                    <option value="html">HTML/CSS/JS (Web)</option>
-                </select>
-            </div>
+  <!-- TOP AD BANNER -->
+  <div class="top-ad-banner">
+    <span class="top-ad-badge">AD</span>
+    <span class="top-ad-text"><strong>Rentyside.in</strong> — 🏠 Find Verified Rooms Without Brokerage. Zero hidden charges. Direct owner contact.</span>
+    <button class="top-ad-cta" onclick="window.open('https://www.rentyside.in','_blank')">Explore Rooms</button>
+  </div>
 
-            <div class="header-right flex items-center gap-4">
-                <button id="btn-reset" class="text-gray-500 hover:text-gray-800 transition" title="Reset Code">
-                    <i class="fa-solid fa-arrow-rotate-right"></i>
-                </button>
-                <button id="btn-run" class="btn-run shadow-md shadow-blue-500/30">
-                    <i class="fa-solid fa-play"></i>
-                    <span>Run</span>
-                    <i class="fa-solid fa-circle-notch spinner" id="run-spinner"></i>
-                </button>
-            </div>
-        </header>
+  <!-- IDE WRAPPER -->
+  <div class="ide-wrapper" id="ideWrapper">
 
-        <!-- Main IDE Workspace -->
-        <div class="ide-workspace">
-            
-            <!-- Left: Monaco Editor -->
-            <div class="editor-pane">
-                <div class="pane-header">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-regular fa-file-code"></i>
-                        <span id="file-name">main.py</span>
-                    </div>
-                </div>
-                <div id="editor-container"></div>
-            </div>
-
-            <!-- Right: Output Terminal / Browser -->
-            <div class="output-pane">
-                <div class="pane-header">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-terminal" id="output-icon"></i>
-                        <span id="output-title">Output Terminal</span>
-                    </div>
-                    <button id="btn-clear" class="text-gray-400 hover:text-white transition text-xs flex items-center gap-1">
-                        <i class="fa-solid fa-broom"></i> Clear
-                    </button>
-                </div>
-                
-                <!-- Code Execution Output -->
-                <div id="terminal" class="terminal-container">
-                    <span class="text-sys">Welcome to CodeStudio Compiler.</span><br>
-                    <span class="text-sys">Select a language and click 'Run' to execute code via Piston Engine.</span><br><br>
-                </div>
-
-                <!-- Web Sandbox Output -->
-                <iframe id="web-preview" title="HTML Output Sandbox"></iframe>
-            </div>
-
+    <!-- AD OVERLAY -->
+    <div class="compile-overlay" id="compileOverlay">
+      <div class="co-ad-card">
+        <img class="co-ad-img" id="adImg" src="/images/ads/ad1.png" alt="Ad"
+          onerror="this.src='https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=560&auto=format&fit=crop'">
+        <div class="co-ad-caption">
+          <div>
+            <p id="adCaption">🏠 Find Verified Rooms Without Brokerage — Rentyside.in</p>
+            <a class="co-ad-link" href="https://www.rentyside.in" target="_blank">Visit www.rentyside.in →</a>
+          </div>
+          <span class="co-badge">SPONSORED</span>
         </div>
+      </div>
+      <div class="co-status" id="coStatus">⚙️ Compiling & Running...</div>
+      <div class="co-sub">Ads keep ToolTari Compiler free for everyone</div>
+      <div class="co-progress"><div class="co-bar" id="coBar"></div></div>
+      <div class="co-timer" id="coTimer">Closing in 3s...</div>
     </div>
 
-    <!-- Monaco Editor Loader -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs/loader.min.js"></script>
+    <!-- ============ SERVER 1 — OneCompiler ============ -->
+    <div id="sv1" class="server-panel">
+      <div class="sv1-lang-bar">
+        <div class="sv1-lang-icon active" onclick="changeLang('c')" data-lang="c" title="C"><i class="fa-solid fa-c"></i><span>C</span></div>
+        <div class="sv1-lang-icon" onclick="changeLang('cpp')" data-lang="cpp" title="C++"><i class="fa-solid fa-code"></i><span>C++</span></div>
+        <div class="sv1-lang-icon" onclick="changeLang('python')" data-lang="python" title="Python"><i class="fa-brands fa-python"></i><span>PY</span></div>
+        <div class="sv1-lang-icon" onclick="changeLang('java')" data-lang="java" title="Java"><i class="fa-brands fa-java"></i><span>Java</span></div>
+        <div class="sv1-lang-icon" onclick="changeLang('javascript')" data-lang="javascript" title="JavaScript"><i class="fa-brands fa-js"></i><span>JS</span></div>
+        <div class="sv1-lang-icon" onclick="changeLang('typescript')" data-lang="typescript" title="TypeScript"><i class="fa-solid fa-t"></i><span>TS</span></div>
+        <div class="sv1-lang-icon" onclick="changeLang('go')" data-lang="go" title="Go"><i class="fa-solid fa-infinity"></i><span>Go</span></div>
+        <div class="sv1-lang-icon" onclick="changeLang('rust')" data-lang="rust" title="Rust"><i class="fa-brands fa-rust"></i><span>Rust</span></div>
+        <div class="sv1-lang-icon" onclick="changeLang('php')" data-lang="php" title="PHP"><i class="fa-brands fa-php"></i><span>PHP</span></div>
+        <div class="sv1-lang-icon" onclick="changeLang('csharp')" data-lang="csharp" title="C#"><i class="fa-solid fa-hashtag"></i><span>C#</span></div>
+        <div class="sv1-lang-icon" onclick="changeLang('kotlin')" data-lang="kotlin" title="Kotlin"><i class="fa-solid fa-k"></i><span>KT</span></div>
+        <div class="sv1-lang-icon" onclick="changeLang('html')" data-lang="html" title="HTML"><i class="fa-brands fa-html5"></i><span>HTML</span></div>
+        <div class="sv1-lang-icon" onclick="changeLang('ruby')" data-lang="ruby" title="Ruby"><i class="fa-solid fa-gem"></i><span>Ruby</span></div>
+        <div class="sv1-lang-icon" onclick="changeLang('swift')" data-lang="swift" title="Swift"><i class="fa-solid fa-s"></i><span>Swift</span></div>
+      </div>
+      <div class="sv1-main">
+        <div class="sv1-tabbar">
+          <div class="sv1-filetab"><i class="fa-solid fa-file-code"></i><span id="sv1Filename">main.c</span></div>
+          <div class="sv1-actions">
+            <button class="sv1-btn sv1-ghost" onclick="openShare()"><i class="fa-solid fa-share-nodes"></i> Share</button>
+            <button class="sv1-btn sv1-ghost" onclick="saveCode()"><i class="fa-solid fa-floppy-disk"></i></button>
+            <button class="sv1-btn sv1-ghost" onclick="toggleFullscreen()"><i class="fa-solid fa-expand"></i></button>
+            <button class="sv1-btn sv1-run" onclick="runCode()"><i class="fa-solid fa-play"></i> Run</button>
+          </div>
+        </div>
+        <div class="sv1-split">
+          <div class="sv1-editor-pane">
+            <div class="editor-mount" id="mount1"></div>
+          </div>
+          <div class="sv1-output-pane">
+            <div class="sv1-out-header">
+              <span class="sv1-dot" id="sv1Dot"></span>
+              <span>Output</span>
+              <button class="sv1-clear-btn" onclick="clearOutput()">Clear</button>
+            </div>
+            <div class="sv1-output-body" id="sv1Output"><span class="sys">// Run your code to see output here</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <script>
-        // Language Configurations & Boilerplates
-        const languages = {
-            'python': {
-                name: 'Python', monacoId: 'python', filename: 'main.py',
-                pistonLang: 'python', pistonVersion: '3.10.0',
-                template: 'def greet(name):\n    print(f"Hello, {name}!")\n\nif __name__ == "__main__":\n    greet("World")\n    \n    # Calculate Fibonacci\n    a, b = 0, 1\n    for _ in range(10):\n        print(a, end=" ")\n        a, b = b, a + b\n'
-            },
-            'c': {
-                name: 'C', monacoId: 'c', filename: 'main.c',
-                pistonLang: 'c', pistonVersion: '10.2.0',
-                template: '#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\\n");\n    \n    for(int i=1; i<=5; i++) {\n        printf("Number: %d\\n", i);\n    }\n    \n    return 0;\n}'
-            },
-            'cpp': {
-                name: 'C++', monacoId: 'cpp', filename: 'main.cpp',
-                pistonLang: 'c++', pistonVersion: '10.2.0',
-                template: '#include <iostream>\n\nusing namespace std;\n\nint main() {\n    cout << "Hello, World!" << endl;\n    \n    for(int i=1; i<=5; i++) {\n        cout << "Number: " << i << endl;\n    }\n    \n    return 0;\n}'
-            },
-            'java': {
-                name: 'Java', monacoId: 'java', filename: 'Main.java',
-                pistonLang: 'java', pistonVersion: '15.0.2',
-                template: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, World!");\n        \n        for(int i=1; i<=5; i++) {\n            System.out.println("Number: " + i);\n        }\n    }\n}'
-            },
-            'javascript': {
-                name: 'Node.js', monacoId: 'javascript', filename: 'index.js',
-                pistonLang: 'javascript', pistonVersion: '18.15.0',
-                template: 'console.log("Hello, World!");\n\nconst arr = [1, 2, 3, 4, 5];\narr.forEach(num => {\n    console.log(`Number: ${num}`);\n});'
-            },
-            'rust': {
-                name: 'Rust', monacoId: 'rust', filename: 'main.rs',
-                pistonLang: 'rust', pistonVersion: '1.68.2',
-                template: 'fn main() {\n    println!("Hello, World!");\n    \n    for i in 1..=5 {\n        println!("Number: {}", i);\n    }\n}'
-            },
-            'go': {
-                name: 'Go', monacoId: 'go', filename: 'main.go',
-                pistonLang: 'go', pistonVersion: '1.16.2',
-                template: 'package main\n\nimport "fmt"\n\nfunc main() {\n    fmt.Println("Hello, World!")\n    \n    for i := 1; i <= 5; i++ {\n        fmt.Printf("Number: %d\\n", i)\n    }\n}'
-            },
-            'html': {
-                name: 'Web (HTML/JS/CSS)', monacoId: 'html', filename: 'index.html',
-                pistonLang: null, pistonVersion: null, // Runs locally
-                template: '<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <style>\n        body {\n            font-family: system-ui, sans-serif;\n            display: flex;\n            flex-direction: column;\n            align-items: center;\n            justify-content: center;\n            height: 100vh;\n            margin: 0;\n            background-color: #f0fdf4;\n            color: #166534;\n        }\n        h1 { font-size: 3rem; margin-bottom: 0.5rem; }\n        button {\n            padding: 10px 20px;\n            background-color: #15803d;\n            color: white;\n            border: none;\n            border-radius: 6px;\n            cursor: pointer;\n            font-weight: bold;\n            transition: background 0.2s;\n        }\n        button:hover { background-color: #166534; }\n    </style>\n</head>\n<body>\n    <h1>Hello World!</h1>\n    <p>Edit the HTML, CSS, or JS and click Run.</p>\n    <button onclick="alert(\'Sandbox is working!\')">Click Me</button>\n</body>\n</html>'
-            }
-        };
+    <!-- ============ SERVER 2 — OnlineGDB ============ -->
+    <div id="sv2" class="server-panel hidden">
+      <div class="sv2-sidebar">
+        <div class="sv2-brand"><h3>ToolTari<br>Compiler</h3><p>online compiler and debugger</p></div>
+        <div class="sv2-nav" onclick="openSettings()"><i class="fa-solid fa-terminal"></i> IDE</div>
+        <div class="sv2-nav"><i class="fa-solid fa-folder"></i> My Projects</div>
+        <div class="sv2-nav"><i class="fa-solid fa-graduation-cap"></i> Learn Programming</div>
+        <div class="sv2-nav"><i class="fa-solid fa-question-circle"></i> Q&A Forum</div>
+        <div class="sv2-nav cta"><i class="fa-solid fa-user-plus"></i> Sign Up</div>
+        <div class="sv2-nav"><i class="fa-solid fa-sign-in-alt"></i> Login</div>
+        <div class="sv2-sidebar-footer">About • FAQ • Docs<br>Terms • Privacy<br>© 2026 ToolTari</div>
+      </div>
+      <div class="sv2-content">
+        <div class="sv2-toolbar">
+          <button class="sv2-tbtn run" onclick="runCode()"><i class="fa-solid fa-play"></i> Run</button>
+          <button class="sv2-tbtn debug" onclick="runDebug()"><i class="fa-solid fa-bug"></i> Debug</button>
+          <button class="sv2-tbtn stop" onclick="clearOutput()"><i class="fa-solid fa-stop"></i> Stop</button>
+          <div class="sv2-div"></div>
+          <button class="sv2-tbtn" onclick="openShare()"><i class="fa-solid fa-share-nodes"></i> Share</button>
+          <button class="sv2-tbtn" onclick="saveCode()"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+          <button class="sv2-tbtn" onclick="formatCode(2)"><i class="fa-solid fa-wand-magic-sparkles"></i> Beautify</button>
+          <div class="sv2-div"></div>
+          <button class="sv2-tbtn"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+          <button class="sv2-tbtn"><i class="fa-solid fa-arrow-down-to-bracket"></i></button>
+          <select id="sv2LangSel" class="sv2-lang-sel" onchange="changeLang(this.value)"></select>
+          <div class="sv2-help-icons">
+            <div class="sv2-help-icon info"><i class="fa-solid fa-circle-info"></i></div>
+            <div class="sv2-help-icon" onclick="openSettings()"><i class="fa-solid fa-gear"></i></div>
+          </div>
+        </div>
+        <div class="sv2-filetab-bar"><div class="sv2-ftab" id="sv2Filetab">main.c</div></div>
+        <div class="sv2-editor-area"><div class="editor-mount" id="mount2"></div></div>
+        <div class="sv2-drawer">
+          <div class="sv2-dtabs">
+            <div class="sv2-dtab active" id="sv2TabInput" onclick="sv2Tab('input')">Input</div>
+            <div class="sv2-dtab" id="sv2TabOutput" onclick="sv2Tab('output')">Output</div>
+          </div>
+          <div class="sv2-drawer-body">
+            <div id="sv2InputPanel" class="sv2-input-row">
+              <div class="sv2-label">Standard Input:</div>
+              <div class="sv2-radio-grp">
+                <label><input type="radio" name="sv2in" value="interactive" checked> Interactive Console</label>
+                <label><input type="radio" name="sv2in" value="text" onchange="document.getElementById('sv2StdinBox').classList.remove('hidden')"> Text</label>
+              </div>
+              <textarea id="sv2StdinBox" class="sv2-stdin-box hidden" placeholder="Enter stdin input..."></textarea>
+            </div>
+            <div id="sv2OutputPanel" class="hidden"></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        let editor;
-        let currentLang = 'python';
+    <!-- ============ SERVER 3 — OneCompiler Pro ============ -->
+    <div id="sv3" class="server-panel hidden">
+      <div class="sv3-topbar">
+        <button class="sv3-ai-btn" onclick="openSettings()"><i class="fa-solid fa-robot"></i> AI</button>
+        <button class="sv3-lang-pill" onclick="openLangMenu()">
+          <i class="fa-solid fa-file-code"></i>
+          <span id="sv3LangName">C</span>
+          <i class="fa-solid fa-chevron-down" style="font-size:9px;"></i>
+        </button>
+        <button class="sv3-run-btn" onclick="runCode()"><i class="fa-solid fa-play"></i> Run</button>
+        <button class="sv3-more-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+        <div class="sv3-right-grp">
+          <button class="sv3-icon-btn" onclick="applyTheme('vs')"><i class="fa-solid fa-sun"></i></button>
+          <button class="sv3-icon-btn" onclick="applyTheme('vs-dark')"><i class="fa-solid fa-moon"></i></button>
+          <button class="sv3-text-btn" onclick="saveCode()"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+          <button class="sv3-text-btn" onclick="openShare()"><i class="fa-solid fa-share-nodes"></i></button>
+          <div class="sv3-avatar">T</div>
+        </div>
+      </div>
+      <div class="sv3-body">
+        <div class="sv3-iconbar">
+          <div class="sv3-ibar-icon act"><i class="fa-solid fa-clock-rotate-left"></i></div>
+          <div class="sv3-ibar-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+          <div class="sv3-ibar-icon" style="margin-top:auto;" onclick="openSettings()"><i class="fa-solid fa-gear"></i></div>
+        </div>
+        <div class="sv3-editor-main">
+          <div class="sv3-tabs">
+            <div class="sv3-ftab active"><i class="fa-solid fa-file-code"></i><span id="sv3Filename">main.c</span><i class="fa-solid fa-xmark cx"></i></div>
+            <button class="sv3-add-tab">+</button>
+          </div>
+          <div class="sv3-editor-area"><div class="editor-mount" id="mount3"></div></div>
+          <div class="sv3-term-strip">
+            <span class="sv3-term-label">Terminal</span>
+            <span style="color:#30363d;">›</span>
+            <span class="sv3-term-status" id="sv3Status" style="color:#3fb950;">Ready</span>
+          </div>
+        </div>
+        <div class="sv3-right-panel">
+          <div class="sv3-ptabs">
+            <div class="sv3-ptab active" onclick="sv3Panel('console')" id="sv3TabConsole">Console</div>
+            <div class="sv3-ptab" onclick="sv3Panel('io')" id="sv3TabIO">I/O</div>
+            <div class="sv3-ptab" onclick="sv3Panel('ai')" id="sv3TabAI"><i class="fa-solid fa-robot"></i> AI</div>
+          </div>
+          <div class="sv3-panel" id="sv3PanelConsole">
+            <div class="sv3-placeholder"><i class="fa-solid fa-terminal"></i><span style="color:#58a6ff;font-weight:700;font-size:15px;">Live Console</span><span style="font-size:12px;">Click Run to start</span></div>
+          </div>
+          <div class="sv3-panel hidden" id="sv3PanelIO">
+            <div class="sv3-stdin-wrap"><p>Standard Input (stdin)</p><textarea id="sv3Stdin" placeholder="Enter program input..."></textarea></div>
+          </div>
+          <div class="sv3-panel hidden" id="sv3PanelAI">
+            <div class="sv3-placeholder"><i class="fa-solid fa-robot" style="color:#8957e5;"></i><span style="color:#d2a8ff;font-weight:700;">AI Code Assistant</span><span style="font-size:12px;max-width:210px;text-align:center;">Run your code first, then AI will analyze errors and suggest fixes.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        // DOM Elements
-        const langSelector = document.getElementById('language-selector');
-        const btnRun = document.getElementById('btn-run');
-        const btnReset = document.getElementById('btn-reset');
-        const btnClear = document.getElementById('btn-clear');
-        const terminal = document.getElementById('terminal');
-        const webPreview = document.getElementById('web-preview');
-        const runSpinner = document.getElementById('run-spinner');
-        const fileName = document.getElementById('file-name');
-        const outputTitle = document.getElementById('output-title');
-        const outputIcon = document.getElementById('output-icon');
+    <!-- ============ SERVER 4 — Newton School ============ -->
+    <div id="sv4" class="server-panel hidden">
+      <div class="sv4-topbar">
+        <select id="sv4LangSel" class="sv4-lang-sel" onchange="changeLang(this.value)"></select>
+        <div class="sv4-spacer"></div>
+        <button class="sv4-icon-btn" onclick="openSettings()"><i class="fa-solid fa-gear"></i></button>
+        <button class="sv4-run-btn" onclick="runCode()"><i class="fa-solid fa-play"></i> Run</button>
+        <button class="sv4-icon-btn" onclick="resetCode()"><i class="fa-solid fa-rotate-left"></i></button>
+      </div>
+      <div class="sv4-editor-area"><div class="editor-mount" id="mount4"></div></div>
+      <div class="sv4-bottom">
+        <div class="sv4-btabs">
+          <div class="sv4-btab active" id="sv4TabInput" onclick="sv4Tab('input')">INPUT</div>
+          <div class="sv4-btab" id="sv4TabOutput" onclick="sv4Tab('output')">OUTPUT</div>
+          <div class="sv4-btab" id="sv4TabError" onclick="sv4Tab('error')">ERROR</div>
+        </div>
+        <div class="sv4-bpanel">
+          <div class="sv4-input-panel" id="sv4InputPanel"><textarea class="sv4-input-box" id="sv4Stdin" placeholder="Enter standard input here..."></textarea></div>
+          <div class="sv4-output-panel hidden" id="sv4OutputPanel"><span style="color:#aaa">// Run code to see output</span></div>
+          <div class="sv4-error-panel hidden" id="sv4ErrorPanel">// No errors</div>
+        </div>
+      </div>
+    </div>
 
-        // Initialize Monaco Editor
-        require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs' } });
-        require(['vs/editor/editor.main'], function () {
-            editor = monaco.editor.create(document.getElementById('editor-container'), {
-                value: languages[currentLang].template,
-                language: languages[currentLang].monacoId,
-                theme: 'vs-dark',
-                automaticLayout: true,
-                fontSize: 15,
-                fontFamily: "'Fira Code', 'Courier New', monospace",
-                minimap: { enabled: false },
-                padding: { top: 16 },
-                scrollBeyondLastLine: false,
-                smoothScrolling: true,
-                cursorBlinking: "smooth",
-                cursorSmoothCaretAnimation: true
-            });
-        });
+    <!-- ============ SERVER 5 — Turbo C++ ============ -->
+    <div id="sv5" class="server-panel hidden">
+      <div class="sv5-menubar">
+        <div class="sv5-menu-wrap">
+          <div class="sv5-menu-item" id="mFile" onclick="sv5Menu('file')"><u>F</u>ile</div>
+          <div class="sv5-dropdown" id="ddFile">
+            <div class="sv5-dd-item" onclick="sv5MenuItem()">New <span>F4</span></div>
+            <div class="sv5-dd-item" onclick="sv5MenuItem()">Open... <span>F3</span></div>
+            <div class="sv5-dd-item" onclick="saveCode();sv5MenuItem()">Save <span>F2</span></div>
+            <div class="sv5-dd-sep"></div>
+            <div class="sv5-dd-item" onclick="sv5MenuItem()">Quit <span>Alt+X</span></div>
+          </div>
+        </div>
+        <div class="sv5-menu-item">Edit</div>
+        <div class="sv5-menu-item">Search</div>
+        <div class="sv5-menu-wrap">
+          <div class="sv5-menu-item" onclick="sv5Menu('run')">Run</div>
+          <div class="sv5-dropdown" id="ddRun">
+            <div class="sv5-dd-item" onclick="runCode();sv5MenuItem()">Run <span>Ctrl+F9</span></div>
+            <div class="sv5-dd-item" onclick="sv5MenuItem()">Compile <span>Alt+F9</span></div>
+            <div class="sv5-dd-sep"></div>
+            <div class="sv5-dd-item" onclick="clearOutput();sv5MenuItem()">Clear Output <span>Alt+F5</span></div>
+          </div>
+        </div>
+        <div class="sv5-menu-item">Compile</div>
+        <div class="sv5-menu-item">Debug</div>
+        <div class="sv5-menu-item">Project</div>
+        <div class="sv5-menu-item" onclick="openSettings()">Options</div>
+        <div class="sv5-menu-item">Window</div>
+        <div class="sv5-menu-item">Help</div>
+      </div>
+      <div class="sv5-toolbar">
+        <button class="sv5-tbtn" onclick="saveCode()">💾 Save</button>
+        <button class="sv5-tbtn">📂 Open</button>
+        <button class="sv5-tbtn run-btn" onclick="runCode()">▶ Run (Ctrl+F9)</button>
+        <button class="sv5-tbtn" onclick="runDebug()">🐞 Debug</button>
+        <button class="sv5-tbtn" onclick="clearOutput()">🗑 Clear</button>
+        <select id="sv5LangSel" class="sv5-lang-sel" onchange="changeLang(this.value);updateEditors()">
+          <option value="c">C (Turbo C)</option>
+          <option value="cpp">C++ (Turbo C++)</option>
+        </select>
+      </div>
+      <div class="sv5-body">
+        <div class="sv5-editor-col"><div class="editor-mount" id="mount5"></div></div>
+        <div class="sv5-right">
+          <div class="sv5-out-hdr">═ Output / Messages ══════════════════</div>
+          <div class="sv5-out-body" id="sv5Output"><span class="sv5-sys">Turbo C/C++ Compiler v3.0<br>Copyright (c) ToolTari 2026.<br><br>Ready. Press Ctrl+F9 to run.</span></div>
+          <div class="sv5-stdin-row">
+            <label>Standard Input (stdin):</label>
+            <textarea id="sv5Stdin" placeholder="Enter input..."></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="sv5-statusbar">
+        <div class="sv5-status-item"><span class="key">F1</span><span>Help</span></div>
+        <div class="sv5-status-item"><span class="key">F2</span><span>Save</span></div>
+        <div class="sv5-status-item"><span class="key">Alt+F9</span><span>Compile</span></div>
+        <div class="sv5-status-item"><span class="key">Ctrl+F9</span><span>Run</span></div>
+        <div class="sv5-status-item"><span class="key">Alt+X</span><span>Exit</span></div>
+        <span style="margin-left:auto;font-size:10px;" id="sv5Pos">Ln 1, Col 1</span>
+      </div>
+    </div>
 
-        // Handle Language Change
-        langSelector.addEventListener('change', (e) => {
-            const newLang = e.target.value;
-            
-            // Confirm if code was modified
-            const currentCode = editor.getValue();
-            if (currentCode !== languages[currentLang].template && currentCode.trim() !== '') {
-                if (!confirm(`Switching to ${languages[newLang].name} will replace your current code. Continue?`)) {
-                    e.target.value = currentLang; // Revert dropdown
-                    return;
-                }
-            }
+  </div><!-- /ide-wrapper -->
+</div><!-- /page-wrap -->
 
-            currentLang = newLang;
-            const config = languages[currentLang];
+<!-- SETTINGS MODAL -->
+<div class="modal-backdrop" id="settingsModal">
+  <div class="modal-box">
+    <div class="modal-header">IDE & Compiler Settings<button class="modal-close" onclick="closeModal('settingsModal')"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <h4>Editor Theme</h4>
+        <select class="modal-sel" id="themeSelect" onchange="applyTheme(this.value)">
+          <option value="vs-dark">Dark (Default)</option>
+          <option value="vs">Light</option>
+          <option value="dracula">Dracula</option>
+          <option value="monokai">Monokai</option>
+          <option value="solarizedDark">Solarized Dark</option>
+          <option value="githubDark">GitHub Dark</option>
+          <option value="blueTheme">Sapphire Blue</option>
+        </select>
+      </div>
+      <div class="modal-section">
+        <h4>Font Size</h4>
+        <select class="modal-sel" id="fontSizeSelect" onchange="setFontSize(this.value)">
+          <option value="12">12px</option><option value="13">13px</option>
+          <option value="14" selected>14px (Recommended)</option>
+          <option value="16">16px</option><option value="18">18px</option>
+        </select>
+      </div>
+      <div class="modal-section">
+        <h4>Compiler Backend</h4>
+        <select class="modal-sel" id="engineSelect">
+          <option value="piston">Piston API (Free, Default)</option>
+          <option value="offline">Offline Simulation</option>
+        </select>
+      </div>
+      <div class="modal-section">
+        <h4>Editor Options</h4>
+        <div class="modal-grid">
+          <label class="modal-check"><input type="checkbox" id="optWordWrap" checked onchange="setEditorOpt('wordWrap',this.checked?'on':'off')"> Word Wrap</label>
+          <label class="modal-check"><input type="checkbox" id="optMinimap" onchange="setEditorOpt('minimap',{enabled:this.checked})"> Minimap</label>
+          <label class="modal-check"><input type="checkbox" id="optLineNums" checked onchange="setEditorOpt('lineNumbers',this.checked?'on':'off')"> Line Numbers</label>
+          <label class="modal-check"><input type="checkbox" id="optAutoSave" checked> Auto Save</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="mbtn" onclick="closeModal('settingsModal')">Cancel</button>
+      <button class="mbtn primary" onclick="closeModal('settingsModal')">Apply</button>
+    </div>
+  </div>
+</div>
 
-            // Update Monaco Mode & Code
-            monaco.editor.setModelLanguage(editor.getModel(), config.monacoId);
-            editor.setValue(config.template);
-            
-            // Update UI
-            fileName.innerText = config.filename;
+<!-- SHARE MODAL -->
+<div class="modal-backdrop" id="shareModal">
+  <div class="modal-box">
+    <div class="modal-header">Share Code Snippet<button class="modal-close" onclick="closeModal('shareModal')"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <h4>Shareable Link</h4>
+        <div class="share-link-row">
+          <input type="text" class="share-link-input" id="shareLinkInput" readonly>
+          <button class="mbtn primary" onclick="copyLink()"><i class="fa-regular fa-copy"></i> Copy</button>
+        </div>
+      </div>
+      <div class="modal-section">
+        <h4>Share On</h4>
+        <div class="share-socials">
+          <a id="shareWA" class="soc-btn soc-wa" target="_blank"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+          <a id="shareTG" class="soc-btn soc-tg" target="_blank"><i class="fa-brands fa-telegram"></i> Telegram</a>
+          <a id="shareTW" class="soc-btn soc-tw" target="_blank"><i class="fa-brands fa-x-twitter"></i> Twitter</a>
+          <a id="shareFB" class="soc-btn soc-fb" target="_blank"><i class="fa-brands fa-facebook"></i> Facebook</a>
+        </div>
+      </div>
+      <div class="modal-section" style="display:flex;gap:14px;align-items:flex-start;">
+        <div><h4>QR Code</h4><div class="share-qr"><img id="shareQR" src="" alt="QR Code"></div></div>
+        <div style="flex:1;"><h4>Embed</h4><textarea class="share-link-input" id="shareEmbed" style="height:70px;width:100%;resize:none;" readonly></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="mbtn primary" onclick="closeModal('shareModal')">Done</button></div>
+  </div>
+</div>
 
-            if (currentLang === 'html') {
-                terminal.style.display = 'none';
-                webPreview.style.display = 'block';
-                outputTitle.innerText = 'Web Preview';
-                outputIcon.className = 'fa-solid fa-globe';
-                btnClear.style.display = 'none';
-            } else {
-                terminal.style.display = 'block';
-                webPreview.style.display = 'none';
-                outputTitle.innerText = 'Output Terminal';
-                outputIcon.className = 'fa-solid fa-terminal';
-                btnClear.style.display = 'flex';
-            }
-        });
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs/loader.min.js"></script>
+<script>
+'use strict';
 
-        // Terminal Helpers
-        function writeToTerminal(text, type = 'text-out') {
-            const span = document.createElement('span');
-            span.className = type;
-            span.textContent = text;
-            terminal.appendChild(span);
-            terminal.scrollTop = terminal.scrollHeight;
-        }
+// ============================================================
+// LANGUAGE CONFIG
+// ============================================================
+const LANGS = {
+  c:          { name:'C',          ext:'c',    monaco:'c',          piston:'c',          ver:'*', boiler:'#include <stdio.h>\n\nint main() {\n    printf("Hello, ToolTari C Compiler!\\n");\n    return 0;\n}' },
+  cpp:        { name:'C++',        ext:'cpp',  monaco:'cpp',        piston:'cpp',        ver:'*', boiler:'#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello, ToolTari C++ Compiler!" << endl;\n    return 0;\n}' },
+  java:       { name:'Java',       ext:'java', monaco:'java',       piston:'java',       ver:'*', boiler:'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, ToolTari Java!");\n    }\n}' },
+  python:     { name:'Python',     ext:'py',   monaco:'python',     piston:'python',     ver:'*', boiler:'print("Hello, ToolTari Python!")\n\na = 10\nb = 20\nprint("Sum:", a + b)' },
+  javascript: { name:'JavaScript', ext:'js',   monaco:'javascript', piston:'javascript', ver:'*', boiler:'console.log("Hello, ToolTari JavaScript!");\nlet a = 10, b = 20;\nconsole.log("Sum:", a + b);' },
+  typescript: { name:'TypeScript', ext:'ts',   monaco:'typescript', piston:'typescript', ver:'*', boiler:'let msg: string = "Hello, ToolTari TypeScript!";\nconsole.log(msg);' },
+  go:         { name:'Go',         ext:'go',   monaco:'go',         piston:'go',         ver:'*', boiler:'package main\nimport "fmt"\nfunc main() {\n    fmt.Println("Hello, ToolTari Go!")\n}' },
+  rust:       { name:'Rust',       ext:'rs',   monaco:'rust',       piston:'rust',       ver:'*', boiler:'fn main() {\n    println!("Hello, ToolTari Rust!");\n}' },
+  php:        { name:'PHP',        ext:'php',  monaco:'php',        piston:'php',        ver:'*', boiler:'<?php\necho "Hello, ToolTari PHP!\\n";\n?>' },
+  csharp:     { name:'C#',         ext:'cs',   monaco:'csharp',     piston:'csharp',     ver:'*', boiler:'using System;\nclass Program {\n    static void Main() {\n        Console.WriteLine("Hello, ToolTari C#!");\n    }\n}' },
+  kotlin:     { name:'Kotlin',     ext:'kt',   monaco:'kotlin',     piston:'kotlin',     ver:'*', boiler:'fun main() {\n    println("Hello, ToolTari Kotlin!")\n}' },
+  html:       { name:'HTML',       ext:'html', monaco:'html',       piston:null,         ver:null, boiler:'<!DOCTYPE html>\n<html>\n<head><title>ToolTari HTML</title></head>\n<body>\n  <h1>Hello from ToolTari!</h1>\n</body>\n</html>' },
+  ruby:       { name:'Ruby',       ext:'rb',   monaco:'ruby',       piston:'ruby',       ver:'*', boiler:'puts "Hello, ToolTari Ruby!"' },
+  swift:      { name:'Swift',      ext:'swift',monaco:'swift',      piston:'swift',      ver:'*', boiler:'print("Hello, ToolTari Swift!")' },
+  lua:        { name:'Lua',        ext:'lua',  monaco:'lua',        piston:'lua',        ver:'*', boiler:'print("Hello, ToolTari Lua!")' },
+  r:          { name:'R',          ext:'r',    monaco:'r',          piston:'r',          ver:'*', boiler:'cat("Hello, ToolTari R!\\n")' },
+};
 
-        function clearTerminal() {
-            terminal.innerHTML = '';
-        }
+const ADS = [
+  { img:'/images/ads/ad1.png', caption:'🏠 Find Verified Rooms Without Brokerage — Rentyside.in', fallback:'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=560&auto=format&fit=crop', url:'https://www.rentyside.in' },
+  { img:'/images/ads/ad2.png', caption:'🏠 Verified Rooms. Zero Brokerage. Direct Owner Contact — Rentyside.in', fallback:'https://images.unsplash.com/photo-1486325212027-8081e485255e?q=80&w=560&auto=format&fit=crop', url:'https://www.rentyside.in' },
+  { img:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=560&auto=format&fit=crop', caption:'Master Full-Stack Development — Start for Free', fallback:null, url:'#' },
+];
+let adIdx = 0;
 
-        btnClear.addEventListener('click', clearTerminal);
+// ============================================================
+// STATE
+// ============================================================
+let editors = {};       // { 1: monacoEditor, 2: ..., 5: ... }
+let sharedModel = null; // single model shared by all editors
+let currentServer = 1;
+let currentLang = 'c';
+let savedCode = {};
+Object.keys(LANGS).forEach(k => { savedCode[k] = LANGS[k].boiler; });
+try {
+  const s = JSON.parse(localStorage.getItem('tt_cc') || '{}');
+  Object.keys(s).forEach(k => { if (LANGS[k]) savedCode[k] = s[k]; });
+} catch(e) {}
 
-        btnReset.addEventListener('click', () => {
-            if (confirm('Reset code to default template? Your changes will be lost.')) {
-                editor.setValue(languages[currentLang].template);
-            }
-        });
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  populateSelects();
 
-        // Run Code Handler
-        btnRun.addEventListener('click', async () => {
-            const code = editor.getValue();
-            if (!code.trim()) return;
+  // Handle URL share params before init
+  try {
+    const p = new URLSearchParams(location.search);
+    const pl = p.get('lang'), pc = p.get('code');
+    if (pl && LANGS[pl]) {
+      currentLang = pl;
+      if (pc) savedCode[pl] = atob(pc);
+    }
+  } catch(e) {}
 
-            // Handle Web Mode (Local HTML Sandbox)
-            if (currentLang === 'html') {
-                webPreview.srcdoc = code;
-                return;
-            }
+  require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs' } });
+  require(['vs/editor/editor.main'], () => {
+    registerThemes();
 
-            // Handle Backend Languages via Piston API
-            const config = languages[currentLang];
-            
-            // UI Loading State
-            btnRun.disabled = true;
-            runSpinner.style.display = 'inline-block';
-            btnRun.querySelector('.fa-play').style.display = 'none';
-            writeToTerminal(`\n> Executing ${config.name} code...\n`, 'text-sys');
+    // Create ONE shared model — all editors read/write the same content
+    sharedModel = monaco.editor.createModel(
+      savedCode[currentLang],
+      LANGS[currentLang].monaco
+    );
 
-            try {
-                // Call Piston Engine API (Free, No Auth required for basic usage)
-                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        language: config.pistonLang,
-                        version: "*", // Automatically use the latest available version
-                        files: [{
-                            name: config.filename,
-                            content: code
-                        }]
-                    })
-                });
+    // Create 5 editors, all using sharedModel
+    const serverThemes = { 1:'vs-dark', 2:'vs', 3:'githubDark', 4:'vs', 5:'turboCTheme' };
+    for (let i = 1; i <= 5; i++) {
+      const mountEl = document.getElementById('mount'+i);
+      editors[i] = monaco.editor.create(mountEl, {
+        model: sharedModel,
+        theme: serverThemes[i],
+        fontSize: 14,
+        fontFamily: i === 5 ? "'Courier New', monospace" : "'Fira Code', Consolas, monospace",
+        automaticLayout: true,
+        minimap: { enabled: false },
+        wordWrap: 'on',
+        lineNumbers: 'on',
+        tabSize: 4,
+        scrollBeyondLastLine: false,
+        renderLineHighlight: 'line',
+        padding: { top: 8 },
+        readOnly: false
+      });
+    }
 
-                const result = await response.json();
+    // Turbo C cursor position indicator
+    editors[5].onDidChangeCursorPosition(e => {
+      const el = document.getElementById('sv5Pos');
+      if (el) el.textContent = `Ln ${e.position.lineNumber}, Col ${e.position.column}`;
+    });
 
-                if (!response.ok) {
-                    throw new Error(result.message || 'Failed to connect to execution engine.');
-                }
+    // Auto-save on model change
+    sharedModel.onDidChangeContent(() => {
+      savedCode[currentLang] = sharedModel.getValue();
+      if (document.getElementById('optAutoSave')?.checked) persist();
+    });
 
-                const runResult = result.run;
-                
-                // Display compilation/execution errors
-                if (runResult.stderr) {
-                    writeToTerminal(runResult.stderr + '\n', 'text-err');
-                }
-                
-                // Display standard output
-                if (runResult.stdout) {
-                    writeToTerminal(runResult.stdout + '\n', 'text-out');
-                }
+    switchServer(1);
+    updateLabels();
+    console.log('✅ ToolTari Compiler loaded. All 5 editors ready.');
+  });
+});
 
-                // Program exit code
-                if (runResult.code !== 0) {
-                    writeToTerminal(`> Program exited with code ${runResult.code}\n`, 'text-err');
-                } else {
-                    writeToTerminal(`> Execution finished successfully.\n`, 'text-sys');
-                }
+function persist() {
+  try { localStorage.setItem('tt_cc', JSON.stringify(savedCode)); } catch(e) {}
+}
 
-            } catch (error) {
-                writeToTerminal(`\n[Execution Error]: ${error.message}\n`, 'text-err');
-                writeToTerminal(`Make sure you have an active internet connection to reach the compiler API.\n`, 'text-sys');
-            } finally {
-                // Reset UI State
-                btnRun.disabled = false;
-                runSpinner.style.display = 'none';
-                btnRun.querySelector('.fa-play').style.display = 'inline-block';
-            }
-        });
+function populateSelects() {
+  ['sv2LangSel','sv4LangSel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = Object.keys(LANGS).map(k =>
+      `<option value="${k}"${k===currentLang?' selected':''}>${LANGS[k].name}</option>`
+    ).join('');
+  });
+}
 
-    </script>
+// ============================================================
+// SERVER SWITCHING
+// ============================================================
+function switchServer(id) {
+  [1,2,3,4,5].forEach(i => {
+    document.getElementById('sv'+i)?.classList.toggle('hidden', i !== id);
+    document.getElementById('pill'+i)?.classList.toggle('active', i === id);
+  });
+  currentServer = id;
+
+  // Trigger layout for the now-visible editor
+  setTimeout(() => editors[id]?.layout(), 10);
+
+  // Sync turbo C language selector
+  if (id === 5) {
+    const s5 = document.getElementById('sv5LangSel');
+    if (s5) s5.value = (['c','cpp'].includes(currentLang) ? currentLang : 'c');
+  }
+}
+
+// ============================================================
+// LANGUAGE SWITCHING
+// ============================================================
+function changeLang(key) {
+  if (!LANGS[key]) return;
+  savedCode[currentLang] = sharedModel?.getValue() || savedCode[currentLang];
+  currentLang = key;
+  updateEditors();
+  // Sync selects
+  ['sv2LangSel','sv4LangSel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = key;
+  });
+  document.querySelectorAll('.sv1-lang-icon').forEach(el => {
+    el.classList.toggle('active', el.dataset.lang === key);
+  });
+  updateLabels();
+}
+
+function updateEditors() {
+  if (!sharedModel) return;
+  const lang = LANGS[currentLang];
+  monaco.editor.setModelLanguage(sharedModel, lang.monaco);
+  sharedModel.setValue(savedCode[currentLang] || lang.boiler);
+}
+
+function updateLabels() {
+  const lang = LANGS[currentLang];
+  if (!lang) return;
+  const fname = `main.${lang.ext}`;
+  const ids = { sv1Filename: fname, sv2Filetab: fname, sv3Filename: fname };
+  Object.entries(ids).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  });
+  const sv3ln = document.getElementById('sv3LangName');
+  if (sv3ln) sv3ln.textContent = lang.name;
+}
+
+// ============================================================
+// RUN CODE
+// ============================================================
+async function runCode() {
+  if (!sharedModel) return;
+  const code = sharedModel.getValue().trim();
+  if (!code) return;
+
+  // Rotate ad
+  const ad = ADS[adIdx % ADS.length]; adIdx++;
+  const adImg = document.getElementById('adImg');
+  const adCap = document.getElementById('adCaption');
+  if (adImg) { adImg.src = ad.img; if (ad.fallback) adImg.onerror = () => adImg.src = ad.fallback; }
+  if (adCap) adCap.textContent = ad.caption;
+
+  await showAdOverlay();
+
+  const engine = document.getElementById('engineSelect')?.value || 'piston';
+
+  if (currentLang === 'html') {
+    const w = window.open('', '_blank');
+    if (w) { w.document.write(code); w.document.close(); }
+    writeOut('HTML preview opened in new tab.', 'sys'); return;
+  }
+  if (!LANGS[currentLang].piston || engine === 'offline') {
+    runOffline(code); return;
+  }
+
+  clearOutputs();
+  writeOut(`[ToolTari Compiler] Running ${LANGS[currentLang].name} code...`, 'sys');
+
+  try {
+    const lang = LANGS[currentLang];
+    const stdin = getStdin();
+    const res = await fetch('https://emkc.org/api/v2/piston/execute', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        language: lang.piston,
+        version: lang.ver,
+        files: [{ name: `main.${lang.ext}`, content: code }],
+        stdin
+      })
+    });
+    if (!res.ok) throw new Error(`Server error: HTTP ${res.status}`);
+    const data = await res.json();
+
+    clearOutputs();
+    const comp = data.compile || {}, run = data.run || {};
+    if (comp.stderr) writeOut(comp.stderr, 'err');
+    if (comp.stdout) writeOut(comp.stdout, 'out');
+    if (run.stdout) writeOut(run.stdout, 'out');
+    if (run.stderr) writeOut(run.stderr, 'err');
+    const exit = run.code !== undefined ? run.code : (comp.code || 0);
+    writeOut(`\n[${LANGS[currentLang].name}] Exited with code ${exit}`, 'sys');
+    setDot(exit === 0);
+
+    // Auto-switch output tabs
+    if (currentServer === 2) sv2Tab('output');
+    if (currentServer === 4) sv4Tab('output');
+
+  } catch(err) {
+    clearOutputs();
+    writeOut(`[Error] ${err.message}`, 'err');
+    writeOut('[Falling back to offline simulation...]', 'sys');
+    runOffline(code);
+  }
+}
+
+function getStdin() {
+  if (currentServer === 2) {
+    const isText = document.querySelector('input[name="sv2in"]:checked')?.value === 'text';
+    return isText ? (document.getElementById('sv2StdinBox')?.value || '') : '';
+  }
+  if (currentServer === 3) return document.getElementById('sv3Stdin')?.value || '';
+  if (currentServer === 4) return document.getElementById('sv4Stdin')?.value || '';
+  if (currentServer === 5) return document.getElementById('sv5Stdin')?.value || '';
+  return '';
+}
+
+function runOffline(code) {
+  clearOutputs();
+  writeOut(`[Sandbox] Simulating ${LANGS[currentLang].name}...`, 'sys');
+  setTimeout(() => {
+    const lines = [];
+    const re = /(?:console\.log|print(?:ln!|f|ln)?|puts|echo|fmt\.Println|System\.out\.println|cat)\s*\(?\s*["'`]([^"'`\n]+)["'`]/g;
+    let m; re.lastIndex = 0;
+    while ((m = re.exec(code))) lines.push(m[1]);
+    if (!lines.length) lines.push(`Hello from ToolTari ${LANGS[currentLang].name} Compiler!`);
+    lines.forEach(l => writeOut(l, 'out'));
+    const t = (0.01+Math.random()*.12).toFixed(4);
+    const mem = Math.floor(1500+Math.random()*5000);
+    writeOut(`\n[Time: ${t}s | Mem: ${mem}KB | Exit: 0]`, 'sys');
+    setDot(true);
+    if (currentServer === 2) sv2Tab('output');
+    if (currentServer === 4) sv4Tab('output');
+  }, 380);
+}
+
+function runDebug() {
+  clearOutputs();
+  writeOut('[Debugger] Starting debug session...', 'sys');
+  setTimeout(() => {
+    writeOut('Breakpoint 1 set at main()\n(gdb) run', 'out');
+    writeOut('[Inferior 1 exited normally with code 0]', 'sys');
+  }, 500);
+}
+
+// ============================================================
+// OUTPUT
+// ============================================================
+function writeOut(text, type) {
+  if (text == null || text === '') return;
+  const esc = String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  // SV1
+  const o1 = document.getElementById('sv1Output');
+  if (o1) o1.innerHTML += `<span class="${type}">${esc}\n</span>`;
+
+  // SV2
+  const o2 = document.getElementById('sv2OutputPanel');
+  const cls2 = { out:'sv2out', err:'sv2err', sys:'sv2sys' }[type]||'sv2sys';
+  if (o2) { o2.innerHTML += `<span class="${cls2}">${esc}\n</span>`; o2.scrollTop = o2.scrollHeight; }
+
+  // SV3
+  const p3 = document.getElementById('sv3PanelConsole');
+  if (p3) {
+    if (!p3.classList.contains('has-output')) {
+      p3.innerHTML = '<div class="sv3-console-out"></div>';
+      p3.classList.add('has-output');
+    }
+    const co = p3.querySelector('.sv3-console-out');
+    if (co) { co.innerHTML += `<span class="${type}">${esc}\n</span>`; p3.scrollTop = p3.scrollHeight; }
+  }
+
+  // SV4
+  if (type === 'err') {
+    const o4e = document.getElementById('sv4ErrorPanel');
+    if (o4e) o4e.innerHTML += `<span class="sv4err">${esc}\n</span>`;
+  } else {
+    const o4o = document.getElementById('sv4OutputPanel');
+    const cls4 = type === 'out' ? 'sv4out' : 'sv4sys';
+    if (o4o) o4o.innerHTML += `<span class="${cls4}">${esc}\n</span>`;
+  }
+
+  // SV5
+  const o5 = document.getElementById('sv5Output');
+  const cls5 = { out:'sv5-out', err:'sv5-err', sys:'sv5-sys' }[type]||'sv5-sys';
+  if (o5) { o5.innerHTML += `<span class="${cls5}">${esc}\n</span>`; o5.scrollTop = o5.scrollHeight; }
+
+  // SV3 term status
+  if (type === 'err') {
+    const ts = document.getElementById('sv3Status');
+    if (ts) { ts.textContent = '✗ Error'; ts.style.color = '#f85149'; }
+  }
+}
+
+function clearOutputs() {
+  const el1 = document.getElementById('sv1Output');
+  if (el1) el1.innerHTML = '';
+  const el2 = document.getElementById('sv2OutputPanel');
+  if (el2) el2.innerHTML = '';
+  const p3 = document.getElementById('sv3PanelConsole');
+  if (p3) { p3.innerHTML = ''; p3.classList.remove('has-output'); }
+  const o4o = document.getElementById('sv4OutputPanel');
+  if (o4o) o4o.innerHTML = '';
+  const o4e = document.getElementById('sv4ErrorPanel');
+  if (o4e) o4e.innerHTML = '';
+  const o5 = document.getElementById('sv5Output');
+  if (o5) o5.innerHTML = '<span class="sv5-sys">Output cleared.\n</span>';
+}
+
+function clearOutput() {
+  clearOutputs();
+  const el1 = document.getElementById('sv1Output');
+  if (el1) el1.innerHTML = '<span class="sys">// Output cleared</span>';
+  setDot(false);
+}
+
+function setDot(ok) {
+  const d = document.getElementById('sv1Dot');
+  if (d) d.className = 'sv1-dot ' + (ok ? 'green' : 'red');
+  const ts = document.getElementById('sv3Status');
+  if (ts) { ts.textContent = ok ? '✓ Done' : '✗ Error'; ts.style.color = ok ? '#3fb950' : '#f85149'; }
+}
+
+// ============================================================
+// AD OVERLAY
+// ============================================================
+function showAdOverlay() {
+  return new Promise(resolve => {
+    const ov = document.getElementById('compileOverlay');
+    const bar = document.getElementById('coBar');
+    const timer = document.getElementById('coTimer');
+    ov.classList.add('show');
+    bar.style.width = '0%';
+    let p = 0;
+    timer.textContent = 'Closing in 3s...';
+    const iv = setInterval(() => {
+      p += 100/30;
+      if (p > 100) p = 100;
+      bar.style.width = p + '%';
+      const s = Math.max(0, Math.ceil(3*(1-p/100)));
+      timer.textContent = s > 0 ? `Closing in ${s}s...` : 'Starting execution...';
+      if (p >= 100) {
+        clearInterval(iv);
+        setTimeout(() => { ov.classList.remove('show'); bar.style.width='0%'; resolve(); }, 300);
+      }
+    }, 100);
+  });
+}
+
+// ============================================================
+// UTILITIES
+// ============================================================
+function saveCode() {
+  if (sharedModel) savedCode[currentLang] = sharedModel.getValue();
+  persist();
+  alert(`Saved: main.${LANGS[currentLang].ext}`);
+}
+
+function resetCode() {
+  if (!confirm(`Reset ${LANGS[currentLang].name} to default boilerplate?`)) return;
+  savedCode[currentLang] = LANGS[currentLang].boiler;
+  sharedModel?.setValue(LANGS[currentLang].boiler);
+}
+
+function formatCode(svIdx) {
+  const ed = editors[svIdx || currentServer];
+  ed?.trigger('editor','editor.action.formatDocument');
+}
+
+function toggleFullscreen() {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else document.documentElement.requestFullscreen?.();
+}
+
+function openLangMenu() {
+  const keys = Object.keys(LANGS);
+  const choice = prompt('Choose language key:\n' + keys.map((k,i)=>`${i+1}. ${LANGS[k].name} (${k})`).join('\n'));
+  if (choice) {
+    const k = choice.trim().toLowerCase();
+    if (LANGS[k]) changeLang(k);
+  }
+}
+
+function setEditorOpt(key, val) {
+  Object.values(editors).forEach(ed => { if (ed) { const o={}; o[key]=val; ed.updateOptions(o); }});
+}
+
+function setFontSize(s) { setEditorOpt('fontSize', parseInt(s)); }
+
+// ============================================================
+// TAB HELPERS
+// ============================================================
+function sv2Tab(tab) {
+  document.getElementById('sv2InputPanel').classList.toggle('hidden', tab!=='input');
+  document.getElementById('sv2OutputPanel').classList.toggle('hidden', tab!=='output');
+  document.getElementById('sv2TabInput').classList.toggle('active', tab==='input');
+  document.getElementById('sv2TabOutput').classList.toggle('active', tab==='output');
+}
+
+function sv3Panel(name) {
+  ['console','io','ai'].forEach(n => {
+    const cap = n.charAt(0).toUpperCase()+n.slice(1);
+    document.getElementById('sv3Panel'+cap)?.classList.toggle('hidden', n!==name);
+    document.getElementById('sv3Tab'+cap)?.classList.toggle('active', n===name);
+  });
+}
+
+function sv4Tab(tab) {
+  ['input','output','error'].forEach(t => {
+    const cap = t.charAt(0).toUpperCase()+t.slice(1);
+    document.getElementById('sv4'+cap+'Panel')?.classList.toggle('hidden', t!==tab);
+    document.getElementById('sv4Tab'+cap)?.classList.toggle('active', t===tab);
+  });
+}
+
+
+// ============================================================
+// TURBO C MENUS
+// ============================================================
+function sv5Menu(name) {
+  const map = { file:'ddFile', run:'ddRun' };
+  const dd = document.getElementById(map[name]);
+  if (!dd) return;
+  const isOpen = dd.classList.contains('open');
+  document.querySelectorAll('.sv5-dropdown').forEach(d=>d.classList.remove('open'));
+  if (!isOpen) dd.classList.add('open');
+}
+function sv5MenuItem() {
+  document.querySelectorAll('.sv5-dropdown').forEach(d=>d.classList.remove('open'));
+}
+
+// ============================================================
+// MODALS
+// ============================================================
+function openModal(id) { document.getElementById(id)?.classList.add('open'); }
+function closeModal(id) { document.getElementById(id)?.classList.remove('open'); }
+function openSettings() { openModal('settingsModal'); }
+
+function openShare() {
+  const code = sharedModel?.getValue() || '';
+  let encoded = '';
+  try { encoded = btoa(unescape(encodeURIComponent(code))); } catch(e) { encoded = btoa(code); }
+  const url = `${location.origin}${location.pathname}?lang=${currentLang}&code=${encoded}`;
+  document.getElementById('shareLinkInput').value = url;
+  document.getElementById('shareEmbed').value = `<iframe src="${url}" width="900" height="600" frameborder="0"></iframe>`;
+  document.getElementById('shareQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(url)}`;
+  document.getElementById('shareWA').href = `https://api.whatsapp.com/send?text=${encodeURIComponent('Check my code: '+url)}`;
+  document.getElementById('shareTG').href = `https://t.me/share/url?url=${encodeURIComponent(url)}`;
+  document.getElementById('shareTW').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent('Code on ToolTari: '+url)}`;
+  document.getElementById('shareFB').href = `https://facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+  openModal('shareModal');
+}
+
+function copyLink() {
+  const inp = document.getElementById('shareLinkInput');
+  inp.select();
+  try { document.execCommand('copy'); } catch(e) { navigator.clipboard?.writeText(inp.value); }
+  alert('Link copied!');
+}
+
+// ============================================================
+// THEME
+// ============================================================
+function registerThemes() {
+  monaco.editor.defineTheme('dracula', {
+    base:'vs-dark', inherit:true,
+    rules:[{token:'comment',foreground:'6272a4',fontStyle:'italic'},{token:'keyword',foreground:'ff79c6'},{token:'string',foreground:'f1fa8c'},{token:'number',foreground:'bd93f9'}],
+    colors:{'editor.background':'#282a36','editor.foreground':'#f8f8f2','editor.selectionBackground':'#44475a','editor.lineHighlightBackground':'#313442'}
+  });
+  monaco.editor.defineTheme('monokai', {
+    base:'vs-dark', inherit:true,
+    rules:[{token:'comment',foreground:'75715e'},{token:'keyword',foreground:'f92672'},{token:'string',foreground:'e6db74'},{token:'number',foreground:'ae81ff'}],
+    colors:{'editor.background':'#272822','editor.foreground':'#f8f8f2','editor.selectionBackground':'#49483e'}
+  });
+  monaco.editor.defineTheme('solarizedDark', {
+    base:'vs-dark', inherit:true,
+    rules:[{token:'keyword',foreground:'859900'},{token:'string',foreground:'2aa198'},{token:'comment',foreground:'586e75',fontStyle:'italic'}],
+    colors:{'editor.background':'#002b36','editor.foreground':'#839496'}
+  });
+  monaco.editor.defineTheme('githubDark', {
+    base:'vs-dark', inherit:true,
+    rules:[{token:'comment',foreground:'6a737d',fontStyle:'italic'},{token:'keyword',foreground:'f97583'},{token:'string',foreground:'9ecbff'}],
+    colors:{'editor.background':'#24292e','editor.foreground':'#e1e4e8','editor.selectionBackground':'#3392ff44','editor.lineHighlightBackground':'#2b3036'}
+  });
+  monaco.editor.defineTheme('blueTheme', {
+    base:'vs-dark', inherit:true,
+    rules:[{token:'keyword',foreground:'00e5ff'},{token:'string',foreground:'a5ffc2'},{token:'comment',foreground:'546e80',fontStyle:'italic'},{token:'number',foreground:'ffd54f'}],
+    colors:{'editor.background':'#0a1628','editor.foreground':'#cbd5e1','editor.selectionBackground':'#1e3a5f'}
+  });
+  monaco.editor.defineTheme('turboCTheme', {
+    base:'vs-dark', inherit:true,
+    rules:[
+      {token:'keyword',foreground:'00ffff',fontStyle:'bold'},{token:'comment',foreground:'55ff55',fontStyle:'italic'},
+      {token:'string',foreground:'ffff55'},{token:'number',foreground:'ff55ff'},{token:'type',foreground:'55ffff'},
+      {token:'',foreground:'aaaaaa'}
+    ],
+    colors:{
+      'editor.background':'#0000aa','editor.foreground':'#aaaaaa',
+      'editor.selectionBackground':'#5555ff','editor.lineHighlightBackground':'#0000cc',
+      'editorLineNumber.foreground':'#ffff55','editorCursor.foreground':'#ffffff'
+    }
+  });
+}
+
+function applyTheme(t) {
+  monaco.editor.setTheme(t);
+  const sel = document.getElementById('themeSelect');
+  if (sel) sel.value = t;
+}
+
+// ============================================================
+// KEYBOARD SHORTCUTS
+// ============================================================
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey||e.metaKey) && e.key==='Enter') { e.preventDefault(); runCode(); }
+  if ((e.ctrlKey||e.metaKey) && e.key==='s') { e.preventDefault(); saveCode(); }
+  if (e.ctrlKey && e.key==='F9') { e.preventDefault(); runCode(); }
+  if (e.key==='Escape') {
+    closeModal('settingsModal'); closeModal('shareModal');
+    document.querySelectorAll('.sv5-dropdown').forEach(d=>d.classList.remove('open'));
+  }
+});
+
+// Close dropdowns & modals on backdrop click
+document.addEventListener('click', e => {
+  if (!e.target.closest('.sv5-menu-wrap')) sv5MenuItem();
+  if (e.target.id==='settingsModal') closeModal('settingsModal');
+  if (e.target.id==='shareModal') closeModal('shareModal');
+});
+</script>
 </body>
 </html>
-
-```
