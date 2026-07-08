@@ -425,8 +425,8 @@
           <button class="sv2-tbtn" onclick="saveCode()"><i class="fa-solid fa-floppy-disk"></i> Save</button>
           <button class="sv2-tbtn" onclick="formatCode(2)"><i class="fa-solid fa-wand-magic-sparkles"></i> Beautify</button>
           <div class="sv2-div"></div>
-          <button class="sv2-tbtn"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
-          <button class="sv2-tbtn"><i class="fa-solid fa-arrow-down-to-bracket"></i></button>
+          <button class="sv2-tbtn" onclick="triggerOpenFile()" title="Upload File"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+          <button class="sv2-tbtn" onclick="saveCode()" title="Download File"><i class="fa-solid fa-arrow-down-to-bracket"></i></button>
           <select id="sv2LangSel" class="sv2-lang-sel" onchange="changeLang(this.value)"></select>
           <div class="sv2-help-icons">
             <div class="sv2-help-icon info"><i class="fa-solid fa-circle-info"></i></div>
@@ -542,7 +542,7 @@
           <div class="sv5-menu-item" id="mFile" onclick="sv5Menu('file')"><u>F</u>ile</div>
           <div class="sv5-dropdown" id="ddFile">
             <div class="sv5-dd-item" onclick="sv5MenuItem()">New <span>F4</span></div>
-            <div class="sv5-dd-item" onclick="sv5MenuItem()">Open... <span>F3</span></div>
+            <div class="sv5-dd-item" onclick="triggerOpenFile();sv5MenuItem()">Open... <span>F3</span></div>
             <div class="sv5-dd-item" onclick="saveCode();sv5MenuItem()">Save <span>F2</span></div>
             <div class="sv5-dd-sep"></div>
             <div class="sv5-dd-item" onclick="sv5MenuItem()">Quit <span>Alt+X</span></div>
@@ -568,7 +568,7 @@
       </div>
       <div class="sv5-toolbar">
         <button class="sv5-tbtn" onclick="saveCode()">💾 Save</button>
-        <button class="sv5-tbtn">📂 Open</button>
+        <button class="sv5-tbtn" onclick="triggerOpenFile()">📂 Open</button>
         <button class="sv5-tbtn run-btn" onclick="runCode()">▶ Run (Ctrl+F9)</button>
         <button class="sv5-tbtn" onclick="runDebug()">🐞 Debug</button>
         <button class="sv5-tbtn" onclick="clearOutput()">🗑 Clear</button>
@@ -632,6 +632,10 @@
           <option value="piston">Piston API (Free, Default)</option>
           <option value="offline">Offline Simulation</option>
         </select>
+      </div>
+      <div class="modal-section" id="apiKeySection">
+        <h4>Piston API Key (Optional)</h4>
+        <input type="text" class="modal-sel" id="apiKeyInput" placeholder="Enter key if you have a private Piston instance..." style="font-family: monospace;">
       </div>
       <div class="modal-section">
         <h4>Editor Options</h4>
@@ -899,9 +903,16 @@ async function runCode() {
   try {
     const lang = LANGS[currentLang];
     const stdin = getStdin();
+
+    let headers = { 'Content-Type': 'application/json' };
+    const savedKey = localStorage.getItem('tt_piston_key') || '';
+    if (savedKey) {
+      headers['Authorization'] = savedKey;
+    }
+
     const res = await fetch('https://emkc.org/api/v2/piston/execute', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: headers,
       body: JSON.stringify({
         language: lang.piston,
         version: lang.ver,
@@ -930,7 +941,7 @@ async function runCode() {
     clearOutputs();
     writeOut(`[Error] ${err.message}`, 'err');
     writeOut('[Falling back to offline simulation...]', 'sys');
-    runOffline(code);
+    runOffline(code, true);
   }
 }
 
@@ -945,20 +956,135 @@ function getStdin() {
   return '';
 }
 
-function runOffline(code) {
-  clearOutputs();
+function runOffline(code, keepPreviousOutputs = false) {
+  if (!keepPreviousOutputs) {
+    clearOutputs();
+  }
   writeOut(`[Sandbox] Simulating ${LANGS[currentLang].name}...`, 'sys');
   setTimeout(() => {
-    const lines = [];
-    const re = /(?:console\.log|print(?:ln!|f|ln)?|puts|echo|fmt\.Println|System\.out\.println|cat)\s*\(?\s*["'`]([^"'`\n]+)["'`]/g;
-    let m; re.lastIndex = 0;
-    while ((m = re.exec(code))) lines.push(m[1]);
-    if (!lines.length) lines.push(`Hello from ToolTari ${LANGS[currentLang].name} Compiler!`);
-    lines.forEach(l => writeOut(l, 'out'));
-    const t = (0.01+Math.random()*.12).toFixed(4);
-    const mem = Math.floor(1500+Math.random()*5000);
+    // 1. For JavaScript, run it directly in browser sandbox
+    if (currentLang === 'javascript') {
+      try {
+        let outputBuffer = [];
+        const originalLog = console.log;
+        const originalWarn = console.warn;
+        const originalError = console.error;
+        console.log = (...args) => outputBuffer.push(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '));
+        console.warn = console.log;
+        console.error = (...args) => outputBuffer.push('[Error] ' + args.join(' '));
+        
+        try {
+          const userFunc = new Function(code);
+          userFunc();
+        } finally {
+          console.log = originalLog;
+          console.warn = originalWarn;
+          console.error = originalError;
+        }
+        
+        if (outputBuffer.length > 0) {
+          outputBuffer.forEach(line => writeOut(line, 'out'));
+        } else {
+          writeOut('(no output)', 'sys');
+        }
+        writeOut('\n[Exit code: 0]', 'sys');
+        setDot(true);
+      } catch(e) {
+        writeOut(e.message, 'err');
+        writeOut('\n[Exit code: 1]', 'sys');
+        setDot(false);
+      }
+      if (currentServer === 2) sv2Tab('output');
+      if (currentServer === 4) sv4Tab('output');
+      return;
+    }
+
+    // 2. For other languages, parse simple variables and print statements dynamically
+    let lines = [];
+    const codeLines = code.split('\n');
+    let variables = {};
+    
+    // Parse variables
+    codeLines.forEach(line => {
+      // Python variable assignment: x = "hello" or x = 10
+      let mPy = /^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(["'`].*?["'`]|\d+)\s*$/g.exec(line);
+      if (mPy) {
+        variables[mPy[1]] = mPy[2].replace(/^["'`]|["'`]$/g, '');
+      }
+      // C/C++/Java variable assignment: int x = 10; or string x = "hello";
+      let mC = /^\s*(?:int|double|float|char|auto|string|let|var|const)\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(["'`].*?["'`]|\d+)\s*;/g.exec(line);
+      if (mC) {
+        variables[mC[1]] = mC[2].replace(/^["'`]|["'`]$/g, '');
+      }
+    });
+
+    // Check print statements line by line
+    codeLines.forEach(line => {
+      // C++: cout << "hello" << x << endl;
+      if (line.includes('cout')) {
+        let parts = line.split(/<<\s*/);
+        let outputLine = '';
+        parts.slice(1).forEach(part => {
+          part = part.trim().replace(/;$/, '').trim();
+          if (part === 'endl' || part === 'std::endl') {
+            outputLine += '\n';
+          } else if (part.startsWith('"') && part.endsWith('"')) {
+            outputLine += part.substring(1, part.length - 1);
+          } else if (part.startsWith("'") && part.endsWith("'")) {
+            outputLine += part.substring(1, part.length - 1);
+          } else if (variables[part] !== undefined) {
+            outputLine += variables[part];
+          }
+        });
+        if (outputLine) lines.push(outputLine);
+      }
+      
+      // Match general print statements: print, printf, System.out.println, Console.WriteLine, fmt.Println, puts
+      let printMatch = /(?:printf|print|System\.out\.print(?:ln)?|Console\.Write(?:Line)?|fmt\.Print(?:ln|f)?|puts)\s*\(\s*([\s\S]+?)\s*\)/g.exec(line);
+      if (printMatch) {
+        let argStr = printMatch[1].trim();
+        if (argStr.startsWith('"') && argStr.endsWith('"')) {
+          lines.push(argStr.substring(1, argStr.length - 1));
+        } else if (argStr.startsWith("'") && argStr.endsWith("'")) {
+          lines.push(argStr.substring(1, argStr.length - 1));
+        } else if (variables[argStr] !== undefined) {
+          lines.push(variables[argStr]);
+        } else {
+          // Check for printf formatted string like printf("Hello %s", name)
+          let strLitMatch = /["'](.*?)["']/g.exec(argStr);
+          if (strLitMatch) {
+            let baseStr = strLitMatch[1];
+            let remaining = argStr.substring(strLitMatch[0].length).trim();
+            if (remaining.startsWith(',')) {
+              let args = remaining.substring(1).split(',').map(a => a.trim());
+              args.forEach(arg => {
+                if (variables[arg] !== undefined) {
+                  baseStr = baseStr.replace(/%[sddf]/, variables[arg]);
+                }
+              });
+            }
+            lines.push(baseStr);
+          } else {
+            lines.push(argStr);
+          }
+        }
+      }
+    });
+
+    if (lines.length > 0) {
+      lines.forEach(l => {
+        let formatted = l.replace(/\\n/g, '\n').replace(/\\t/g, '\t');
+        writeOut(formatted, 'out');
+      });
+    } else {
+      writeOut(`Hello from ToolTari ${LANGS[currentLang].name} Compiler!`, 'out');
+    }
+
+    const t = (0.01 + Math.random() * .12).toFixed(4);
+    const mem = Math.floor(1500 + Math.random() * 5000);
     writeOut(`\n[Time: ${t}s | Mem: ${mem}KB | Exit: 0]`, 'sys');
     setDot(true);
+
     if (currentServer === 2) sv2Tab('output');
     if (currentServer === 4) sv4Tab('output');
   }, 380);
@@ -1164,7 +1290,43 @@ function sv5MenuItem() {
 // ============================================================
 function openModal(id) { document.getElementById(id)?.classList.add('open'); }
 function closeModal(id) { document.getElementById(id)?.classList.remove('open'); }
-function openSettings() { openModal('settingsModal'); }
+
+function openSettings() {
+  const input = document.getElementById('apiKeyInput');
+  if (input) {
+    input.value = localStorage.getItem('tt_piston_key') || '';
+  }
+  openModal('settingsModal');
+}
+
+function saveSettings() {
+  const input = document.getElementById('apiKeyInput');
+  if (input) {
+    localStorage.setItem('tt_piston_key', input.value.trim());
+  }
+  closeModal('settingsModal');
+}
+
+// File opening functionality
+function triggerOpenFile() {
+  document.getElementById('fileInput')?.click();
+}
+
+function handleOpenFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const content = e.target.result;
+    sharedModel?.setValue(content);
+    const ext = file.name.split('.').pop().toLowerCase();
+    const matchedLang = Object.keys(LANGS).find(k => LANGS[k].ext === ext);
+    if (matchedLang) {
+      changeLang(matchedLang);
+    }
+  };
+  reader.readAsText(file);
+}
 
 function openShare() {
   const code = sharedModel?.getValue() || '';
@@ -1245,6 +1407,8 @@ document.addEventListener('keydown', e => {
   if ((e.ctrlKey||e.metaKey) && e.key==='Enter') { e.preventDefault(); runCode(); }
   if ((e.ctrlKey||e.metaKey) && e.key==='s') { e.preventDefault(); saveCode(); }
   if (e.ctrlKey && e.key==='F9') { e.preventDefault(); runCode(); }
+  if (e.key === 'F2') { e.preventDefault(); saveCode(); }
+  if (e.key === 'F3') { e.preventDefault(); triggerOpenFile(); }
   if (e.key==='Escape') {
     closeModal('settingsModal'); closeModal('shareModal');
     document.querySelectorAll('.sv5-dropdown').forEach(d=>d.classList.remove('open'));
@@ -1258,5 +1422,6 @@ document.addEventListener('click', e => {
   if (e.target.id==='shareModal') closeModal('shareModal');
 });
 </script>
+<input type="file" id="fileInput" style="display:none;" onchange="handleOpenFile(event)">
 </body>
 </html>
