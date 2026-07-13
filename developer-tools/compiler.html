@@ -3,181 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Tooltari Compiler</title>
-  <!-- Tailwind via CDN + custom baseline -->
+  <title>Tooltari Compiler · Turbo C++</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font for clean UI -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; }
-    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #0b0e14; }
-    /* custom scrollbar for dark/modern */
-    .code-editor-wrap {
-      background: #1e2530;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.7);
-    }
+    body { font-family: 'Inter', system-ui, sans-serif; background: #0b0e14; margin:0; }
+    .code-editor-wrap { background: #1e2530; border-radius: 12px; overflow: hidden; box-shadow: 0 12px 30px rgba(0,0,0,0.7); }
     .line-numbers {
-      background: #141a22;
-      color: #6b7b8f;
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
-      font-size: 13px;
-      line-height: 1.6;
-      padding: 16px 0 16px 12px;
-      min-width: 52px;
-      text-align: right;
-      user-select: none;
-      border-right: 1px solid #2e3846;
-      overflow-y: hidden;
-      white-space: pre-wrap;
-      word-break: break-all;
+      background: #141a22; color: #6b7b8f; font-family: 'JetBrains Mono', monospace; font-size: 13px;
+      line-height: 1.6; padding: 16px 0 16px 12px; min-width: 52px; text-align: right;
+      user-select: none; border-right: 1px solid #2e3846; overflow-y: hidden; white-space: pre-wrap;
     }
     .code-textarea {
-      background: #1e2530;
-      color: #e3e9f2;
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
-      font-size: 13px;
-      line-height: 1.6;
-      padding: 16px 16px 16px 20px;
-      border: none;
-      outline: none;
-      resize: none;
-      width: 100%;
-      height: 100%;
-      min-height: 420px;
-      tab-size: 2;
-      letter-spacing: 0.2px;
-      overflow: auto;
+      background: #1e2530; color: #e3e9f2; font-family: 'JetBrains Mono', monospace; font-size: 13px;
+      line-height: 1.6; padding: 16px 16px 16px 20px; border: none; outline: none; resize: none;
+      width: 100%; height: 100%; min-height: 420px; tab-size: 2; overflow: auto;
     }
-    .code-textarea::placeholder { color: #4b5a6f; }
     .code-textarea:focus { box-shadow: inset 0 0 0 1px #3e4b5e; }
 
-    /* Turbo blue DOS style */
+    /* ===== TURBO C++ DOS ===== */
     .turbo-active .code-editor-wrap {
-      background: #0000aa !important;
-      border-radius: 0 !important;
-      box-shadow: none !important;
+      background: #0000aa !important; border-radius: 0 !important; box-shadow: none !important;
     }
     .turbo-active .line-numbers {
-      background: #0000aa !important;
-      color: #ffff55 !important;
-      border-right: 1px solid #ffff55 !important;
+      background: #0000aa !important; color: #ffff55 !important; border-right: 1px solid #ffff55 !important;
     }
     .turbo-active .code-textarea {
-      background: #0000aa !important;
-      color: #ffffff !important;
+      background: #0000aa !important; color: #ffffff !important;
     }
-    .turbo-active .code-textarea::placeholder { color: #aaccff; }
     .turbo-active .top-bar-bg {
-      background: #c0c0c0 !important;
-      border-bottom: 2px solid #ffffff;
+      background: #c0c0c0 !important; border-bottom: 2px solid #ffffff;
     }
     .turbo-active .server-btn {
-      background: #c0c0c0 !important;
-      color: #000000 !important;
+      background: #c0c0c0 !important; color: #000000 !important;
       border: 1px solid #808080 !important;
       box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #ffffff;
     }
     .turbo-active .server-btn.active {
-      background: #0000aa !important;
-      color: #ffffff !important;
+      background: #0000aa !important; color: #ffffff !important;
       border: 1px solid #ffff55 !important;
       box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #ffffff;
     }
     .turbo-active .menu-btn {
-      background: #c0c0c0 !important;
-      color: #000000 !important;
+      background: #c0c0c0 !important; color: #000000 !important;
       border: 1px solid #808080;
       box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #ffffff;
     }
-    .turbo-active .menu-btn:hover {
-      background: #d4d4d4 !important;
-    }
+    .turbo-active .menu-btn:hover { background: #d4d4d4 !important; }
     .turbo-active .output-panel {
-      background: #0000aa !important;
-      color: #ffffff !important;
+      background: #0000aa !important; color: #ffffff !important;
       border-top: 2px solid #ffff55 !important;
     }
-    .turbo-active .output-panel pre {
-      color: #ffffff !important;
-    }
-    .turbo-active body {
-      background: #0000aa !important;
-    }
+    .turbo-active .output-panel pre { color: #ffffff !important; }
+    .turbo-active body { background: #0000aa !important; }
     .turbo-active .container { background: #0000aa !important; }
     .turbo-active .top-bar-bg .text-white { color: #000000 !important; }
+    .turbo-active .shortcut-hint { background: #c0c0c0; color: #000; border-color: #808080; }
+    /* ad banner turbo */
+    .turbo-active .ad-banner { background: #0000aa; border-top: 2px solid #ffff55; color: #ffff55; }
 
-    /* output */
     .output-panel {
-      background: #141c26;
-      border-radius: 0 0 12px 12px;
-      border-top: 1px solid #2e3a48;
-      padding: 12px 16px;
-      max-height: 200px;
-      overflow-y: auto;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      color: #b8c9e0;
-      white-space: pre-wrap;
-      word-break: break-word;
+      background: #141c26; border-radius: 0 0 12px 12px; border-top: 1px solid #2e3a48;
+      padding: 12px 16px; max-height: 200px; overflow-y: auto;
+      font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #b8c9e0;
+      white-space: pre-wrap; word-break: break-word;
     }
     .output-panel pre { margin: 0; color: #b8c9e0; }
 
     .top-bar-bg {
-      background: #1f2937;
-      border-radius: 12px 12px 0 0;
-      padding: 10px 16px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px 6px;
+      background: #1f2937; border-radius: 12px 12px 0 0; padding: 10px 16px;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px 6px;
       border-bottom: 1px solid #2e3a48;
     }
-
     .server-btn {
-      background: #2d3748;
-      padding: 4px 14px;
-      border-radius: 24px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #b0c4de;
-      border: 1px solid #3b4a5e;
+      background: #2d3748; padding: 4px 14px; border-radius: 24px; font-size: 12px;
+      font-weight: 600; color: #b0c4de; border: 1px solid #3b4a5e; cursor: pointer;
       transition: all 0.1s;
-      cursor: pointer;
-      letter-spacing: 0.3px;
     }
-    .server-btn.active {
-      background: #3b82f6;
-      color: white;
-      border-color: #60a5fa;
-    }
+    .server-btn.active { background: #3b82f6; color: white; border-color: #60a5fa; }
     .server-btn:hover { filter: brightness(1.2); }
 
     .menu-btn {
-      background: #2d3748;
-      border: none;
-      color: #d1dae8;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
-      transition: 0.1s;
-      cursor: pointer;
-      border: 1px solid #3b4a5e;
+      background: #2d3748; border: none; color: #d1dae8; padding: 4px 12px;
+      border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer;
+      border: 1px solid #3b4a5e; transition: 0.1s;
     }
     .menu-btn:hover { background: #3b4a5e; }
 
     .shortcut-hint {
-      font-size: 10px;
-      color: #6b7f96;
-      background: #1e293b;
-      padding: 2px 8px;
-      border-radius: 30px;
-      border: 1px solid #334155;
+      font-size: 10px; color: #6b7f96; background: #1e293b; padding: 2px 8px;
+      border-radius: 30px; border: 1px solid #334155;
     }
+    .ad-banner {
+      background: #1f2937; color: #94a3b8; font-size: 12px; padding: 6px 16px;
+      border-radius: 0 0 12px 12px; border-top: 1px solid #2e3a48;
+      text-align: center; letter-spacing: 0.3px;
+    }
+    .ad-banner a { color: #60a5fa; text-decoration: none; font-weight: 600; }
+    .ad-banner a:hover { text-decoration: underline; }
 
-    /* responsive */
     @media (max-width: 700px) {
       .top-bar-bg { flex-wrap: wrap; justify-content: center; }
       .code-textarea { min-height: 300px; }
@@ -189,8 +114,8 @@
 
 <div class="container w-full max-w-6xl mx-auto transition-colors duration-150" id="appContainer">
 
-  <!-- Top bar with server + menu -->
-  <div class="top-bar-bg flex flex-wrap items-center justify-between" id="topBar">
+  <!-- TOP BAR -->
+  <div class="top-bar-bg" id="topBar">
     <div class="flex flex-wrap items-center gap-2">
       <span class="text-white font-bold text-sm tracking-wide mr-1 hidden sm:inline">⚡ Tooltari</span>
       <button data-server="c" class="server-btn active" id="srvC">C</button>
@@ -209,23 +134,28 @@
     </div>
   </div>
 
-  <!-- Editor with line numbers -->
+  <!-- EDITOR -->
   <div class="code-editor-wrap flex flex-col transition-colors duration-150" id="editorWrap">
     <div class="flex" style="height: 420px; min-height: 300px;">
       <div class="line-numbers" id="lineNumbers">1</div>
       <textarea class="code-textarea" id="codeEditor" spellcheck="false" placeholder="Write your code here..."></textarea>
     </div>
-    <!-- Output panel -->
+    <!-- OUTPUT -->
     <div class="output-panel" id="outputPanel"><pre>// Output will appear here</pre></div>
   </div>
 
-  <!-- hidden file input -->
+  <!-- AD BANNER (rentyside.in) -->
+  <div class="ad-banner" id="adBanner">
+    <span>🚀 Sponsored by </span><a href="https://rentyside.in" target="_blank">rentyside.in</a>
+    <span class="hidden sm:inline"> — Build, deploy, grow.</span>
+  </div>
+
   <input type="file" id="fileInput" accept=".c,.cpp,.js,.html,.txt,.h" style="display:none" />
 </div>
 
 <script>
   (function() {
-    // ---------- DOM refs ----------
+    // DOM refs
     const editor = document.getElementById('codeEditor');
     const lineNumbers = document.getElementById('lineNumbers');
     const output = document.getElementById('outputPanel');
@@ -236,8 +166,9 @@
     const container = document.getElementById('appContainer');
     const topBar = document.getElementById('topBar');
     const editorWrap = document.getElementById('editorWrap');
+    const adBanner = document.getElementById('adBanner');
 
-    // ---------- Default templates (escaped to avoid parser issues) ----------
+    // ---------- TEMPLATES (escaped) ----------
     const TEMPLATES = {
       c: `#include <stdio.h>\n\nint main() {\n    printf("Hello from C!\\n");\n    return 0;\n}`,
       cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello from C++!" << endl;\n    return 0;\n}`,
@@ -246,90 +177,55 @@
       turbo: `#include <iostream.h>\n#include <conio.h>\n\nvoid main() {\n    clrscr();\n    cout << "Turbo C++ mode!";\n    getch();\n}`
     };
 
-    // current state
     let currentServer = 'c';
-    let currentTheme = 'modern'; // 'modern' or 'turbo'
+    let currentTheme = 'modern';
 
-    // ---------- helper: set line numbers ----------
+    // line numbers
     function updateLineNumbers() {
       const lines = editor.value.split('\n');
-      const count = lines.length;
       let nums = '';
-      for (let i = 1; i <= count; i++) {
-        nums += i + '\n';
-      }
+      for (let i = 1; i <= lines.length; i++) nums += i + '\n';
       lineNumbers.textContent = nums;
     }
-
-    // sync scroll
-    editor.addEventListener('scroll', function() {
-      lineNumbers.scrollTop = this.scrollTop;
-    });
-
+    editor.addEventListener('scroll', function() { lineNumbers.scrollTop = this.scrollTop; });
     editor.addEventListener('input', updateLineNumbers);
 
-    // ---------- set editor content and update line numbers ----------
     function setEditorContent(code) {
       editor.value = code;
       updateLineNumbers();
     }
 
-    // ---------- load template for server ----------
     function loadTemplate(server) {
-      let code = '';
-      if (server === 'c') code = TEMPLATES.c;
-      else if (server === 'cpp') code = TEMPLATES.cpp;
-      else if (server === 'js') code = TEMPLATES.js;
-      else if (server === 'html') code = TEMPLATES.html;
-      else if (server === 'turbo') code = TEMPLATES.turbo;
-      setEditorContent(code);
+      const map = { c: 'c', cpp: 'cpp', js: 'js', html: 'html', turbo: 'turbo' };
+      setEditorContent(TEMPLATES[map[server]] || TEMPLATES.c);
     }
 
-    // ---------- apply theme ----------
+    // theme
     function applyTheme(server) {
       const isTurbo = (server === 'turbo');
-      if (isTurbo) {
-        container.classList.add('turbo-active');
-        currentTheme = 'turbo';
-      } else {
-        container.classList.remove('turbo-active');
-        currentTheme = 'modern';
-      }
-      // active button style
+      container.classList.toggle('turbo-active', isTurbo);
+      currentTheme = isTurbo ? 'turbo' : 'modern';
       serverBtns.forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.server === server) btn.classList.add('active');
+        btn.classList.toggle('active', btn.dataset.server === server);
       });
+      // ad banner style in turbo is handled by css
     }
 
-    // ---------- switch server ----------
     function switchServer(server) {
       currentServer = server;
       applyTheme(server);
       loadTemplate(server);
-      // clear output
       outputPre.textContent = `// ${server.toUpperCase()} ready`;
-      // if html: preview mode hint
-      if (server === 'html') {
-        outputPre.textContent = '// HTML: preview will be shown in iframe after compile.';
-      }
+      if (server === 'html') outputPre.textContent = '// HTML: preview after compile.';
     }
 
-    // ---------- compile / run ----------
+    // ---------- COMPILE ----------
     async function compileCode() {
       const code = editor.value;
       const server = currentServer;
-      const langMap = {
-        'c': { language: 'c', version: '10.2.0' },
-        'cpp': { language: 'c++', version: '10.2.0' },
-        'js': { language: 'javascript', version: '18.15.0' },
-        'html': { language: 'html', version: '5.0' },
-        'turbo': { language: 'c++', version: '10.2.0' } // turbo uses c++
-      };
-      
-      // HTML special: live preview
+
+      // HTML preview
       if (server === 'html') {
-        // show in iframe inside output
         const iframe = document.createElement('iframe');
         iframe.style.width = '100%';
         iframe.style.height = '180px';
@@ -342,7 +238,6 @@
         doc.open();
         doc.write(code);
         doc.close();
-        // also show code
         const detail = document.createElement('div');
         detail.style.marginTop = '8px';
         detail.textContent = '✅ HTML preview rendered.';
@@ -350,34 +245,31 @@
         return;
       }
 
-      // JS: secure execution using Function
+      // JS secure
       if (server === 'js') {
         try {
           let logs = [];
           const originalLog = console.log;
           console.log = (...args) => { logs.push(args.map(a => String(a)).join(' ')); };
-          const func = new Function(code);
-          func();
+          new Function(code)();
           console.log = originalLog;
-          outputPre.textContent = logs.length ? logs.join('\n') : '✅ JS executed successfully (no output)';
+          outputPre.textContent = logs.length ? logs.join('\n') : '✅ JS executed (no output)';
         } catch (err) {
           outputPre.textContent = '❌ JS Error: ' + err.message;
         }
         return;
       }
 
-      // C / C++ / Turbo => piston API
-      const lang = langMap[server]?.language || 'c';
-      const version = langMap[server]?.version || '10.2.0';
-      // For turbo we use c++ but with a different flavor? we keep as c++
-      const pistonLang = (server === 'turbo') ? 'c++' : lang;
-      
+      // C / C++ / Turbo => Piston API
+      const langMap = { 'c': 'c', 'cpp': 'c++', 'turbo': 'c++' };
+      const lang = langMap[server] || 'c';
+      const version = '10.2.0';
       try {
         const resp = await fetch('https://emkc.org/api/v2/piston/execute', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            language: pistonLang,
+            language: lang,
             version: version,
             files: [{ content: code }]
           })
@@ -386,23 +278,22 @@
         if (data.run && data.run.output) {
           let out = data.run.output;
           if (data.run.stderr) out += '\n' + data.run.stderr;
-          outputPre.textContent = out || '✅ Compilation successful (no output)';
+          outputPre.textContent = out || '✅ Compiled (no output)';
         } else if (data.message) {
           outputPre.textContent = '⚠️ ' + data.message;
         } else {
-          outputPre.textContent = '⚠️ Unknown response from Piston API';
+          outputPre.textContent = '⚠️ Unknown response';
         }
       } catch (e) {
         outputPre.textContent = '❌ API Error: ' + e.message;
       }
     }
 
-    // ---------- save file ----------
+    // save
     function saveFile() {
-      const code = editor.value;
       const extMap = { 'c': 'c', 'cpp': 'cpp', 'js': 'js', 'html': 'html', 'turbo': 'cpp' };
       const ext = extMap[currentServer] || 'txt';
-      const blob = new Blob([code], { type: 'text/plain' });
+      const blob = new Blob([editor.value], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -413,48 +304,31 @@
       URL.revokeObjectURL(url);
     }
 
-    // ---------- open file ----------
-    function openFile() {
-      document.getElementById('fileInput').click();
-    }
-
+    function openFile() { document.getElementById('fileInput').click(); }
     document.getElementById('fileInput').addEventListener('change', function(e) {
       const file = this.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(ev) {
         setEditorContent(ev.target.result);
-        // also detect server from extension? 
         const name = file.name.toLowerCase();
         if (name.endsWith('.c')) switchServer('c');
         else if (name.endsWith('.cpp') || name.endsWith('.h')) switchServer('cpp');
         else if (name.endsWith('.js')) switchServer('js');
         else if (name.endsWith('.html') || name.endsWith('.htm')) switchServer('html');
-        // else keep current server
       };
       reader.readAsText(file);
-      this.value = ''; // reset
+      this.value = '';
     });
 
-    // ---------- debug mock ----------
-    function debugMock() {
-      alert('🐞 Debugger: mock breakpoint at line 1 (simulated)');
-    }
+    function debugMock() { alert('🐞 Debugger: mock breakpoint (Turbo style)'); }
+    function clearOutput() { outputPre.textContent = '// Output cleared'; if (currentServer === 'html') outputPre.innerHTML = '// HTML preview cleared'; }
 
-    // ---------- clear output ----------
-    function clearOutput() {
-      outputPre.textContent = '// Output cleared';
-      if (currentServer === 'html') {
-        outputPre.innerHTML = '// HTML preview cleared';
-      }
-    }
-
-    // ---------- event binding ----------
+    // events
     serverBtns.forEach(btn => {
       btn.addEventListener('click', function() {
-        const server = this.dataset.server;
-        if (server === currentServer) return;
-        switchServer(server);
+        const srv = this.dataset.server;
+        if (srv !== currentServer) switchServer(srv);
       });
     });
 
@@ -466,19 +340,13 @@
 
     // keyboard shortcuts
     document.addEventListener('keydown', function(e) {
-      if (e.ctrlKey && e.key === 'F9') {
-        e.preventDefault();
-        compileCode();
-      }
-      if (e.ctrlKey && e.key === 's') {
-        e.preventDefault();
-        saveFile();
-      }
+      if (e.ctrlKey && e.key === 'F9') { e.preventDefault(); compileCode(); }
+      if (e.ctrlKey && e.key === 's') { e.preventDefault(); saveFile(); }
     });
 
-    // ---------- init ----------
+    // init
     switchServer('c');
   })();
 </script>
 </body>
-    </html>
+</html>
