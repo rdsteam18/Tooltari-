@@ -1,463 +1,412 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tooltari - C/C++/JS/HTML Compiler</title>
-    <!-- Tailwind CSS for Desktop UI styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Modern Scrollbar */
-        ::-webkit-scrollbar { width: 12px; height: 12px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
-        ::-webkit-scrollbar-thumb { background: rgba(150,150,150,0.4); border-radius: 2px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(150,150,150,0.7); }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tooltari – Online Compiler</title>
 
-        /* Classic Turbo Theme */
-        .theme-turbo {
-            --bg-main: #0000a8; 
-            --bg-menu: #a8a8a8; 
-            --text-main: #ffff55; 
-            --text-normal: #ffffff;
-            --menu-text: #000000;
-            --menu-hover-bg: #55ffff;
-            --output-bg: #000000;
-            --output-text: #a8a8a8;
-            font-family: 'Courier New', Courier, monospace;
-        }
+  <!-- CodeMirror CDN for syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
 
-        /* Modern Dark Theme */
-        .theme-modern {
-            --bg-main: #1e1e1e; 
-            --bg-menu: #333333;
-            --text-main: #d4d4d4;
-            --text-normal: #ffffff;
-            --menu-text: #cccccc;
-            --menu-hover-bg: #007acc;
-            --output-bg: #0d1117;
-            --output-text: #4ade80; 
-            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-        }
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-normal);
-            transition: background-color 0.2s, color 0.2s;
-        }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #1e1e2f;
+      color: #f0f0f0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-        /* Top Server Bar */
-        .top-server-bar {
-            background-color: #0f172a;
-            color: #94a3b8;
-            font-family: sans-serif;
-        }
-        .server-tab { 
-            padding: 0.5rem 1.2rem; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            border-right: 1px solid #1e293b;
-        }
-        .server-tab:hover { background-color: #1e293b; color: white; }
-        .server-tab.active-turbo { background-color: #2563eb; color: white; box-shadow: inset 0 -3px 0 #60a5fa; }
-        .server-tab.active-modern { background-color: #007acc; color: white; box-shadow: inset 0 -3px 0 #4ade80; }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      flex: 1;
+    }
 
-        /* Menu Bar */
-        .menu-bar {
-            background-color: var(--bg-menu);
-            color: var(--menu-text);
-            font-weight: bold;
-            font-family: sans-serif;
-        }
-        .menu-item {
-            padding: 0.4rem 1rem;
-            cursor: pointer;
-            user-select: none;
-        }
-        .menu-item:hover { background-color: var(--menu-hover-bg); color: #000; }
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header .tagline {
+      font-size: 0.9rem;
+      color: #aaa;
+    }
 
-        /* Editor Section */
-        .editor-area {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            outline: none;
-            resize: none;
-            white-space: pre;
-            tab-size: 4;
-            font-size: 16px;
-        }
-        
-        .output-area {
-            background-color: var(--output-bg);
-            color: var(--output-text);
-            font-family: 'Courier New', Courier, monospace;
-        }
+    /* Advertisement Banner */
+    .ad-banner {
+      background: #2a2a40;
+      border-radius: 12px;
+      padding: 12px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      border: 1px solid #444;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .ad-banner a {
+      color: #ffd700;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: 0.2s;
+    }
+    .ad-banner a:hover {
+      text-decoration: underline;
+      color: #ffe44d;
+    }
+    .ad-banner span {
+      color: #ccc;
+    }
 
-        .language-select {
-            background-color: #ffffff;
-            color: #000000;
-            border: 1px solid #555;
-            padding: 2px 6px;
-            outline: none;
-            cursor: pointer;
-            border-radius: 3px;
-        }
-    </style>
+    /* Layout */
+    .editor-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .top-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      background: #2a2a40;
+      padding: 12px 16px;
+      border-radius: 12px;
+    }
+    .top-row select,
+    .top-row button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      background: #3a3a55;
+      color: #fff;
+      transition: 0.2s;
+    }
+    .top-row select:hover,
+    .top-row button:hover {
+      background: #4a4a6a;
+    }
+    .top-row button.run-btn {
+      background: #6c5ce7;
+      font-weight: bold;
+    }
+    .top-row button.run-btn:hover {
+      background: #5a4bd1;
+    }
+    .top-row button.download-btn {
+      background: #00b894;
+      font-weight: bold;
+    }
+    .top-row button.download-btn:hover {
+      background: #00a381;
+    }
+    .top-row .spacer {
+      flex: 1;
+    }
+
+    .editor-wrapper {
+      background: #282a36;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #444;
+    }
+    .editor-wrapper .CodeMirror {
+      height: 400px;
+      font-size: 14px;
+    }
+
+    .input-area {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .input-area label {
+      font-weight: 500;
+      color: #ccc;
+    }
+    .input-area textarea {
+      background: #2a2a40;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 12px;
+      color: #f0f0f0;
+      font-family: 'Consolas', monospace;
+      resize: vertical;
+      min-height: 80px;
+      width: 100%;
+      outline: none;
+    }
+    .input-area textarea:focus {
+      border-color: #6c5ce7;
+    }
+
+    .output-area {
+      margin-top: 20px;
+      background: #1e1e2f;
+      border-radius: 12px;
+      border: 1px solid #444;
+      padding: 16px;
+      min-height: 120px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Consolas', monospace;
+      font-size: 14px;
+      color: #e0e0e0;
+      overflow: auto;
+      max-height: 400px;
+    }
+    .output-area .error {
+      color: #ff6b6b;
+    }
+    .output-area .success {
+      color: #69db7c;
+    }
+
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      color: #666;
+      font-size: 0.8rem;
+      border-top: 1px solid #333;
+      padding-top: 16px;
+    }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* responsive */
+    @media (max-width: 600px) {
+      .header h1 { font-size: 1.8rem; }
+      .top-row { flex-direction: column; align-items: stretch; }
+      .top-row .spacer { display: none; }
+      .editor-wrapper .CodeMirror { height: 250px; }
+    }
+  </style>
 </head>
-<body class="theme-turbo h-screen flex flex-col overflow-hidden" id="app-body">
+<body>
+<div class="container">
 
-    <!-- Top Server Selector Bar -->
-    <div class="top-server-bar flex text-sm font-semibold select-none shadow-md z-20">
-        <div class="px-4 py-2 text-white/80 border-r border-slate-800 flex items-center bg-slate-900">
-            <i class="fa-solid fa-laptop-code mr-2 text-blue-400"></i> Tooltari IDE
-        </div>
-        <div class="server-tab" id="tab-s1" onclick="setServer('s1', 'c')">Server 1 (C)</div>
-        <div class="server-tab" id="tab-s2" onclick="setServer('s2', 'cpp')">Server 2 (C++)</div>
-        <div class="server-tab" id="tab-s3" onclick="setServer('s3', 'javascript')">Server 3 (JS)</div>
-        <div class="server-tab" id="tab-s4" onclick="setServer('s4', 'html')">Server 4 (HTML)</div>
-        <div class="server-tab active-turbo flex items-center gap-1" id="tab-turbo" onclick="setServer('turbo', 'cpp')">
-            <i class="fa-solid fa-bolt text-yellow-400"></i> Turbo C++
-        </div>
-        <div class="flex-1"></div>
-        <div class="px-4 py-2 text-xs opacity-70 hidden md:flex items-center">
-            <i class="fa-solid fa-check-circle text-green-400 mr-1"></i> Verified Error Free
-        </div>
+  <!-- Header -->
+  <div class="header">
+    <h1>⚙️ Tooltari</h1>
+    <span class="tagline">compile · run · download</span>
+  </div>
+
+  <!-- Ad Banner -->
+  <div class="ad-banner">
+    <span>📢</span>
+    <a href="https://rentyside.in" target="_blank">rentyside.in</a>
+    <span>– Your trusted rental partner. Click to explore!</span>
+  </div>
+
+  <!-- Main Editor -->
+  <div class="editor-section">
+    <div class="top-row">
+      <select id="languageSelect">
+        <option value="python">Python 3.10</option>
+        <option value="cpp" selected>C++ (GCC 10.2)</option>
+        <option value="java">Java (OpenJDK 17)</option>
+        <option value="javascript">JavaScript (Node 16)</option>
+        <option value="csharp">C# (.NET 6)</option>
+      </select>
+
+      <div class="spacer"></div>
+
+      <button class="run-btn" id="runBtn">▶ Run</button>
+      <button class="download-btn" id="downloadBtn">⬇ Download</button>
     </div>
 
-    <!-- Actions Menu Bar -->
-    <div class="menu-bar flex flex-wrap items-center text-sm shadow-sm select-none border-b-2 border-black/20">
-        <div class="menu-item flex items-center gap-2" onclick="runCode()" title="Code Chalayen">
-            <span class="text-red-600 font-extrabold text-lg">C</span>ompile (Ctrl+F9)
-        </div>
-        <div class="menu-item flex items-center gap-1" onclick="alert('Debug mode jald hi aayega!')">
-            <i class="fa-solid fa-bug text-xs"></i> Debug
-        </div>
-        <div class="menu-item flex items-center gap-1" onclick="document.getElementById('file-input').click()">
-            <i class="fa-solid fa-folder-open text-xs"></i> Open Project
-        </div>
-        <div class="menu-item flex items-center gap-1" onclick="saveFile()">
-            <i class="fa-solid fa-floppy-disk text-xs"></i> Save File
-        </div>
-        <div class="menu-item flex items-center gap-1" onclick="clearOutput()">
-            <i class="fa-solid fa-eraser text-xs"></i> Clear Output
-        </div>
-        
-        <div class="mx-auto"></div>
-        
-        <!-- Language Selector Fallback -->
-        <div class="flex items-center gap-2 px-3 py-1">
-            <span class="opacity-80 text-xs">Active Language:</span>
-            <select id="lang-selector" class="language-select text-sm font-bold" onchange="changeLanguage(this.value)">
-                <option value="cpp">C++ (Turbo/GCC)</option>
-                <option value="c">C (GCC)</option>
-                <option value="javascript">JavaScript</option>
-                <option value="html">HTML / CSS</option>
-            </select>
-        </div>
+    <div class="editor-wrapper">
+      <textarea id="codeEditor"></textarea>
     </div>
 
-    <!-- Hidden File Input -->
-    <input type="file" id="file-input" class="hidden" accept=".c,.cpp,.js,.html,.txt" onchange="handleFileSelect(event)">
+    <!-- STDIN -->
+    <div class="input-area">
+      <label for="stdinInput">STDIN (optional)</label>
+      <textarea id="stdinInput" placeholder="Enter input here..."></textarea>
+    </div>
 
-    <!-- Main Desktop Layout (Editor + Output) -->
-    <main class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
-        
-        <!-- Code Editor Pane -->
-        <div class="flex-1 flex flex-col border-r-4 border-black/30 relative min-w-[50%]">
-            <div class="bg-black/20 text-center text-xs py-1 border-b border-black/30 font-bold opacity-90 tracking-widest shadow-inner" id="filename-display">
-                NONAME00.CPP
-            </div>
-            <div class="flex-1 flex relative overflow-hidden bg-inherit">
-                <!-- Line Numbers -->
-                <div id="line-numbers" class="w-12 bg-black/20 text-right pr-2 py-4 opacity-60 text-sm overflow-hidden select-none border-r border-black/20">
-                    <!-- JS Dwara Generate Honge -->
-                </div>
-                <!-- Textarea (Blank initially to prevent HTML parsing errors) -->
-                <textarea id="code-editor" class="editor-area flex-1 w-full h-full p-4 p-l-3 leading-relaxed border-none" spellcheck="false" autocomplete="off"></textarea>
-            </div>
-        </div>
+    <!-- Output -->
+    <div class="output-area" id="outputArea">▶ Output will appear here</div>
+  </div>
 
-        <!-- Output Pane -->
-        <div class="h-1/3 md:h-full md:w-2/5 flex flex-col output-area relative shadow-xl z-10 border-t-4 md:border-t-0 border-gray-600">
-            <div class="bg-gray-800 text-white text-xs py-1.5 px-3 flex justify-between items-center border-b border-black">
-                <span class="font-bold tracking-wide"><i class="fa-solid fa-terminal mr-1"></i> Output Terminal</span>
-                <span id="status-badge" class="px-2 py-0.5 rounded bg-gray-600 text-white font-bold text-[10px] uppercase">IDLE</span>
-            </div>
-            
-            <div class="flex-1 relative bg-inherit">
-                <!-- Text Console -->
-                <div id="console-output" class="absolute inset-0 p-4 overflow-auto text-sm whitespace-pre-wrap leading-relaxed shadow-inner"></div>
-                
-                <!-- Web Preview iframe (hidden by default) -->
-                <div id="preview-container" class="absolute inset-0 hidden bg-white">
-                    <iframe id="web-preview" class="w-full h-full border-none shadow-inner"></iframe>
-                </div>
-            </div>
-        </div>
+  <div class="footer">
+    Tooltari · built with ❤️ · uses Piston API
+  </div>
+</div>
 
-    </main>
+<script>
+  (function() {
+    // --- Init CodeMirror ---
+    const editorElement = document.getElementById('codeEditor');
+    const editor = CodeMirror.fromTextArea(editorElement, {
+      mode: 'text/x-c++src',
+      theme: 'dracula',
+      lineNumbers: true,
+      indentUnit: 2,
+      tabSize: 2,
+      autoCloseBrackets: true,
+      matchBrackets: true,
+    });
 
-    <script>
-        // Use \x3C and \x3E instead of < and > in HTML string to prevent browser parsing errors
-        const defaultTemplates = {
-            'cpp': '#include \x3Ciostream\x3E\nusing namespace std;\n\nint main() {\n    // Tooltari Turbo Compiler\n    cout \x3C\x3C "Hello, World! Welcome to C++" \x3C\x3C endl;\n    return 0;\n}',
-            'c': '#include \x3Cstdio.h\x3E\n\nint main() {\n    // Tooltari C Compiler\n    printf("Hello, World! Welcome to C\\n");\n    return 0;\n}',
-            'javascript': '// Tooltari JS Server\nconsole.log("JavaScript engine is running...");\n\nfor(let i = 1; i <= 5; i++) {\n    console.log("Loop iteration: " + i);\n}',
-            'html': '\x3C!DOCTYPE html\x3E\n\x3Chtml\x3E\n\x3Chead\x3E\n  \x3Cstyle\x3E\n    body { font-family: system-ui, sans-serif; text-align: center; padding-top: 2rem; background: #f8fafc; }\n    h1 { color: #2563eb; }\n    p { color: #475569; }\n  \x3C/style\x3E\n\x3C/head\x3E\n\x3Cbody\x3E\n  \x3Ch1\x3ETooltari Web Server\x3C/h1\x3E\n  \x3Cp\x3EHTML/CSS Code yahan likhein aur Compile dabayen.\x3C/p\x3E\n\x3C/body\x3E\n\x3C/html\x3E'
+    // Default code sample (C++)
+    editor.setValue(`#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello, Tooltari!" << endl;\n    return 0;\n}`);
+
+    // --- Language -> mode and file extension mapping ---
+    const langMap = {
+      python: { mode: 'python', ext: '.py', pistonLang: 'python', version: '3.10.0' },
+      cpp:    { mode: 'text/x-c++src', ext: '.cpp', pistonLang: 'cpp', version: '10.2.0' },
+      java:   { mode: 'text/x-java', ext: '.java', pistonLang: 'java', version: '17.0.0' },
+      javascript: { mode: 'javascript', ext: '.js', pistonLang: 'javascript', version: '16.14.2' },
+      csharp: { mode: 'text/x-csharp', ext: '.cs', pistonLang: 'csharp', version: '6.0.0' }
+    };
+
+    // --- Update editor mode on language change ---
+    const langSelect = document.getElementById('languageSelect');
+    langSelect.addEventListener('change', function() {
+      const lang = this.value;
+      const mode = langMap[lang].mode;
+      editor.setOption('mode', mode);
+    });
+
+    // --- Run compilation ---
+    const runBtn = document.getElementById('runBtn');
+    const outputArea = document.getElementById('outputArea');
+    const stdinInput = document.getElementById('stdinInput');
+
+    runBtn.addEventListener('click', async function() {
+      const code = editor.getValue();
+      const lang = langSelect.value;
+      const pistonLang = langMap[lang].pistonLang;
+      const version = langMap[lang].version;
+      const stdin = stdinInput.value;
+
+      if (!code.trim()) {
+        outputArea.innerHTML = '<span class="error">⚠️ Please enter some code.</span>';
+        return;
+      }
+
+      // Show loading
+      outputArea.innerHTML = '<span class="spinner"></span> Compiling...';
+
+      try {
+        const payload = {
+          language: pistonLang,
+          version: version,
+          files: [{
+            name: `main${langMap[lang].ext}`,
+            content: code
+          }],
+          stdin: stdin
         };
 
-        const fileNames = {
-            'cpp': 'NONAME00.CPP',
-            'c': 'MAIN.C',
-            'javascript': 'SCRIPT.JS',
-            'html': 'INDEX.HTML'
-        };
-
-        let currentLang = 'cpp';
-        let isCompiling = false;
-
-        // Elements
-        const editor = document.getElementById('code-editor');
-        const lineNumbers = document.getElementById('line-numbers');
-        const consoleOutput = document.getElementById('console-output');
-        const previewContainer = document.getElementById('preview-container');
-        const webPreview = document.getElementById('web-preview');
-        const statusBadge = document.getElementById('status-badge');
-        const filenameDisplay = document.getElementById('filename-display');
-        const langSelector = document.getElementById('lang-selector');
-
-        // Initialization
-        window.onload = () => {
-            // Safe injection to avoid HTML bugs
-            editor.value = defaultTemplates['cpp'];
-            updateLineNumbers();
-            logToConsole("Tooltari IDE Initialized.\nPress Ctrl+F9 to Compile code.", "info");
-        };
-
-        // UI Server Switching
-        function setServer(serverName, lang) {
-            // Reset active classes
-            document.querySelectorAll('.server-tab').forEach(tab => {
-                tab.classList.remove('active-turbo', 'active-modern');
-            });
-            
-            const activeTab = document.getElementById('tab-' + serverName);
-            const body = document.getElementById('app-body');
-            
-            if (serverName === 'turbo') {
-                body.className = 'theme-turbo h-screen flex flex-col overflow-hidden';
-                activeTab.classList.add('active-turbo');
-            } else {
-                body.className = 'theme-modern h-screen flex flex-col overflow-hidden';
-                activeTab.classList.add('active-modern');
-            }
-
-            // Update language selector based on server
-            langSelector.value = lang;
-            changeLanguage(lang);
-        }
-
-        function changeLanguage(lang) {
-            currentLang = lang;
-            editor.value = defaultTemplates[lang];
-            filenameDisplay.innerText = fileNames[lang];
-            updateLineNumbers();
-
-            if (lang === 'html') {
-                previewContainer.classList.remove('hidden');
-                consoleOutput.classList.add('hidden');
-            } else {
-                previewContainer.classList.add('hidden');
-                consoleOutput.classList.remove('hidden');
-                clearOutput();
-                logToConsole(`Ready. Language set to ${lang.toUpperCase()}.`, 'info');
-            }
-        }
-
-        // Editor Utilities
-        function updateLineNumbers() {
-            const linesCount = editor.value.split('\n').length;
-            let linesHTML = '';
-            for (let i = 1; i <= Math.max(linesCount, 15); i++) {
-                linesHTML += `<div>${i}</div>`;
-            }
-            lineNumbers.innerHTML = linesHTML;
-        }
-
-        editor.addEventListener('input', updateLineNumbers);
-        editor.addEventListener('scroll', () => { lineNumbers.scrollTop = editor.scrollTop; });
-
-        editor.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                const start = editor.selectionStart;
-                const end = editor.selectionEnd;
-                editor.value = editor.value.substring(0, start) + "    " + editor.value.substring(end);
-                editor.selectionStart = editor.selectionEnd = start + 4;
-                updateLineNumbers();
-            }
+        const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
         });
 
-        // Shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && (e.key === 'F9' || e.key === 'f9')) {
-                e.preventDefault();
-                runCode();
-            }
-            if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
-                e.preventDefault();
-                saveFile();
-            }
-        });
+        const data = await response.json();
 
-        // Console Logging
-        function clearOutput() {
-            consoleOutput.innerHTML = '';
+        if (!response.ok) {
+          throw new Error(data.message || 'Compilation service error');
         }
 
-        function logToConsole(msg, type = 'normal') {
-            const div = document.createElement('div');
-            if (type === 'error') div.className = 'text-red-500 font-bold';
-            else if (type === 'success') div.className = 'text-green-400 font-bold';
-            else if (type === 'info') div.className = 'text-blue-300 italic opacity-90';
-            
-            // Protect against XSS in output
-            div.textContent = msg; 
-            consoleOutput.appendChild(div);
-            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        // Build output
+        let outputHtml = '';
+        if (data.run && data.run.stdout) {
+          outputHtml += `<span class="success">${escapeHtml(data.run.stdout)}</span>`;
+        }
+        if (data.run && data.run.stderr) {
+          outputHtml += `<span class="error">${escapeHtml(data.run.stderr)}</span>`;
+        }
+        if (data.compile && data.compile.stderr) {
+          outputHtml += `<span class="error">${escapeHtml(data.compile.stderr)}</span>`;
+        }
+        if (!outputHtml) {
+          outputHtml = '✅ Program executed with no output.';
         }
 
-        function setStatus(statusText, colorClass) {
-            statusBadge.innerText = statusText;
-            statusBadge.className = `px-2 py-0.5 rounded text-white font-bold text-[10px] uppercase ${colorClass}`;
-        }
+        outputArea.innerHTML = outputHtml;
 
-        // Compilation Engine
-        async function runCode() {
-            if (isCompiling) return;
-            const code = editor.value;
-            
-            if (currentLang === 'html') {
-                setStatus("Running", "bg-green-600");
-                webPreview.srcdoc = code;
-                setTimeout(() => setStatus("IDLE", "bg-gray-600"), 1000);
-                return;
-            }
+      } catch (error) {
+        outputArea.innerHTML = `<span class="error">❌ Error: ${escapeHtml(error.message)}</span>`;
+      }
+    });
 
-            if (currentLang === 'javascript') {
-                executeJavaScript(code);
-                return;
-            }
+    // --- Download code ---
+    const downloadBtn = document.getElementById('downloadBtn');
+    downloadBtn.addEventListener('click', function() {
+      const code = editor.getValue();
+      const lang = langSelect.value;
+      const ext = langMap[lang].ext;
+      const blob = new Blob([code], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `tooltari_code${ext}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
 
-            // C / C++ Compilation via Piston API
-            isCompiling = true;
-            setStatus("Compiling", "bg-yellow-600 animate-pulse");
-            clearOutput();
-            logToConsole(`Compiling ${filenameDisplay.innerText} to executable...`, 'info');
+    // --- Helper: escape HTML ---
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
 
-            try {
-                const apiLang = currentLang === 'cpp' ? 'c++' : 'c';
-                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        language: apiLang,
-                        version: '*',
-                        files: [{ content: code }]
-                    })
-                });
+    // --- Trigger initial mode ---
+    langSelect.dispatchEvent(new Event('change'));
 
-                const data = await response.json();
-
-                if (data.run) {
-                    if (data.run.stderr) {
-                        logToConsole("\n--- Compiler Warnings/Errors ---\n" + data.run.stderr, 'error');
-                    }
-                    if (data.run.output) {
-                        logToConsole("\n--- Output ---\n" + data.run.output, 'success');
-                    } else if (!data.run.stderr) {
-                        logToConsole("\n(No output returned)", 'info');
-                    }
-                } else {
-                    logToConsole("Compilation Failed:\n" + (data.message || "Unknown Error"), 'error');
-                }
-            } catch (error) {
-                logToConsole("\n[!] Server connection failed. Check your internet or API limits.", 'error');
-            }
-
-            isCompiling = false;
-            setStatus("IDLE", "bg-gray-600");
-        }
-
-        function executeJavaScript(code) {
-            setStatus("Executing", "bg-blue-600");
-            clearOutput();
-            logToConsole("Running JavaScript Engine...\n", 'info');
-
-            try {
-                // Override console log temporarily to capture output
-                const oldLog = console.log;
-                const oldError = console.error;
-                
-                console.log = function(...args) {
-                    logToConsole(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '));
-                    oldLog.apply(console, args);
-                };
-                console.error = function(...args) {
-                    logToConsole("Error: " + args.join(' '), 'error');
-                    oldError.apply(console, args);
-                };
-
-                // Execute JS
-                new Function(code)();
-
-                // Restore console
-                console.log = oldLog;
-                console.error = oldError;
-
-            } catch (e) {
-                logToConsole("Runtime Error: " + e.message, 'error');
-            }
-            
-            setStatus("IDLE", "bg-gray-600");
-        }
-
-        // File Management
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                editor.value = e.target.result;
-                filenameDisplay.innerText = file.name.toUpperCase();
-                
-                // Detect Lang
-                const ext = file.name.split('.').pop().toLowerCase();
-                if(ext === 'c') langSelector.value = 'c';
-                else if(ext === 'cpp') langSelector.value = 'cpp';
-                else if(ext === 'js') langSelector.value = 'javascript';
-                else if(ext === 'html' || ext === 'htm') langSelector.value = 'html';
-                
-                currentLang = langSelector.value;
-                if (currentLang === 'html') {
-                    previewContainer.classList.remove('hidden');
-                    consoleOutput.classList.add('hidden');
-                } else {
-                    previewContainer.classList.add('hidden');
-                    consoleOutput.classList.remove('hidden');
-                }
-
-                updateLineNumbers();
-            };
-            reader.readAsText(file);
-            event.target.value = '';
-        }
-
-        function saveFile() {
-            const blob = new Blob([editor.value], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filenameDisplay.innerText.toLowerCase
+  })();
+</script>
+</body>
+    </html>
