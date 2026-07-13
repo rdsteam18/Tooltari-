@@ -1,0 +1,388 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tooltari Compiler 🍌</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom scrollbar aur basic styling */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        .editor-container {
+            display: flex;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        #line-numbers {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            padding: 1rem 0.5rem;
+            text-align: right;
+            user-select: none;
+            overflow: hidden;
+        }
+        
+        #code-editor {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            white-space: pre;
+            tab-size: 4;
+            outline: none;
+            resize: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-300 font-sans h-screen flex flex-col overflow-hidden selection:bg-yellow-500/30">
+
+    <!-- Header / Navbar -->
+    <header class="flex flex-col sm:flex-row items-center justify-between px-4 py-3 bg-slate-900 border-b border-slate-800 shadow-sm gap-4 sm:gap-0 z-10">
+        <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
+            <div class="flex items-center gap-2">
+                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-yellow-400 text-slate-900 text-xl shadow-lg shadow-yellow-500/20">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight text-white hidden sm:block">Tooltari <span class="text-yellow-400">🍌</span></h1>
+            </div>
+            
+            <!-- Language Switcher Mobile -->
+            <div class="flex sm:hidden bg-slate-800 rounded-md p-1 border border-slate-700">
+                <button onclick="setLanguage('javascript')" id="btn-js-mob" class="px-3 py-1.5 rounded text-sm transition-colors bg-slate-700 text-yellow-400 shadow-sm">JS</button>
+                <button onclick="setLanguage('html')" id="btn-html-mob" class="px-3 py-1.5 rounded text-sm transition-colors hover:text-white">HTML</button>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-2 flex-wrap justify-center w-full sm:w-auto">
+            <!-- Language Switcher Desktop -->
+            <div class="hidden sm:flex bg-slate-800 rounded-md p-1 mr-2 border border-slate-700">
+                <button onclick="setLanguage('javascript')" id="btn-js" class="flex items-center gap-2 px-3 py-1.5 rounded text-sm transition-colors bg-slate-700 text-yellow-400 shadow-sm">
+                    <i class="fa-brands fa-js"></i> JavaScript
+                </button>
+                <button onclick="setLanguage('html')" id="btn-html" class="flex items-center gap-2 px-3 py-1.5 rounded text-sm transition-colors hover:text-white">
+                    <i class="fa-brands fa-html5"></i> HTML/CSS
+                </button>
+            </div>
+
+            <!-- Hidden File Input -->
+            <input type="file" id="file-input" class="hidden" accept=".js,.html,.css,.txt" onchange="handleOpenFile(event)">
+            
+            <!-- Tools -->
+            <button onclick="document.getElementById('file-input').click()" class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-700" title="File Kholein">
+                <i class="fa-regular fa-folder-open text-slate-400"></i>
+                <span class="hidden md:inline">Kholein</span>
+            </button>
+            
+            <button onclick="handleSaveFile()" class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-700" title="Device me Save Karein">
+                <i class="fa-regular fa-floppy-disk text-slate-400"></i>
+                <span class="hidden md:inline">Save</span>
+            </button>
+            
+            <div class="w-px h-6 bg-slate-700 mx-1 sm:mx-2"></div>
+            
+            <button onclick="runCode()" class="flex items-center gap-2 px-4 py-2 text-sm font-bold text-slate-900 bg-yellow-400 rounded-md hover:bg-yellow-300 transition-all shadow-md shadow-yellow-500/20 active:scale-95">
+                <i class="fa-solid fa-play"></i> Code Chalayen
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+        
+        <!-- Editor Section -->
+        <section class="flex-1 flex flex-col border-r border-slate-800 min-w-[50%] bg-[#0d1117] relative">
+            <div class="flex items-center justify-between px-4 py-2 bg-slate-800/50 border-b border-slate-800 text-xs font-medium text-slate-400">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-code"></i> <span id="file-name-display">main.js</span>
+                </div>
+            </div>
+            
+            <div class="editor-container relative">
+                <!-- Line Numbers -->
+                <div id="line-numbers" class="w-10 sm:w-12 flex-shrink-0 bg-[#0d1117] border-r border-slate-800 text-slate-600 text-xs sm:text-sm leading-6">
+                    1
+                </div>
+                <!-- Textarea Editor -->
+                <textarea id="code-editor" class="flex-1 w-full bg-transparent text-slate-200 text-xs sm:text-sm leading-6 p-4 h-full" spellcheck="false" autocomplete="off">// Tooltari Compiler mein aapka swagat hai 🍌
+// Apna JavaScript ya HTML yahan likhein...
+
+console.log("Hello, Tooltari user!");
+
+let naam = prompt("Aapka naam kya hai?");
+if (naam) {
+    console.log("Welcome " + naam + "!");
+} else {
+    console.log("Aapne naam nahi bataya!");
+}</textarea>
+            </div>
+        </section>
+
+        <!-- Output / Preview Section -->
+        <section class="flex-1 flex flex-col bg-slate-950 min-w-[50%] h-[50vh] md:h-auto">
+            
+            <!-- Output Tabs -->
+            <div class="flex items-center justify-between px-2 py-1.5 bg-slate-900 border-b border-slate-800">
+                <div class="flex gap-1">
+                    <button id="tab-console" onclick="setTab('console')" class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-t-md transition-colors bg-slate-950 text-yellow-400 border-t border-l border-r border-slate-800 -mb-[7px] pb-[7px]">
+                        <i class="fa-solid fa-terminal"></i> Console Output
+                    </button>
+                    <button id="tab-preview" onclick="setTab('preview')" class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-t-md transition-colors text-slate-500 hover:text-slate-300">
+                        <i class="fa-solid fa-globe"></i> Web Preview
+                    </button>
+                </div>
+                <button onclick="clearConsole()" class="text-slate-500 hover:text-red-400 transition-colors p-1" title="Console Saaf Karein">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 relative overflow-hidden bg-slate-950">
+                
+                <!-- JS Console Div -->
+                <div id="console-output" class="absolute inset-0 p-4 font-mono text-sm space-y-1 overflow-auto text-slate-300 break-all">
+                    <div class="text-slate-600 italic">Abhi tak koi output nahi hai. 'Code Chalayen' par click karein.</div>
+                </div>
+                
+                <!-- Web Preview Iframe -->
+                <div id="preview-container" class="absolute inset-0 hidden bg-white">
+                    <iframe id="web-preview" class="w-full h-full border-none" sandbox="allow-scripts allow-modals"></iframe>
+                </div>
+                
+                <!-- Hidden Runner Iframe for JS execution -->
+                <iframe id="js-runner" class="hidden" sandbox="allow-scripts allow-modals"></iframe>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // State Variables
+        let currentLanguage = 'javascript';
+        let currentFileName = 'main.js';
+        let currentTab = 'console';
+
+        const editor = document.getElementById('code-editor');
+        const lineNumbers = document.getElementById('line-numbers');
+        const consoleOutput = document.getElementById('console-output');
+        const webPreview = document.getElementById('web-preview');
+        const previewContainer = document.getElementById('preview-container');
+        const jsRunner = document.getElementById('js-runner');
+
+        // Line Numbers Update Function
+        function updateLineNumbers() {
+            const lines = editor.value.split('\n').length;
+            let numbersHTML = '';
+            for (let i = 1; i <= Math.max(lines, 10); i++) {
+                numbersHTML += `<div>${i}</div>`;
+            }
+            lineNumbers.innerHTML = numbersHTML;
+        }
+
+        // Sync Scrolling for line numbers
+        editor.addEventListener('scroll', () => {
+            lineNumbers.scrollTop = editor.scrollTop;
+        });
+
+        editor.addEventListener('input', updateLineNumbers);
+
+        // Tab Key handler for Textarea (taaki focus change na ho)
+        editor.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                // Insert 4 spaces
+                this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 4;
+                updateLineNumbers();
+            }
+        });
+
+        // Initialize line numbers on load
+        updateLineNumbers();
+
+        // UI Toggle Functions
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            currentFileName = lang === 'javascript' ? 'main.js' : 'index.html';
+            document.getElementById('file-name-display').innerText = currentFileName;
+
+            // Update Buttons Styling (Desktop)
+            document.getElementById('btn-js').className = lang === 'javascript' 
+                ? 'flex items-center gap-2 px-3 py-1.5 rounded text-sm transition-colors bg-slate-700 text-yellow-400 shadow-sm' 
+                : 'flex items-center gap-2 px-3 py-1.5 rounded text-sm transition-colors hover:text-white';
+            document.getElementById('btn-html').className = lang === 'html' 
+                ? 'flex items-center gap-2 px-3 py-1.5 rounded text-sm transition-colors bg-slate-700 text-yellow-400 shadow-sm' 
+                : 'flex items-center gap-2 px-3 py-1.5 rounded text-sm transition-colors hover:text-white';
+
+            // Update Buttons Styling (Mobile)
+            document.getElementById('btn-js-mob').className = lang === 'javascript' 
+                ? 'px-3 py-1.5 rounded text-sm transition-colors bg-slate-700 text-yellow-400 shadow-sm' 
+                : 'px-3 py-1.5 rounded text-sm transition-colors hover:text-white';
+            document.getElementById('btn-html-mob').className = lang === 'html' 
+                ? 'px-3 py-1.5 rounded text-sm transition-colors bg-slate-700 text-yellow-400 shadow-sm' 
+                : 'px-3 py-1.5 rounded text-sm transition-colors hover:text-white';
+
+            // Auto-switch tabs
+            setTab(lang === 'javascript' ? 'console' : 'preview');
+            
+            // Sample code update agar editor khali hai ya purana sample hai
+            if(editor.value.includes('// Tooltari Compiler mein aapka swagat hai') || editor.value.includes('<!-- HTML Code yahan likhein -->')) {
+                if(lang === 'html') {
+                    editor.value = `<!-- HTML Code yahan likhein -->\n<div style="font-family: sans-serif; text-align: center; margin-top: 50px;">\n    <h1 style="color: #eab308;">Tooltari 🍌 Web Preview</h1>\n    <p>Apna HTML aur CSS yahan edit karein!</p>\n</div>`;
+                } else {
+                    editor.value = `// Tooltari Compiler mein aapka swagat hai 🍌\n// Apna JavaScript ya HTML yahan likhein...\n\nconsole.log("Hello, Tooltari user!");`;
+                }
+                updateLineNumbers();
+            }
+        }
+
+        function setTab(tab) {
+            currentTab = tab;
+            
+            // Tab Button Styling
+            const activeClasses = 'flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-t-md transition-colors bg-slate-950 text-yellow-400 border-t border-l border-r border-slate-800 -mb-[7px] pb-[7px]';
+            const inactiveClasses = 'flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-t-md transition-colors text-slate-500 hover:text-slate-300';
+            
+            document.getElementById('tab-console').className = tab === 'console' ? activeClasses : inactiveClasses;
+            document.getElementById('tab-preview').className = tab === 'preview' ? activeClasses : inactiveClasses;
+
+            // Show/Hide Content
+            if (tab === 'console') {
+                consoleOutput.style.display = 'block';
+                previewContainer.style.display = 'none';
+            } else {
+                consoleOutput.style.display = 'none';
+                previewContainer.style.display = 'block';
+            }
+        }
+
+        // File Operations
+        function handleOpenFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            currentFileName = file.name;
+            document.getElementById('file-name-display').innerText = currentFileName;
+
+            if (file.name.endsWith('.html') || file.name.endsWith('.htm')) {
+                setLanguage('html');
+            } else {
+                setLanguage('javascript');
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                editor.value = e.target.result;
+                updateLineNumbers();
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Input reset karna
+        }
+
+        function handleSaveFile() {
+            const code = editor.value;
+            const blob = new Blob([code], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = currentFileName;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function clearConsole() {
+            consoleOutput.innerHTML = '';
+        }
+
+        // Console messages sunne ke liye Event Listener
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.source === 'tooltari-runner') {
+                // Pehli baar message aaye toh default text hatao
+                if(consoleOutput.innerHTML.includes('Abhi tak koi output nahi hai')) {
+                    consoleOutput.innerHTML = '';
+                }
+
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `py-1 border-b border-slate-800/50 last:border-0 ${
+                    event.data.type === 'error' ? 'text-red-400' : 
+                    event.data.type === 'warn' ? 'text-yellow-500' : 'text-slate-300'
+                }`;
+                
+                const iconHTML = event.data.type === 'error' ? '<span class="opacity-50 select-none mr-2 text-xs">✖</span>' : 
+                                 event.data.type === 'warn' ? '<span class="opacity-50 select-none mr-2 text-xs">⚠</span>' : 
+                                 '<span class="opacity-50 select-none mr-2 text-xs">›</span>';
+                
+                msgDiv.innerHTML = iconHTML + event.data.msg.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                consoleOutput.appendChild(msgDiv);
+                
+                // Scroll to bottom
+                consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            }
+        });
+
+        // Run Code Logic
+        function runCode() {
+            const code = editor.value;
+            
+            if (currentLanguage === 'html') {
+                setTab('preview');
+                webPreview.srcdoc = code;
+            } else {
+                setTab('console');
+                clearConsole();
+                
+                // Iframe ke andar safe execution ke liye HTML template
+                const htmlTemplate = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <script>
+                            // Iframe se main window mein messages bhejne ke liye function
+                            const post = (type, ...args) => {
+                                const msg = args.map(a => {
+                                    try { return typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a); }
+                                    catch(e) { return String(a); }
+                                }).join(' ');
+                                window.parent.postMessage({ source: 'tooltari-runner', type, msg }, '*');
+                            };
+                            
+                            // Console ko override karna
+                            console.log = (...args) => post('log', ...args);
+                            console.error = (...args) => post('error', ...args);
+                            console.warn = (...args) => post('warn', ...args);
+                            console.info = (...args) => post('info', ...args);
+                            
+                            window.onerror = function(message, source, lineno, colno, error) {
+                                // Template me script tag ki line number adjust karna
+                                const actualLine = Math.max(1, lineno - 22); 
+                                post('error', 'Error: ' + message + ' (Line ' + actualLine + ')');
+                                return true;
+                            };
+                        <\/script>
+                    </head>
+                    <body>
+                        <script>
+                            try {
+                                ${code}
+                            } catch(e) {
+                                console.error(e.name + ': ' + e.message);
+                            }
+                        <\/script>
+                    </body>
+                    </html>
+                `;
+                jsRunner.srcdoc = htmlTemplate;
+            }
+        }
+    </script>
+</body>
+</html>
+
+```
+          
