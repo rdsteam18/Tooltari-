@@ -1,1076 +1,484 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tooltari - C/C++/JS/HTML Compiler</title>
-    <!-- Tailwind CSS for Desktop UI styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Modern Scrollbar */
-        ::-webkit-scrollbar { width: 12px; height: 12px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
-        ::-webkit-scrollbar-thumb { background: rgba(150,150,150,0.4); border-radius: 2px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(150,150,150,0.7); }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Tooltari Compiler</title>
+  <!-- Tailwind via CDN + custom baseline -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font for clean UI -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #0b0e14; }
+    /* custom scrollbar for dark/modern */
+    .code-editor-wrap {
+      background: #1e2530;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.7);
+    }
+    .line-numbers {
+      background: #141a22;
+      color: #6b7b8f;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 16px 0 16px 12px;
+      min-width: 52px;
+      text-align: right;
+      user-select: none;
+      border-right: 1px solid #2e3846;
+      overflow-y: hidden;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .code-textarea {
+      background: #1e2530;
+      color: #e3e9f2;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 16px 16px 16px 20px;
+      border: none;
+      outline: none;
+      resize: none;
+      width: 100%;
+      height: 100%;
+      min-height: 420px;
+      tab-size: 2;
+      letter-spacing: 0.2px;
+      overflow: auto;
+    }
+    .code-textarea::placeholder { color: #4b5a6f; }
+    .code-textarea:focus { box-shadow: inset 0 0 0 1px #3e4b5e; }
 
-        /* Classic Turbo Theme */
-        .theme-turbo {
-            --bg-main: #0000a8; 
-            --bg-menu: #a8a8a8; 
-            --text-main: #ffff55; 
-            --text-normal: #ffffff;
-            --menu-text: #000000;
-            --menu-hover-bg: #55ffff;
-            --output-bg: #000000;
-            --output-text: #a8a8a8;
-            font-family: 'Courier New', Courier, monospace;
-        }
+    /* Turbo blue DOS style */
+    .turbo-active .code-editor-wrap {
+      background: #0000aa !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+    .turbo-active .line-numbers {
+      background: #0000aa !important;
+      color: #ffff55 !important;
+      border-right: 1px solid #ffff55 !important;
+    }
+    .turbo-active .code-textarea {
+      background: #0000aa !important;
+      color: #ffffff !important;
+    }
+    .turbo-active .code-textarea::placeholder { color: #aaccff; }
+    .turbo-active .top-bar-bg {
+      background: #c0c0c0 !important;
+      border-bottom: 2px solid #ffffff;
+    }
+    .turbo-active .server-btn {
+      background: #c0c0c0 !important;
+      color: #000000 !important;
+      border: 1px solid #808080 !important;
+      box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #ffffff;
+    }
+    .turbo-active .server-btn.active {
+      background: #0000aa !important;
+      color: #ffffff !important;
+      border: 1px solid #ffff55 !important;
+      box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #ffffff;
+    }
+    .turbo-active .menu-btn {
+      background: #c0c0c0 !important;
+      color: #000000 !important;
+      border: 1px solid #808080;
+      box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #ffffff;
+    }
+    .turbo-active .menu-btn:hover {
+      background: #d4d4d4 !important;
+    }
+    .turbo-active .output-panel {
+      background: #0000aa !important;
+      color: #ffffff !important;
+      border-top: 2px solid #ffff55 !important;
+    }
+    .turbo-active .output-panel pre {
+      color: #ffffff !important;
+    }
+    .turbo-active body {
+      background: #0000aa !important;
+    }
+    .turbo-active .container { background: #0000aa !important; }
+    .turbo-active .top-bar-bg .text-white { color: #000000 !important; }
 
-        /* Modern Dark Theme */
-        .theme-modern {
-            --bg-main: #1e1e1e; 
-            --bg-menu: #333333;
-            --text-main: #d4d4d4;
-            --text-normal: #ffffff;
-            --menu-text: #cccccc;
-            --menu-hover-bg: #007acc;
-            --output-bg: #0d1117;
-            --output-text: #4ade80; 
-            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-        }
+    /* output */
+    .output-panel {
+      background: #141c26;
+      border-radius: 0 0 12px 12px;
+      border-top: 1px solid #2e3a48;
+      padding: 12px 16px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #b8c9e0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .output-panel pre { margin: 0; color: #b8c9e0; }
 
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-normal);
-            transition: background-color 0.2s, color 0.2s;
-        }
+    .top-bar-bg {
+      background: #1f2937;
+      border-radius: 12px 12px 0 0;
+      padding: 10px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 6px;
+      border-bottom: 1px solid #2e3a48;
+    }
 
-        /* Top Server Bar */
-        .top-server-bar {
-            background-color: #0f172a;
-            color: #94a3b8;
-            font-family: sans-serif;
-        }
-        .server-tab { 
-            padding: 0.5rem 1.2rem; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            border-right: 1px solid #1e293b;
-        }
-        .server-tab:hover { background-color: #1e293b; color: white; }
-        .server-tab.active-turbo { background-color: #2563eb; color: white; box-shadow: inset 0 -3px 0 #60a5fa; }
-        .server-tab.active-modern { background-color: #007acc; color: white; box-shadow: inset 0 -3px 0 #4ade80; }
+    .server-btn {
+      background: #2d3748;
+      padding: 4px 14px;
+      border-radius: 24px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #b0c4de;
+      border: 1px solid #3b4a5e;
+      transition: all 0.1s;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+    }
+    .server-btn.active {
+      background: #3b82f6;
+      color: white;
+      border-color: #60a5fa;
+    }
+    .server-btn:hover { filter: brightness(1.2); }
 
-        /* Menu Bar */
-        .menu-bar {
-            background-color: var(--bg-menu);
-            color: var(--menu-text);
-            font-weight: bold;
-            font-family: sans-serif;
-        }
-        .menu-item {
-            padding: 0.4rem 1rem;
-            cursor: pointer;
-            user-select: none;
-        }
-        .menu-item:hover { background-color: var(--menu-hover-bg); color: #000; }
+    .menu-btn {
+      background: #2d3748;
+      border: none;
+      color: #d1dae8;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      transition: 0.1s;
+      cursor: pointer;
+      border: 1px solid #3b4a5e;
+    }
+    .menu-btn:hover { background: #3b4a5e; }
 
-        /* Editor Section */
-        .editor-area {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            outline: none;
-            resize: none;
-            white-space: pre;
-            tab-size: 4;
-            font-size: 16px;
-        }
-        
-        .output-area {
-            background-color: var(--output-bg);
-            color: var(--output-text);
-            font-family: 'Courier New', Courier, monospace;
-        }
+    .shortcut-hint {
+      font-size: 10px;
+      color: #6b7f96;
+      background: #1e293b;
+      padding: 2px 8px;
+      border-radius: 30px;
+      border: 1px solid #334155;
+    }
 
-        .language-select {
-            background-color: #ffffff;
-            color: #000000;
-            border: 1px solid #555;
-            padding: 2px 6px;
-            outline: none;
-            cursor: pointer;
-            border-radius: 3px;
-        }
-    </style>
+    /* responsive */
+    @media (max-width: 700px) {
+      .top-bar-bg { flex-wrap: wrap; justify-content: center; }
+      .code-textarea { min-height: 300px; }
+      .line-numbers { min-width: 40px; padding-left: 6px; }
+    }
+  </style>
 </head>
-<body class="theme-turbo h-screen flex flex-col overflow-hidden" id="app-body">
+<body class="min-h-screen flex items-center justify-center p-4 transition-colors duration-150" style="background:#0b0e14;">
 
-    <!-- Top Server Selector Bar -->
-    <div class="top-server-bar flex text-sm font-semibold select-none shadow-md z-20">
-        <div class="px-4 py-2 text-white/80 border-r border-slate-800 flex items-center bg-slate-900">
-            <i class="fa-solid fa-laptop-code mr-2 text-blue-400"></i> Tooltari IDE
-        </div>
-        <div class="server-tab" id="tab-s1" onclick="setServer('s1', 'c')">Server 1 (C)</div>
-        <div class="server-tab" id="tab-s2" onclick="setServer('s2', 'cpp')">Server 2 (C++)</div>
-        <div class="server-tab" id="tab-s3" onclick="setServer('s3', 'javascript')">Server 3 (JS)</div>
-        <div class="server-tab" id="tab-s4" onclick="setServer('s4', 'html')">Server 4 (HTML)</div>
-        <div class="server-tab active-turbo flex items-center gap-1" id="tab-turbo" onclick="setServer('turbo', 'cpp')">
-            <i class="fa-solid fa-bolt text-yellow-400"></i> Turbo C++
-        </div>
-        <div class="flex-1"></div>
-        <div class="px-4 py-2 text-xs opacity-70 hidden md:flex items-center">
-            <i class="fa-solid fa-check-circle text-green-400 mr-1"></i> Verified Error Free
-        </div>
+<div class="container w-full max-w-6xl mx-auto transition-colors duration-150" id="appContainer">
+
+  <!-- Top bar with server + menu -->
+  <div class="top-bar-bg flex flex-wrap items-center justify-between" id="topBar">
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="text-white font-bold text-sm tracking-wide mr-1 hidden sm:inline">⚡ Tooltari</span>
+      <button data-server="c" class="server-btn active" id="srvC">C</button>
+      <button data-server="cpp" class="server-btn" id="srvCpp">C++</button>
+      <button data-server="js" class="server-btn" id="srvJs">JS</button>
+      <button data-server="html" class="server-btn" id="srvHtml">HTML</button>
+      <button data-server="turbo" class="server-btn" id="srvTurbo">🐉 Turbo</button>
     </div>
-
-    <!-- Actions Menu Bar -->
-    <div class="menu-bar flex flex-wrap items-center text-sm shadow-sm select-none border-b-2 border-black/20">
-        <div class="menu-item flex items-center gap-2" onclick="runCode()" title="Code Chalayen">
-            <span class="text-red-600 font-extrabold text-lg">C</span>ompile (Ctrl+F9)
-        </div>
-        <div class="menu-item flex items-center gap-1" onclick="alert('Debug mode jald hi aayega!')">
-            <i class="fa-solid fa-bug text-xs"></i> Debug
-        </div>
-        <div class="menu-item flex items-center gap-1" onclick="document.getElementById('file-input').click()">
-            <i class="fa-solid fa-folder-open text-xs"></i> Open Project
-        </div>
-        <div class="menu-item flex items-center gap-1" onclick="saveFile()">
-            <i class="fa-solid fa-floppy-disk text-xs"></i> Save File
-        </div>
-        <div class="menu-item flex items-center gap-1" onclick="clearOutput()">
-            <i class="fa-solid fa-eraser text-xs"></i> Clear Output
-        </div>
-        
-        <div class="mx-auto"></div>
-        
-        <!-- Language Selector Fallback -->
-        <div class="flex items-center gap-2 px-3 py-1">
-            <span class="opacity-80 text-xs">Active Language:</span>
-            <select id="lang-selector" class="language-select text-sm font-bold" onchange="changeLanguage(this.value)">
-                <option value="cpp">C++ (Turbo/GCC)</option>
-                <option value="c">C (GCC)</option>
-                <option value="javascript">JavaScript</option>
-                <option value="html">HTML / CSS</option>
-            </select>
-        </div>
+    <div class="flex flex-wrap items-center gap-1.5">
+      <button class="menu-btn" id="compileBtn">▶ Compile</button>
+      <button class="menu-btn" id="debugBtn">🐞 Debug</button>
+      <button class="menu-btn" id="openBtn">📂 Open</button>
+      <button class="menu-btn" id="saveBtn">💾 Save</button>
+      <button class="menu-btn" id="clearBtn">✕ Clear</button>
+      <span class="shortcut-hint hidden sm:inline-block">Ctrl+F9 · Ctrl+S</span>
     </div>
+  </div>
 
-    <!-- Hidden File Input -->
-    <input type="file" id="file-input" class="hidden" accept=".c,.cpp,.js,.html,.txt" onchange="handleFileSelect(event)">
+  <!-- Editor with line numbers -->
+  <div class="code-editor-wrap flex flex-col transition-colors duration-150" id="editorWrap">
+    <div class="flex" style="height: 420px; min-height: 300px;">
+      <div class="line-numbers" id="lineNumbers">1</div>
+      <textarea class="code-textarea" id="codeEditor" spellcheck="false" placeholder="Write your code here..."></textarea>
+    </div>
+    <!-- Output panel -->
+    <div class="output-panel" id="outputPanel"><pre>// Output will appear here</pre></div>
+  </div>
 
-    <!-- Main Desktop Layout (Editor + Output) -->
-    <main class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
-        
-        <!-- Code Editor Pane -->
-        <div class="flex-1 flex flex-col border-r-4 border-black/30 relative min-w-[50%]">
-            <div class="bg-black/20 text-center text-xs py-1 border-b border-black/30 font-bold opacity-90 tracking-widest shadow-inner" id="filename-display">
-                NONAME00.CPP
-            </div>
-            <div class="flex-1 flex relative overflow-hidden bg-inherit">
-                <!-- Line Numbers -->
-                <div id="line-numbers" class="w-12 bg-black/20 text-right pr-2 py-4 opacity-60 text-sm overflow-hidden select-none border-r border-black/20">
-                    <!-- JS Dwara Generate Honge -->
-                </div>
-                <!-- Textarea (Blank initially to prevent HTML parsing errors) -->
-                <textarea id="code-editor" class="editor-area flex-1 w-full h-full p-4 p-l-3 leading-relaxed border-none" spellcheck="false" autocomplete="off"></textarea>
-            </div>
-        </div>
+  <!-- hidden file input -->
+  <input type="file" id="fileInput" accept=".c,.cpp,.js,.html,.txt,.h" style="display:none" />
+</div>
 
-        <!-- Output Pane -->
-        <div class="h-1/3 md:h-full md:w-2/5 flex flex-col output-area relative shadow-xl z-10 border-t-4 md:border-t-0 border-gray-600">
-            <div class="bg-gray-800 text-white text-xs py-1.5 px-3 flex justify-between items-center border-b border-black">
-                <span class="font-bold tracking-wide"><i class="fa-solid fa-terminal mr-1"></i> Output Terminal</span>
-                <span id="status-badge" class="px-2 py-0.5 rounded bg-gray-600 text-white font-bold text-[10px] uppercase">IDLE</span>
-            </div>
-            
-            <div class="flex-1 relative bg-inherit">
-                <!-- Text Console -->
-                <div id="console-output" class="absolute inset-0 p-4 overflow-auto text-sm whitespace-pre-wrap leading-relaxed shadow-inner"></div>
-                
-                <!-- Web Preview iframe (hidden by default) -->
-                <div id="preview-container" class="absolute inset-0 hidden bg-white">
-                    <iframe id="web-preview" class="w-full h-full border-none shadow-inner"></iframe>
-                </div>
-            </div>
-        </div>
+<script>
+  (function() {
+    // ---------- DOM refs ----------
+    const editor = document.getElementById('codeEditor');
+    const lineNumbers = document.getElementById('lineNumbers');
+    const output = document.getElementById('outputPanel');
+    const outputPre = output.querySelector('pre') || document.createElement('pre');
+    if (!output.querySelector('pre')) { output.prepend(outputPre); }
 
-    </main>
+    const serverBtns = document.querySelectorAll('.server-btn');
+    const container = document.getElementById('appContainer');
+    const topBar = document.getElementById('topBar');
+    const editorWrap = document.getElementById('editorWrap');
 
-    <script>
-        // Use \x3C and \x3E instead of < and > in HTML string to prevent browser parsing errors
-        const defaultTemplates = {
-            'cpp': '#include \x3Ciostream\x3E\nusing namespace std;\n\nint main() {\n    // Tooltari Turbo Compiler\n    cout \x3C\x3C "Hello, World! Welcome to C++" \x3C\x3C endl;\n    return 0;\n}',
-            'c': '#include \x3Cstdio.h\x3E\n\nint main() {\n    // Tooltari C Compiler\n    printf("Hello, World! Welcome to C\\n");\n    return 0;\n}',
-            'javascript': '// Tooltari JS Server\nconsole.log("JavaScript engine is running...");\n\nfor(let i = 1; i <= 5; i++) {\n    console.log("Loop iteration: " + i);\n}',
-            'html': '\x3C!DOCTYPE html\x3E\n\x3Chtml\x3E\n\x3Chead\x3E\n  \x3Cstyle\x3E\n    body { font-family: system-ui, sans-serif; text-align: center; padding-top: 2rem; background: #f8fafc; }\n    h1 { color: #2563eb; }\n    p { color: #475569; }\n  \x3C/style\x3E\n\x3C/head\x3E\n\x3Cbody\x3E\n  \x3Ch1\x3ETooltari Web Server\x3C/h1\x3E\n  \x3Cp\x3EHTML/CSS Code yahan likhein aur Compile dabayen.\x3C/p\x3E\n\x3C/body\x3E\n\x3C/html\x3E'
-        };
+    // ---------- Default templates (escaped to avoid parser issues) ----------
+    const TEMPLATES = {
+      c: `#include <stdio.h>\n\nint main() {\n    printf("Hello from C!\\n");\n    return 0;\n}`,
+      cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello from C++!" << endl;\n    return 0;\n}`,
+      js: `// JavaScript\nconsole.log("Hello from JS!");\nconst sum = (a, b) => a + b;\nconsole.log("2+3 =", sum(2,3));`,
+      html: `\x3Chtml\x3E\n  \x3Chead\x3E\x3Ctitle\x3EPreview\x3C/title\x3E\x3C/head\x3E\n  \x3Cbody style="background:#1e293b;color:#eee;font-family:sans-serif;padding:2rem;"\x3E\n    \x3Ch1\x3EHello from HTML!\x3C/h1\x3E\n    \x3Cp\x3ELive preview inside iframe.\x3C/p\x3E\n  \x3C/body\x3E\n\x3C/html\x3E`,
+      turbo: `#include <iostream.h>\n#include <conio.h>\n\nvoid main() {\n    clrscr();\n    cout << "Turbo C++ mode!";\n    getch();\n}`
+    };
 
-        const fileNames = {
-            'cpp': 'NONAME00.CPP',
-            'c': 'MAIN.C',
-            'javascript': 'SCRIPT.JS',
-            'html': 'INDEX.HTML'
-        };
+    // current state
+    let currentServer = 'c';
+    let currentTheme = 'modern'; // 'modern' or 'turbo'
 
-        let currentLang = 'cpp';
-        let isCompiling = false;
+    // ---------- helper: set line numbers ----------
+    function updateLineNumbers() {
+      const lines = editor.value.split('\n');
+      const count = lines.length;
+      let nums = '';
+      for (let i = 1; i <= count; i++) {
+        nums += i + '\n';
+      }
+      lineNumbers.textContent = nums;
+    }
 
-        // Elements
-        const editor = document.getElementById('code-editor');
-        const lineNumbers = document.getElementById('line-numbers');
-        const consoleOutput = document.getElementById('console-output');
-        const previewContainer = document.getElementById('preview-container');
-        const webPreview = document.getElementById('web-preview');
-        const statusBadge = document.getElementById('status-badge');
-        const filenameDisplay = document.getElementById('filename-display');
-        const langSelector = document.getElementById('lang-selector');
+    // sync scroll
+    editor.addEventListener('scroll', function() {
+      lineNumbers.scrollTop = this.scrollTop;
+    });
 
-        // Initialization
-        window.onload = () => {
-            // Safe injection to avoid HTML bugs
-            editor.value = defaultTemplates['cpp'];
-            updateLineNumbers();
-            logToConsole("Tooltari IDE Initialized.\nPress Ctrl+F9 to Compile code.", "info");
-        };
+    editor.addEventListener('input', updateLineNumbers);
 
-        // UI Server Switching
-        function setServer(serverName, lang) {
-            // Reset active classes
-            document.querySelectorAll('.server-tab').forEach(tab => {
-                tab.classList.remove('active-turbo', 'active-modern');
-            });
-            
-            const activeTab = document.getElementById('tab-' + serverName);
-            const body = document.getElementById('app-body');
-            
-            if (serverName === 'turbo') {
-                body.className = 'theme-turbo h-screen flex flex-col overflow-hidden';
-                activeTab.classList.add('active-turbo');
-            } else {
-                body.className = 'theme-modern h-screen flex flex-col overflow-hidden';
-                activeTab.classList.add('active-modern');
-            }
+    // ---------- set editor content and update line numbers ----------
+    function setEditorContent(code) {
+      editor.value = code;
+      updateLineNumbers();
+    }
 
-            // Update language selector based on server
-            langSelector.value = lang;
-            changeLanguage(lang);
+    // ---------- load template for server ----------
+    function loadTemplate(server) {
+      let code = '';
+      if (server === 'c') code = TEMPLATES.c;
+      else if (server === 'cpp') code = TEMPLATES.cpp;
+      else if (server === 'js') code = TEMPLATES.js;
+      else if (server === 'html') code = TEMPLATES.html;
+      else if (server === 'turbo') code = TEMPLATES.turbo;
+      setEditorContent(code);
+    }
+
+    // ---------- apply theme ----------
+    function applyTheme(server) {
+      const isTurbo = (server === 'turbo');
+      if (isTurbo) {
+        container.classList.add('turbo-active');
+        currentTheme = 'turbo';
+      } else {
+        container.classList.remove('turbo-active');
+        currentTheme = 'modern';
+      }
+      // active button style
+      serverBtns.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.server === server) btn.classList.add('active');
+      });
+    }
+
+    // ---------- switch server ----------
+    function switchServer(server) {
+      currentServer = server;
+      applyTheme(server);
+      loadTemplate(server);
+      // clear output
+      outputPre.textContent = `// ${server.toUpperCase()} ready`;
+      // if html: preview mode hint
+      if (server === 'html') {
+        outputPre.textContent = '// HTML: preview will be shown in iframe after compile.';
+      }
+    }
+
+    // ---------- compile / run ----------
+    async function compileCode() {
+      const code = editor.value;
+      const server = currentServer;
+      const langMap = {
+        'c': { language: 'c', version: '10.2.0' },
+        'cpp': { language: 'c++', version: '10.2.0' },
+        'js': { language: 'javascript', version: '18.15.0' },
+        'html': { language: 'html', version: '5.0' },
+        'turbo': { language: 'c++', version: '10.2.0' } // turbo uses c++
+      };
+      
+      // HTML special: live preview
+      if (server === 'html') {
+        // show in iframe inside output
+        const iframe = document.createElement('iframe');
+        iframe.style.width = '100%';
+        iframe.style.height = '180px';
+        iframe.style.border = '1px solid #2e3a48';
+        iframe.style.borderRadius = '6px';
+        iframe.style.background = '#fff';
+        outputPre.innerHTML = '';
+        outputPre.appendChild(iframe);
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        doc.open();
+        doc.write(code);
+        doc.close();
+        // also show code
+        const detail = document.createElement('div');
+        detail.style.marginTop = '8px';
+        detail.textContent = '✅ HTML preview rendered.';
+        outputPre.appendChild(detail);
+        return;
+      }
+
+      // JS: secure execution using Function
+      if (server === 'js') {
+        try {
+          let logs = [];
+          const originalLog = console.log;
+          console.log = (...args) => { logs.push(args.map(a => String(a)).join(' ')); };
+          const func = new Function(code);
+          func();
+          console.log = originalLog;
+          outputPre.textContent = logs.length ? logs.join('\n') : '✅ JS executed successfully (no output)';
+        } catch (err) {
+          outputPre.textContent = '❌ JS Error: ' + err.message;
         }
+        return;
+      }
 
-        function changeLanguage(lang) {
-            currentLang = lang;
-            editor.value = defaultTemplates[lang];
-            filenameDisplay.innerText = fileNames[lang];
-            updateLineNumbers();
-
-            if (lang === 'html') {
-                previewContainer.classList.remove('hidden');
-                consoleOutput.classList.add('hidden');
-            } else {
-                previewContainer.classList.add('hidden');
-                consoleOutput.classList.remove('hidden');
-                clearOutput();
-                logToConsole(`Ready. Language set to ${lang.toUpperCase()}.`, 'info');
-            }
-        }
-
-        // Editor Utilities
-        function updateLineNumbers() {
-            const linesCount = editor.value.split('\n').length;
-            let linesHTML = '';
-            for (let i = 1; i <= Math.max(linesCount, 15); i++) {
-                linesHTML += `<div>${i}</div>`;
-            }
-            lineNumbers.innerHTML = linesHTML;
-        }
-
-        editor.addEventListener('input', updateLineNumbers);
-        editor.addEventListener('scroll', () => { lineNumbers.scrollTop = editor.scrollTop; });
-
-        editor.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                const start = editor.selectionStart;
-                const end = editor.selectionEnd;
-                editor.value = editor.value.substring(0, start) + "    " + editor.value.substring(end);
-                editor.selectionStart = editor.selectionEnd = start + 4;
-                updateLineNumbers();
-            }
+      // C / C++ / Turbo => piston API
+      const lang = langMap[server]?.language || 'c';
+      const version = langMap[server]?.version || '10.2.0';
+      // For turbo we use c++ but with a different flavor? we keep as c++
+      const pistonLang = (server === 'turbo') ? 'c++' : lang;
+      
+      try {
+        const resp = await fetch('https://emkc.org/api/v2/piston/execute', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            language: pistonLang,
+            version: version,
+            files: [{ content: code }]
+          })
         });
-
-        // Shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && (e.key === 'F9' || e.key === 'f9')) {
-                e.preventDefault();
-                runCode();
-            }
-            if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
-                e.preventDefault();
-                saveFile();
-            }
-        });
-
-        // Console Logging
-        function clearOutput() {
-            consoleOutput.innerHTML = '';
+        const data = await resp.json();
+        if (data.run && data.run.output) {
+          let out = data.run.output;
+          if (data.run.stderr) out += '\n' + data.run.stderr;
+          outputPre.textContent = out || '✅ Compilation successful (no output)';
+        } else if (data.message) {
+          outputPre.textContent = '⚠️ ' + data.message;
+        } else {
+          outputPre.textContent = '⚠️ Unknown response from Piston API';
         }
+      } catch (e) {
+        outputPre.textContent = '❌ API Error: ' + e.message;
+      }
+    }
 
-        function logToConsole(msg, type = 'normal') {
-            const div = document.createElement('div');
-            if (type === 'error') div.className = 'text-red-500 font-bold';
-            else if (type === 'success') div.className = 'text-green-400 font-bold';
-            else if (type === 'info') div.className = 'text-blue-300 italic opacity-90';
-            
-            // Protect against XSS in output
-            div.textContent = msg; 
-            consoleOutput.appendChild(div);
-            consoleOutput.scrollTop = consoleOutput.scrollHeight;
-        }
+    // ---------- save file ----------
+    function saveFile() {
+      const code = editor.value;
+      const extMap = { 'c': 'c', 'cpp': 'cpp', 'js': 'js', 'html': 'html', 'turbo': 'cpp' };
+      const ext = extMap[currentServer] || 'txt';
+      const blob = new Blob([code], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `tooltari_code.${ext}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
 
-        function setStatus(statusText, colorClass) {
-            statusBadge.innerText = statusText;
-            statusBadge.className = `px-2 py-0.5 rounded text-white font-bold text-[10px] uppercase ${colorClass}`;
-        }
+    // ---------- open file ----------
+    function openFile() {
+      document.getElementById('fileInput').click();
+    }
 
-        // Compilation Engine
-        async function runCode() {
-            if (isCompiling) return;
-            const code = editor.value;
-            
-            if (currentLang === 'html') {
-                setStatus("Running", "bg-green-600");
-                webPreview.srcdoc = code;
-                setTimeout(() => setStatus("IDLE", "bg-gray-600"), 1000);
-                return;
-            }
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const file = this.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        setEditorContent(ev.target.result);
+        // also detect server from extension? 
+        const name = file.name.toLowerCase();
+        if (name.endsWith('.c')) switchServer('c');
+        else if (name.endsWith('.cpp') || name.endsWith('.h')) switchServer('cpp');
+        else if (name.endsWith('.js')) switchServer('js');
+        else if (name.endsWith('.html') || name.endsWith('.htm')) switchServer('html');
+        // else keep current server
+      };
+      reader.readAsText(file);
+      this.value = ''; // reset
+    });
 
-            if (currentLang === 'javascript') {
-                executeJavaScript(code);
-                return;
-            }
+    // ---------- debug mock ----------
+    function debugMock() {
+      alert('🐞 Debugger: mock breakpoint at line 1 (simulated)');
+    }
 
-            // C / C++ Compilation via Piston API
-            isCompiling = true;
-            setStatus("Compiling", "bg-yellow-600 animate-pulse");
-            clearOutput();
-            logToConsole(`Compiling ${filenameDisplay.innerText} to executable...`, 'info');
+    // ---------- clear output ----------
+    function clearOutput() {
+      outputPre.textContent = '// Output cleared';
+      if (currentServer === 'html') {
+        outputPre.innerHTML = '// HTML preview cleared';
+      }
+    }
 
-            try {
-                const apiLang = currentLang === 'cpp' ? 'c++' : 'c';
-                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        language: apiLang,
-                        version: '*',
-                        files: [{ content: code }]
-                    })
-                });
+    // ---------- event binding ----------
+    serverBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const server = this.dataset.server;
+        if (server === currentServer) return;
+        switchServer(server);
+      });
+    });
 
-                const data = await response.json();
+    document.getElementById('compileBtn').addEventListener('click', compileCode);
+    document.getElementById('debugBtn').addEventListener('click', debugMock);
+    document.getElementById('openBtn').addEventListener('click', openFile);
+    document.getElementById('saveBtn').addEventListener('click', saveFile);
+    document.getElementById('clearBtn').addEventListener('click', clearOutput);
 
-                if (data.run) {
-                    if (data.run.stderr) {
-                        logToConsole("\n--- Compiler Warnings/Errors ---\n" + data.run.stderr, 'error');
-                    }
-                    if (data.run.output) {
-                        logToConsole("\n--- Output ---\n" + data.run.output, 'success');
-                    } else if (!data.run.stderr) {
-                        logToConsole("\n(No output returned)", 'info');
-                    }
-                } else {
-                    logToConsole("Compilation Failed:\n" + (data.message || "Unknown Error"), 'error');
-                }
-            } catch (error) {
-                logToConsole("\n[!] Server connection failed. Check your internet or API limits.", 'error');
-            }
+    // keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'F9') {
+        e.preventDefault();
+        compileCode();
+      }
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        saveFile();
+      }
+    });
 
-            isCompiling = false;
-            setStatus("IDLE", "bg-gray-600");
-        }
-
-        function executeJavaScript(code) {
-            setStatus("Executing", "bg-blue-600");
-            clearOutput();
-            logToConsole("Running JavaScript Engine...\n", 'info');
-
-            try {
-                // Override console log temporarily to capture output
-                const oldLog = console.log;
-                const oldError = console.error;
-                
-                console.log = function(...args) {
-                    logToConsole(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '));
-                    oldLog.apply(console, args);
-                };
-                console.error = function(...args) {
-                    logToConsole("Error: " + args.join(' '), 'error');
-                    oldError.apply(console, args);
-                };
-
-                // Execute JS
-                new Function(code)();
-
-                // Restore console
-                console.log = oldLog;
-                console.error = oldError;
-
-            } catch (e) {
-                logToConsole("Runtime Error: " + e.message, 'error');
-            }
-            
-            setStatus("IDLE", "bg-gray-600");
-        }
-
-        // File Management
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                editor.value = e.target.result;
-                filenameDisplay.innerText = file.name.toUpperCase();
-                
-                // Detect Lang
-                const ext = file.name.split('.').pop().toLowerCase();
-                if(ext === 'c') langSelector.value = 'c';
-                else if(ext === 'cpp') langSelector.value = 'cpp';
-                else if(ext === 'js') langSelector.value = 'javascript';
-                else if(ext === 'html' || ext === 'htm') langSelector.value = 'html';
-                
-                currentLang = langSelector.value;
-                if (currentLang === 'html') {
-                    previewContainer.classList.remove('hidden');
-                    consoleOutput.classList.add('hidden');
-                } else {
-                    previewContainer.classList.add('hidden');
-                    consoleOutput.classList.remove('hidden');
-                }
-
-                updateLineNumbers();
-            };
-            reader.readAsText(file);
-            event.target.value = '';
-        }
-
-        function saveFile() {
-            const blob = new Blob([editor.value], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filenameDisplay.innerText.toLowerCase();
-            a.click();
-            URL.revokeObjectURL(url);
-            logToConsole(`\nProject saved as ${a.download}`, 'success');
-        }
-
-    </script>
+    // ---------- init ----------
+    switchServer('c');
+  })();
+</script>
 </body>
-</html>
-
-
-```
-
-            --menu-hover-bg: #404040;
-            --output-bg: #000000;
-            --output-text: #4ade80; /* Terminal Green */
-            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-        }
-
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-normal);
-            transition: all 0.2s ease;
-        }
-
-        .top-server-bar {
-            background-color: #0f172a;
-            color: #94a3b8;
-            font-family: sans-serif;
-        }
-
-        .server-tab { padding: 0.5rem 1rem; cursor: pointer; transition: 0.2s; border-right: 1px solid #1e293b; }
-        .server-tab:hover { background-color: #1e293b; color: white; }
-        .server-tab.active-turbo { background-color: #2563eb; color: white; box-shadow: inset 0 -2px 0 #60a5fa; }
-        .server-tab.active-modern { background-color: #334155; color: white; box-shadow: inset 0 -2px 0 #94a3b8; }
-
-        .menu-bar {
-            background-color: var(--bg-menu);
-            color: var(--menu-text);
-            font-weight: bold;
-        }
-
-        .menu-item {
-            padding: 0.2rem 0.8rem;
-            cursor: pointer;
-            border: 1px solid transparent;
-        }
-        .menu-item:hover {
-            background-color: var(--menu-hover-bg);
-            color: var(--menu-hover);
-        }
-
-        .editor-area {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            outline: none;
-            resize: none;
-            white-space: pre;
-            tab-size: 4;
-            font-size: 16px;
-        }
-
-        .output-area {
-            background-color: var(--output-bg);
-            color: var(--output-text);
-            font-family: 'Courier New', Courier, monospace;
-        }
-
-        .language-select {
-            background-color: transparent;
-            color: var(--menu-text);
-            border: 1px solid var(--menu-text);
-            padding: 0 4px;
-            outline: none;
-            cursor: pointer;
-        }
-        .language-select option { background-color: white; color: black; }
-    </style>
-</head>
-<body class="theme-turbo h-screen flex flex-col overflow-hidden" id="app-body">
-
-    <!-- Top Server Bar -->
-    <div class="top-server-bar flex text-sm font-semibold select-none z-10 shadow-md">
-        <div class="px-4 py-2 text-white/50 border-r border-slate-800 flex items-center">
-            <i class="fa-solid fa-code mr-2"></i> Tooltari
-        </div>
-        <div class="server-tab" id="tab-s1" onclick="setServer('s1')">Server 1</div>
-        <div class="server-tab" id="tab-s2" onclick="setServer('s2')">Server 2</div>
-        <div class="server-tab" id="tab-s3" onclick="setServer('s3')">Server 3</div>
-        <div class="server-tab" id="tab-s4" onclick="setServer('s4')">Server 4</div>
-        <div class="server-tab active-turbo flex items-center gap-1" id="tab-turbo" onclick="setServer('turbo')">
-            <i class="fa-solid fa-bolt text-yellow-400"></i> Turbo
-        </div>
-        <div class="flex-1"></div>
-        <div class="px-4 py-2 text-xs opacity-70 hidden sm:block">Zero hidden charges.</div>
-    </div>
-
-    <!-- Classic Menu Bar -->
-    <div class="menu-bar flex flex-wrap items-center text-sm shadow-sm select-none border-b-2 border-black/20">
-        <div class="menu-item flex items-center gap-1" onclick="runCode()" title="Run Code (Ctrl+F9)">
-            <span class="text-red-700 font-extrabold hidden sm:inline">C</span>ompile (Ctrl+F9)
-        </div>
-        <div class="menu-item" onclick="alert('Debug feature coming soon!')">Debug</div>
-        <div class="menu-item" onclick="openFile()">Open File</div>
-        <div class="menu-item" onclick="saveFile()">Save File</div>
-        <div class="menu-item" onclick="clearOutput()">Clear</div>
-        
-        <div class="mx-auto"></div>
-        
-        <!-- Language Selector -->
-        <div class="flex items-center gap-2 px-2 py-1">
-            <span>Lang:</span>
-            <select id="lang-selector" class="language-select text-sm font-bold" onchange="changeLanguage(this.value)">
-                <option value="cpp">C++ (Turbo/GCC)</option>
-                <option value="c">C (GCC)</option>
-                <option value="javascript">JavaScript</option>
-                <option value="html">HTML / CSS</option>
-            </select>
-        </div>
-    </div>
-
-    <input type="file" id="file-input" class="hidden" accept=".c,.cpp,.js,.html,.txt" onchange="handleFileSelect(event)">
-
-    <!-- Main Workspace -->
-    <main class="flex-1 flex flex-col md:flex-row overflow-hidden">
-        
-        <!-- Code Editor -->
-        <div class="flex-1 flex flex-col border-r-2 border-black/30 relative">
-            <div class="bg-black/20 text-center text-xs py-0.5 border-b border-black/20 opacity-80" id="filename-display">
-                NONAME00.CPP
-            </div>
-            <div class="flex-1 flex relative overflow-hidden">
-                <!-- Line Numbers -->
-                <div id="line-numbers" class="w-10 bg-black/10 text-right pr-2 py-4 opacity-50 text-sm overflow-hidden select-none">
-                    1
-                </div>
-                <textarea id="code-editor" class="editor-area flex-1 w-full h-full p-4 p-l-2 leading-relaxed" spellcheck="false" autocomplete="off" onkeydown="handleTab(event)"></textarea>
-            </div>
-        </div>
-
-        <!-- Output Console -->
-        <div class="h-1/3 md:h-full md:w-2/5 flex flex-col output-area relative border-t-4 md:border-t-0 md:border-l-4 border-gray-600">
-            <div class="bg-gray-800 text-white text-xs py-1 px-3 flex justify-between items-center border-b-2 border-gray-900">
-                <span><i class="fa-solid fa-terminal"></i> Output Message</span>
-                <span id="status-badge" class="px-2 rounded bg-gray-700 text-gray-300">Idle</span>
-            </div>
-            
-            <div class="flex-1 relative">
-                <!-- Text Output -->
-                <div id="console-output" class="absolute inset-0 p-3 overflow-auto text-sm whitespace-pre-wrap leading-relaxed">Compiler ready. Press Ctrl+F9 to compile...</div>
-                
-                <!-- Web Preview (For HTML) -->
-                <div id="preview-container" class="absolute inset-0 hidden bg-white">
-                    <iframe id="web-preview" class="w-full h-full border-none"></iframe>
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <script>
-        // State
-        let currentServer = 'turbo';
-        let currentLang = 'cpp';
-        
-        const templates = {
-            'cpp': `#include <iostream>\nusing namespace std;\n\nint main() {\n    // Tooltari Turbo Compiler me aapka swagat hai!\n    cout << "Hello, World! Welcome to C++" << endl;\n    return 0;\n}`,
-            'c': `#include <stdio.h>\n\nint main() {\n    // Tooltari C Compiler\n    printf("Hello, World! Welcome to C\\n");\n    return 0;\n}`,
-            'javascript': `// Tooltari JS Server\nconsole.log("JavaScript engine is running...");\n\nfor(let i=1; i<=3; i++) {\n    console.log("Count: " + i);\n}`,
-            'html': `<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: sans-serif; text-align: center; margin-top: 50px; }\n    h1 { color: #2563eb; }\n  </style>\n</head>\n<body>\n  <h1>Tooltari HTML Server</h1>\n  <p>Live preview aapke right side me dikhega.</p>\n</body>\n</html>`
-        };
-
-        const editor = document.getElementById('code-editor');
-        const lineNumbers = document.getElementById('line-numbers');
-        const consoleOutput = document.getElementById('console-output');
-        const previewContainer = document.getElementById('preview-container');
-        const webPreview = document.getElementById('web-preview');
-        const statusBadge = document.getElementById('status-badge');
-        const filenameDisplay = document.getElementById('filename-display');
-
-        // Initial Setup
-        editor.value = templates['cpp'];
-        updateLineNumbers();
-
-        // Server Switching Logic
-        function setServer(serverName) {
-            currentServer = serverName;
-            
-            // Reset tabs
-            document.querySelectorAll('.server-tab').forEach(tab => {
-                tab.classList.remove('active-turbo', 'active-modern');
-            });
-            
-            const activeTab = document.getElementById('tab-' + serverName);
-            
-            // Apply Theme
-            const body = document.getElementById('app-body');
-            if (serverName === 'turbo') {
-                body.className = 'theme-turbo h-screen flex flex-col overflow-hidden';
-                activeTab.classList.add('active-turbo');
-            } else {
-                body.className = 'theme-modern h-screen flex flex-col overflow-hidden';
-                activeTab.classList.add('active-modern');
-            }
-
-            logToConsole(`Switched to [${serverName.toUpperCase()}] backend.`, 'info');
-        }
-
-        // Language Switching Logic
-        function changeLanguage(lang) {
-            currentLang = lang;
-            editor.value = templates[lang];
-            updateLineNumbers();
-            
-            // Set mock filenames based on language
-            const names = { 'cpp': 'NONAME00.CPP', 'c': 'MAIN.C', 'javascript': 'SCRIPT.JS', 'html': 'INDEX.HTM' };
-            filenameDisplay.innerText = names[lang];
-
-            if(lang === 'html') {
-                previewContainer.classList.remove('hidden');
-                consoleOutput.classList.add('hidden');
-            } else {
-                previewContainer.classList.add('hidden');
-                consoleOutput.classList.remove('hidden');
-            }
-            clearOutput();
-            logToConsole(`Language set to ${lang.toUpperCase()}. Press Ctrl+F9 to Run.`, 'info');
-        }
-
-        // Line Numbers Logic
-        function updateLineNumbers() {
-            const lines = editor.value.split('\n').length;
-            lineNumbers.innerHTML = Array.from({length: Math.max(lines, 15)}, (_, i) => `<div>${i + 1}</div>`).join('');
-        }
-        editor.addEventListener('input', updateLineNumbers);
-        editor.addEventListener('scroll', () => { lineNumbers.scrollTop = editor.scrollTop; });
-
-        // Tab Key Support
-        function handleTab(e) {
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                const start = editor.selectionStart;
-                const end = editor.selectionEnd;
-                editor.value = editor.value.substring(0, start) + "    " + editor.value.substring(end);
-                editor.selectionStart = editor.selectionEnd = start + 4;
-                updateLineNumbers();
-            }
-        }
-
-        // Ctrl+F9 Shortcut Listener
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.key === 'F9') {
-                e.preventDefault();
-                runCode();
-            }
-        });
-
-        // Console Utilities
-        function clearOutput() {
-            consoleOutput.innerHTML = '';
-        }
-
-        function logToConsole(msg, type = 'normal') {
-            const div = document.createElement('div');
-            if (type === 'error') div.className = 'text-red-500 font-bold';
-            else if (type === 'success') div.className = 'text-green-400';
-            else if (type === 'info') div.className = 'text-blue-300 italic opacity-80';
-            
-            div.textContent = msg;
-            consoleOutput.appendChild(div);
-            consoleOutput.scrollTop = consoleOutput.scrollHeight;
-        }
-
-        // 🚀 Core Execution Engine 🚀
-        async function runCode() {
-            const code = editor.value;
-            
-            if (currentLang === 'html') {
-                statusBadge.innerText = "Running";
-                statusBadge.className = "px-2 rounded bg-green-600 text-white";
-                webPreview.srcdoc = code;
-                setTimeout(() => setStatusIdle(), 1000);
-                return;
-            }
-
-            if (currentLang === 'javascript') {
-                executeJavaScript(code);
-                return;
-            }
-
-            // C & C++ Execution via Public API (Piston API - Free & No Auth)
-            // Kyunki browser native C/C++ compile nahi kar sakta bina heavy Wasm ke.
-            statusBadge.innerText = "Compiling...";
-            statusBadge.className = "px-2 rounded bg-yellow-600 text-white animate-pulse";
-            clearOutput();
-            logToConsole(`Compiling ${filenameDisplay.innerText} using ${currentServer.toUpperCase()}...`, 'info');
-
-            try {
-                // Piston API Configuration
-                const langMap = { 'c': 'c', 'cpp': 'c++' };
-                const version = '*'; // Use latest version available on API
-
-                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        language: langMap[currentLang],
-                        version: version,
-                        files: [{ content: code }]
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.run) {
-                    if (data.run.stderr) {
-                        logToConsole("Compilation Warnings/Errors:\n" + data.run.stderr, 'error');
-                    }
-                    if (data.run.output) {
-                        logToConsole("\n--- Output ---\n" + data.run.output, 'success');
-                    }
-                    logToConsole("\nSuccess.", 'info');
-                } else {
-                    logToConsole("Error compiling code:\n" + (data.message || JSON.stringify(data)), 'error');
-                }
-            } catch (error) {
-                logToConsole("Server connection failed. Kripya apna internet check karein.", 'error');
-                logToConsole("Details: " + error.message, 'error');
-            }
-
-            setStatusIdle();
-        }
-
-        function executeJavaScript(code) {
-            statusBadge.innerText = "Executing";
-            statusBadge.className = "px-2 rounded bg-blue-600 text-white";
-            clearOutput();
-            logToConsole("Running SCRIPT.JS...", 'info');
-
-            // Safe iframe evaluation
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            document.body.appendChild(iframe);
-
-            const iframeConsole = {
-                log: (...args) => logToConsole(args.join(' ')),
-                error: (...args) => logToConsole("Error: " + args.join(' '), 'error'),
-                warn: (...args) => logToConsole("Warning: " + args.join(' '), 'error')
-            };
-
-            iframe.contentWindow.console = iframeConsole;
-            
-            try {
-                iframe.contentWindow.eval(`
-                    try {
-                        ${code}
-                    } catch (e) {
-                        console.error(e.name + ": " + e.message);
-                    }
-                `);
-            } catch (e) {
-                logToConsole("Fatal Error: " + e.message, 'error');
-            }
-            
-            document.body.removeChild(iframe);
-            setStatusIdle();
-        }
-
-        function setStatusIdle() {
-            statusBadge.innerText = "Idle";
-            statusBadge.className = "px-2 rounded bg-gray-700 text-gray-300";
-        }
-
-        // File Operations
-        function openFile() {
-            document.getElementById('file-input').click();
-        }
-
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                editor.value = e.target.result;
-                updateLineNumbers();
-                filenameDisplay.innerText = file.name.toUpperCase();
-                
-                // Auto-detect language based on extension
-                const ext = file.name.split('.').pop().toLowerCase();
-                const selector = document.getElementById('lang-selector');
-                if(ext === 'c') { selector.value = 'c'; currentLang = 'c'; }
-                else if(ext === 'cpp') { selector.value = 'cpp'; currentLang = 'cpp'; }
-                else if(ext === 'js') { selector.value = 'javascript'; currentLang = 'javascript'; }
-                else if(ext === 'html' || ext === 'htm') { selector.value = 'html'; currentLang = 'html'; }
-                
-                changeLanguage(currentLang);
-                editor.value = e.target.result; // Re-apply text because changeLanguage overrides it
-            };
-            reader.readAsText(file);
-            event.target.value = '';
-        }
-
-        function saveFile() {
-            const blob = new Blob([editor.value], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filenameDisplay.innerText.toLowerCase();
-            a.click();
-            URL.revokeObjectURL(url);
-            logToConsole(`File ${filenameDisplay.innerText} saved to device.`, 'info');
-        }
-
-    </script>
-</body>
-</html>
-
-
-```
-= 'Tab') {
-                e.preventDefault();
-                const start = this.selectionStart;
-                const end = this.selectionEnd;
-                // Insert 4 spaces
-                this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
-                this.selectionStart = this.selectionEnd = start + 4;
-                updateLineNumbers();
-            }
-        });
-
-        // Initialize line numbers on load
-        updateLineNumbers();
-
-        // UI Toggle Functions
-        function setLanguage(lang) {
-            currentLanguage = lang;
-            currentFileName = lang === 'javascript' ? 'main.js' : 'index.html';
-            document.getElementById('file-name-display').innerText = currentFileName;
-
-            // Update Buttons Styling (Desktop)
-            document.getElementById('btn-js').className = lang === 'javascript' 
-                ? 'flex items-center gap-2 px-3 py-1.5 rounded text-sm transition-colors bg-slate-700 text-yellow-400 shadow-sm' 
-                : 'flex items-center gap-2 px-3 py-1.5 rounded text-sm transition-colors hover:text-white';
-            document.getElementById('btn-html').className = lang === 'html' 
-                ? 'flex items-center gap-2 px-3 py-1.5 rounded text-sm transition-colors bg-slate-700 text-yellow-400 shadow-sm' 
-                : 'flex items-center gap-2 px-3 py-1.5 rounded text-sm transition-colors hover:text-white';
-
-            // Update Buttons Styling (Mobile)
-            document.getElementById('btn-js-mob').className = lang === 'javascript' 
-                ? 'px-3 py-1.5 rounded text-sm transition-colors bg-slate-700 text-yellow-400 shadow-sm' 
-                : 'px-3 py-1.5 rounded text-sm transition-colors hover:text-white';
-            document.getElementById('btn-html-mob').className = lang === 'html' 
-                ? 'px-3 py-1.5 rounded text-sm transition-colors bg-slate-700 text-yellow-400 shadow-sm' 
-                : 'px-3 py-1.5 rounded text-sm transition-colors hover:text-white';
-
-            // Auto-switch tabs
-            setTab(lang === 'javascript' ? 'console' : 'preview');
-            
-            // Sample code update agar editor khali hai ya purana sample hai
-            if(editor.value.includes('// Tooltari Compiler mein aapka swagat hai') || editor.value.includes('<!-- HTML Code yahan likhein -->')) {
-                if(lang === 'html') {
-                    editor.value = `<!-- HTML Code yahan likhein -->\n<div style="font-family: sans-serif; text-align: center; margin-top: 50px;">\n    <h1 style="color: #eab308;">Tooltari 🍌 Web Preview</h1>\n    <p>Apna HTML aur CSS yahan edit karein!</p>\n</div>`;
-                } else {
-                    editor.value = `// Tooltari Compiler mein aapka swagat hai 🍌\n// Apna JavaScript ya HTML yahan likhein...\n\nconsole.log("Hello, Tooltari user!");`;
-                }
-                updateLineNumbers();
-            }
-        }
-
-        function setTab(tab) {
-            currentTab = tab;
-            
-            // Tab Button Styling
-            const activeClasses = 'flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-t-md transition-colors bg-slate-950 text-yellow-400 border-t border-l border-r border-slate-800 -mb-[7px] pb-[7px]';
-            const inactiveClasses = 'flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-t-md transition-colors text-slate-500 hover:text-slate-300';
-            
-            document.getElementById('tab-console').className = tab === 'console' ? activeClasses : inactiveClasses;
-            document.getElementById('tab-preview').className = tab === 'preview' ? activeClasses : inactiveClasses;
-
-            // Show/Hide Content
-            if (tab === 'console') {
-                consoleOutput.style.display = 'block';
-                previewContainer.style.display = 'none';
-            } else {
-                consoleOutput.style.display = 'none';
-                previewContainer.style.display = 'block';
-            }
-        }
-
-        // File Operations
-        function handleOpenFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            currentFileName = file.name;
-            document.getElementById('file-name-display').innerText = currentFileName;
-
-            if (file.name.endsWith('.html') || file.name.endsWith('.htm')) {
-                setLanguage('html');
-            } else {
-                setLanguage('javascript');
-            }
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                editor.value = e.target.result;
-                updateLineNumbers();
-            };
-            reader.readAsText(file);
-            event.target.value = ''; // Input reset karna
-        }
-
-        function handleSaveFile() {
-            const code = editor.value;
-            const blob = new Blob([code], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = currentFileName;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function clearConsole() {
-            consoleOutput.innerHTML = '';
-        }
-
-        // Console messages sunne ke liye Event Listener
-        window.addEventListener('message', (event) => {
-            if (event.data && event.data.source === 'tooltari-runner') {
-                // Pehli baar message aaye toh default text hatao
-                if(consoleOutput.innerHTML.includes('Abhi tak koi output nahi hai')) {
-                    consoleOutput.innerHTML = '';
-                }
-
-                const msgDiv = document.createElement('div');
-                msgDiv.className = `py-1 border-b border-slate-800/50 last:border-0 ${
-                    event.data.type === 'error' ? 'text-red-400' : 
-                    event.data.type === 'warn' ? 'text-yellow-500' : 'text-slate-300'
-                }`;
-                
-                const iconHTML = event.data.type === 'error' ? '<span class="opacity-50 select-none mr-2 text-xs">✖</span>' : 
-                                 event.data.type === 'warn' ? '<span class="opacity-50 select-none mr-2 text-xs">⚠</span>' : 
-                                 '<span class="opacity-50 select-none mr-2 text-xs">›</span>';
-                
-                msgDiv.innerHTML = iconHTML + event.data.msg.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                consoleOutput.appendChild(msgDiv);
-                
-                // Scroll to bottom
-                consoleOutput.scrollTop = consoleOutput.scrollHeight;
-            }
-        });
-
-        // Run Code Logic
-        function runCode() {
-            const code = editor.value;
-            
-            if (currentLanguage === 'html') {
-                setTab('preview');
-                webPreview.srcdoc = code;
-            } else {
-                setTab('console');
-                clearConsole();
-                
-                // Iframe ke andar safe execution ke liye HTML template
-                const htmlTemplate = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <script>
-                            // Iframe se main window mein messages bhejne ke liye function
-                            const post = (type, ...args) => {
-                                const msg = args.map(a => {
-                                    try { return typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a); }
-                                    catch(e) { return String(a); }
-                                }).join(' ');
-                                window.parent.postMessage({ source: 'tooltari-runner', type, msg }, '*');
-                            };
-                            
-                            // Console ko override karna
-                            console.log = (...args) => post('log', ...args);
-                            console.error = (...args) => post('error', ...args);
-                            console.warn = (...args) => post('warn', ...args);
-                            console.info = (...args) => post('info', ...args);
-                            
-                            window.onerror = function(message, source, lineno, colno, error) {
-                                // Template me script tag ki line number adjust karna
-                                const actualLine = Math.max(1, lineno - 22); 
-                                post('error', 'Error: ' + message + ' (Line ' + actualLine + ')');
-                                return true;
-                            };
-                        <\/script>
-                    </head>
-                    <body>
-                        <script>
-                            try {
-                                ${code}
-                            } catch(e) {
-                                console.error(e.name + ': ' + e.message);
-                            }
-                        <\/script>
-                    </body>
-                    </html>
-                `;
-                jsRunner.srcdoc = htmlTemplate;
-            }
-        }
-    </script>
-</body>
-</html>
-
-```
-          
+    </html>
